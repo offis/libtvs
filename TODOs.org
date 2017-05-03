@@ -1,0 +1,3 @@
+* TODO Use SplitPolicy in timed_reader
+* TODO Implement sync() and friends
+* TODO Update Doxygen documentation

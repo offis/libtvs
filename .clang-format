@@ -1,0 +1,5 @@
+Language:        Cpp
+BasedOnStyle:  Mozilla
+
+# Possibly available on LLVM 5.0
+# BreakBeforeInheritanceComma: true

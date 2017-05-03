@@ -1,0 +1,22 @@
+
+libtvs -- Timed-Value Stream Library
+
+Copyright (c) 2017 OFFIS Institute for Information Technology
+                   Oldenburg, Germany
+
+Contact information:
+
+    OFFIS e.V.
+    Institute for Information Technology
+    Escherweg 2
+    D-26121 Oldenburg
+    Germany
+
+    www  : http://www.offis.de/
+    phone: +49 (441) 9722-0
+    fax  : +49 (441) 9722-102
+
+
+This product bundles part of the RapidJSON Library 0.1, which is
+available under the "MIT License".  For details, see
+src/tvs/extern/rapidjson/.
