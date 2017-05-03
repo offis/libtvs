@@ -28,7 +28,7 @@ required system characteristics under analysis.
 The full paper is available at
 http://link.springer.com/chapter/10.1007/978-3-319-16214-0_12
 
-## Building the library
+## Build System and Dependencies
 
 The library requires the build system ``meson >= 0.39``.  By default, meson uses
 the `ninja` backend to generate the build instructions.  On debian-based
@@ -55,7 +55,7 @@ External dependencies:
 - `SystemC >= 2.3.1` 
 - `boost >= 1.51`
 
-## Building the Library
+### Building the Library
 
 To build the library, create a build directory and run `meson` in the new
 directory while pointing it to the source directory:
