@@ -17,7 +17,7 @@
 
 #include "timed_stream_fixture.h"
 
-#include "task_print_processor.h"
+#include "print_processor.h"
 
 #include "tvs/tracing.h"
 
@@ -29,7 +29,7 @@ struct StreamStateSemantics : public timed_stream_fixture<test_stream>
 {
 
   typedef timed_stream_fixture<test_stream> base_type;
-  typedef task_print_processor<test_stream::value_type> proc_type;
+  typedef print_processor<test_stream::value_type> proc_type;
 
   StreamStateSemantics()
     : base_type()
@@ -182,10 +182,12 @@ TEST_F(StreamStateSemantics, PushOffsetAndTwoCommitsWithAbsoluteTime)
 // this is not allowed since it would lead to a merge
 TEST_F(StreamStateSemantics, PushOffsetAndDurationAndCommitDeath)
 {
-  ASSERT_DEATH({
+  ASSERT_DEATH(
+    {
       writer.push(dur, 4711, dur);
       writer.push(test_tuple);
-    }, "");
+    },
+    "");
 }
 
 //-------------------------------------------------------------------

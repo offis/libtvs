@@ -17,7 +17,7 @@
 
 #include "timed_stream_fixture.h"
 
-#include "task_print_processor.h"
+#include "print_processor.h"
 
 #include "tvs/tracing.h"
 
@@ -30,8 +30,8 @@ struct StreamProcessSemantics : public timed_stream_fixture<test_stream>
 {
 
   typedef timed_stream_fixture<test_stream> base_type;
-  typedef task_print_processor<test_stream::value_type,
-                               tracing::timed_process_traits>
+  typedef print_processor<test_stream::value_type,
+                          tracing::timed_process_traits>
     proc_type;
 
   StreamProcessSemantics()
@@ -114,7 +114,6 @@ TEST_F(StreamProcessSemantics, MergePolicy)
   expect_processor_output("2 s:(0,1 s)\n");
 }
 
-
 TEST_F(StreamProcessSemantics, PushToAdvanceAndFuture)
 {
 
@@ -129,14 +128,12 @@ TEST_F(StreamProcessSemantics, PushToAdvanceAndFuture)
   // local time offset has not been advanced
   EXPECT_EQ(dur * 2, writer.duration());
 
-  writer.commit(dur*6);
-  expect_processor_output(
-                          "0 s:(100,2 s)\n"
+  writer.commit(dur * 6);
+  expect_processor_output("0 s:(100,2 s)\n"
                           "2 s:(50,1 s)\n"
                           "3 s:(100,1 s)\n"
                           "4 s:(50,1 s)\n"
-                          "5 s:(0,1 s)\n"
-                          );
+                          "5 s:(0,1 s)\n");
 }
 
 TEST_F(StreamProcessSemantics, PushOffsetAndPushToAdvance)
@@ -152,12 +149,10 @@ TEST_F(StreamProcessSemantics, PushOffsetAndPushToAdvance)
   // local time offset has been advanced
   EXPECT_EQ(dur * 2, writer.duration());
 
-  writer.commit(dur*3);
-  expect_processor_output(
-                          "0 s:(100,1 s)\n"
+  writer.commit(dur * 3);
+  expect_processor_output("0 s:(100,1 s)\n"
                           "1 s:(150,1 s)\n"
-                          "2 s:(50,1 s)\n"
-                          );
+                          "2 s:(50,1 s)\n");
 }
 
 TEST_F(StreamProcessSemantics, PushOffsetSmallDuration)
@@ -173,14 +168,12 @@ TEST_F(StreamProcessSemantics, PushOffsetSmallDuration)
   // local time offset has not been advanced
   EXPECT_EQ(dur * 2, writer.duration());
 
-  writer.commit(dur*6);
-  expect_processor_output(
-                          "0 s:(100,2 s)\n"
+  writer.commit(dur * 6);
+  expect_processor_output("0 s:(100,2 s)\n"
                           "2 s:(50,1 s)\n"
                           "3 s:(100,1 s)\n"
                           "4 s:(50,1 s)\n"
-                          "5 s:(0,1 s)\n"
-                          );
+                          "5 s:(0,1 s)\n");
 }
 
 TEST_F(StreamProcessSemantics, PushDuration)

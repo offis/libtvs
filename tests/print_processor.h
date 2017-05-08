@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-#ifndef TASK_PRINT_PROCESSOR_INCLUDED_
-#define TASK_PRINT_PROCESSOR_INCLUDED_
+#ifndef PRINT_PROCESSOR_H_INCLUDED_
+#define PRINT_PROCESSOR_H_INCLUDED_
 
 #include "tvs/tracing.h"
 
@@ -31,13 +31,13 @@
  */
 template<typename T,
          template<typename> class Traits = tracing::timed_state_traits>
-struct task_print_processor : tracing::timed_stream_processor_base<T, Traits>
+struct print_processor : tracing::timed_stream_processor_base<T, Traits>
 {
-  using this_type = task_print_processor;
+  using this_type = print_processor;
   using base_type = tracing::timed_stream_processor_base<T, Traits>;
   using reader_type = typename base_type::reader_type;
 
-  task_print_processor(char const* name)
+  print_processor(char const* name)
     : base_type(name)
   {
   }
@@ -69,4 +69,4 @@ private:
   std::stringstream output_;
 };
 
-#endif // TASK_PRINT_PROCESSOR_INCLUDED_
+#endif // PRINT_PROCESSOR_H_INCLUDED_
