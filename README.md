@@ -89,13 +89,13 @@ directory using ``meson -D<name>=<value> <...>`` or use ``mesonconf
     
 The build system will search for a suitable SystemC library via `pkg-config`.
 If a `pkg-config` file is not available, you can optionally specify custom
-SystemC library and include header paths via the options `-Dsystemc_incdir` and
-`-Dsystemc_libdir`:
+SystemC library and include header paths via the options `-Dsc_includedir` and
+`-Dsc_libdir`:
 
     $ mkdir objdir
     $ cd objdir
-    $ meson -Dsystemc_libdir=/opt/systemc-2.3.1/lib-linux64 \
-          -Dsystemc_incdir=/opt/systemc-2.3.1/include ..
+    $ meson -Dsc_libdir=/opt/systemc-2.3.1/lib-linux64 \
+          -Dsc_includedir=/opt/systemc-2.3.1/include ..
           
 ## Test Suite and Documentation
           
