@@ -75,7 +75,7 @@ if not systemc_dep.found()
 #if __SCVER < _MAKE_VERSION(@0@, @1@, @2@)
 # error "SystemC version check failed."
 #endif
-'''.format(sc_ver[0], sc_ver[1], sc_ver[2]), dependencies: sc_lib)
+'''.format(sc_ver[0], sc_ver[1], sc_ver[2]), dependencies: sc_lib, include_directories: sc_includedir)
     error('Cannot find SystemC >= @0@ at @1@'.format(sc_version_required, sc_libdir))
   endif
 endif
