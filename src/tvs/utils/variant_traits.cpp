@@ -69,11 +69,11 @@ DEFINE_BUILTIN_(std::string, string)
 DEFINE_PACK_(sc_core::sc_time)
 {
 #if SYSX_HAVE_SYSTEMC_ > SYSX_MAKE_VERSION(2, 3, 1)
-  sc_core::sc_time_tuple t = src.to_tuple();
+  sc_core::sc_time_tuple t(src);
   if (t.has_value())
-    dst.set_list().push_back(t.value()).push_back(std::string(t.symbol()));
+    dst.set_list().push_back(t.value()).push_back(std::string(t.unit_symbol()));
   else
-    dst.set_list().push_back(t.to_double()).push_back(std::string(t.symbol()));
+    dst.set_list().push_back(t.to_double()).push_back(std::string(t.unit_symbol()));
 #else
   ///@todo normalize output to best matching unit
   dst.set_list().push_back(src.to_seconds()).push_back("s");
@@ -95,7 +95,7 @@ static inline sc_core::sc_time
 sc_time_from_symbol(double value, variant_string_cref sym)
 {
 #if SYSX_HAVE_SYSTEMC_ > SYSX_MAKE_VERSION(2, 3, 1)
-  return sc_core::sc_time::from_symbol(value, sym.c_str());
+  return sc_core::sc_time(value, sym.c_str());
 #else  // SystemC <= 2.3.1
   static struct symbol
   {
