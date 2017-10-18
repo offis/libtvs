@@ -25,6 +25,7 @@
 
 #include <algorithm> // std::swap
 #include <vector>    // std::vector
+#include <mutex>
 
 namespace sysx {
 namespace utils {
@@ -74,6 +75,7 @@ private:
 
   impl_type* do_create()
   {
+    std::lock_guard<std::mutex> l(mut_);
     if (free_.empty())
       return new impl_type();
 
@@ -82,7 +84,13 @@ private:
     return ret;
   }
 
-  void do_free(impl_type* obj) { free_.push_back(obj); }
+  void do_free(impl_type* obj)
+  {
+    std::lock_guard<std::mutex> l(mut_);
+    free_.push_back(obj);
+  }
+
+  std::mutex mut_;
 
   free_list free_;
 };
