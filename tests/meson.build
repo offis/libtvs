@@ -47,3 +47,7 @@ foreach test : tests
                   dependencies: deps))
 endforeach
 
+
+subdir('native')
+
+
