@@ -35,9 +35,54 @@
 
 namespace tracing {
 
+template<typename T, typename Traits>
+void
+timed_stream<T, Traits>::merge_future(sequence_type&& other)
+{
+  sequence_type& this_ = this->future_;
+
+  if (other.empty())
+    return;
+
+  if (this_.empty()) {
+    this_.move_back(other);
+    return;
+  }
+
+  sequence_type result;
+  sequence_type *seq_a = &this_, *seq_b = &other;
+
+  // iterate until one sequence is empty
+  while (!seq_a->empty() && !seq_b->empty()) {
+
+    // make sure seq_a points to the sequence with the longer front tuple
+    if (seq_a->front_duration() < seq_b->front_duration())
+      std::swap(seq_a, seq_b);
+
+    // split the front tuple of A
+    seq_a->split(seq_b->front_duration());
+
+    tuple_type a_front = seq_a->front();
+    merge_policy::merge(a_front, seq_b->front());
+
+    result.push_back(a_front);
+    seq_b->pop_front();
+    seq_a->pop_front();
+  }
+
+  // handle leftover tuples in both sequences
+  if (!seq_a->empty())
+    result.move_back(*seq_a);
+  if (!seq_b->empty())
+    result.move_back(*seq_b);
+
+  this_.clear();
+  this_.move_back(result);
+}
+
 /* -------------------------- push interface -------------------------- */
 
-template<typename T, template<typename> class P>
+template<typename T, typename P>
 void
 timed_stream<T, P>::push(tuple_type const& t)
 {
@@ -48,7 +93,7 @@ timed_stream<T, P>::push(tuple_type const& t)
     // consume any future values caused by the local offset increment
     sequence_type tmp;
     tmp.push_back(t);
-    future_.merge(tmp);
+    merge_future(std::move(tmp));
 
     auto merge_range = future_.range(t.duration());
 
@@ -59,7 +104,7 @@ timed_stream<T, P>::push(tuple_type const& t)
   }
 }
 
-template<typename T, template<typename> class P>
+template<typename T, typename P>
 void
 timed_stream<T, P>::push(value_type const& val)
 {
@@ -71,11 +116,11 @@ timed_stream<T, P>::push(value_type const& val)
     // merge with existing future sequence
     sequence_type pushed;
     pushed.push_back(tup);
-    future_.merge(pushed);
+    merge_future(std::move(pushed));
   }
 }
 
-template<typename T, template<typename> class P>
+template<typename T, typename P>
 void
 timed_stream<T, P>::push(time_type offset, tuple_type const& tuple)
 {
@@ -85,37 +130,39 @@ timed_stream<T, P>::push(time_type offset, tuple_type const& tuple)
     pushed.push_back(empty_policy::empty(offset));
 
   pushed.push_back(tuple);
-  future_.merge(pushed);
+  merge_future(std::move(pushed));
 }
 
 /* ------------------------- commit interface ------------------------- */
 
-template<typename T, template<typename> class P>
+template<typename T, typename P>
 void
 timed_stream<T, P>::do_pre_commit_reader(duration_type const& dur)
 {
-  // make partial commit possible
-  if (dur <= buf_.duration()) {
+  // check if we can just split inside existing buffer
+  if (dur <= duration()) {
     buf_.split(dur);
     return;
   }
 
-  // add future values to satisfy the requested duration
+  // determine offset into future sequence
+  duration_type fdur = dur - duration();
 
-  duration_type fdur = dur - buf_.duration();
+  // extend if necessary
+  if (fdur > future_.duration())
+    future_.push_back(empty_policy::empty(fdur - future_.duration()));
+
   future_.split(fdur);
 
   // append from future so we can satisfy the commit
   auto range = future_.range(fdur);
 
-  sequence_type tmp;
-  tmp.push_back(range.begin(), range.end());
-  buf_.push_back(tmp);
+  buf_.push_back(range.begin(), range.end());
 
   future_.pop_front(fdur);
 }
 
-template<typename T, template<typename> class P>
+template<typename T, typename P>
 void
 timed_stream<T, P>::do_commit_reader(timed_reader_base& r,
                                      duration_type const& dur,
@@ -123,6 +170,8 @@ timed_stream<T, P>::do_commit_reader(timed_reader_base& r,
 {
   typedef timed_reader<T, P> reader_type;
   reader_type& reader = static_cast<reader_type&>(r);
+
+  bool new_window = reader.buf_.empty();
 
   if (dur == duration()) {
     if (!last) {
@@ -139,8 +188,14 @@ timed_stream<T, P>::do_commit_reader(timed_reader_base& r,
       buf_.pop_front(dur);
   }
 
-  bool new_window = reader.buf_.empty();
   reader.trigger(new_window);
+}
+
+template<typename T, typename Traits>
+void
+timed_stream<T, Traits>::print(std::ostream& os) const
+{
+  os << "@" << this->local_time() << " : " << buf_ << "|" << future_ << "\n";
 }
 
 } // namespace tracing

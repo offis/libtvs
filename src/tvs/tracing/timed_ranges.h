@@ -34,14 +34,14 @@
 namespace tracing {
 
 /// non-mutating reference to a (sub)range of a timed_sequence
-template<typename T, template<typename> class P>
+template<typename T, typename Traits>
 class const_timed_range
 {
-  friend class timed_sequence<T, P>;
+  friend class timed_sequence<T, Traits>;
 
 public:
   typedef const_timed_range this_type;
-  typedef timed_sequence<T, P> sequence_type;
+  typedef timed_sequence<T, Traits> sequence_type;
   typedef typename sequence_type::duration_type duration_type;
   typedef typename sequence_type::value_type value_type;
   typedef typename sequence_type::tuple_type tuple_type;
@@ -89,14 +89,14 @@ protected:
 }; // timed_range
 
 /// mutating reference to a (sub)range of a timed_sequence
-template<typename T, template<typename> class P>
-class timed_range : public const_timed_range<T, P>
+template<typename T, typename Traits>
+class timed_range : public const_timed_range<T, Traits>
 {
-  friend class timed_sequence<T, P>;
+  friend class timed_sequence<T, Traits>;
 
 public:
-  typedef const_timed_range<T, P> base_type;
-  typedef timed_range<T, P> this_type;
+  typedef const_timed_range<T, Traits> base_type;
+  typedef timed_range<T, Traits> this_type;
 
   typedef typename base_type::sequence_type sequence_type;
   typedef typename base_type::duration_type duration_type;
@@ -179,11 +179,11 @@ protected:
 
 // -----------------------------------------------------------------------
 
-template<typename T, template<typename> class P>
-const_timed_range<T, P>::const_timed_range(sequence_type& owner,
-                                           time_type offset,
-                                           time_type until,
-                                           bool covering)
+template<typename T, typename Traits>
+const_timed_range<T, Traits>::const_timed_range(sequence_type& owner,
+                                                time_type offset,
+                                                time_type until,
+                                                bool covering)
   : ref_(owner)
   , offset_()
   , duration_()
@@ -221,9 +221,9 @@ const_timed_range<T, P>::const_timed_range(sequence_type& owner,
     end_++;
 }
 
-template<typename T, template<typename> class P>
+template<typename T, typename Traits>
 void
-const_timed_range<T, P>::print(std::ostream& os) const
+const_timed_range<T, Traits>::print(std::ostream& os) const
 {
   os << "{" << offset_ << ", " << this->duration() << "; ";
   if (begin_ == end_) {

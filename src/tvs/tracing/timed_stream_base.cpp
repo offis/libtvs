@@ -56,6 +56,12 @@ timed_stream_base::~timed_stream_base()
     writer_->detach();
 }
 
+const char*
+timed_stream_base::gen_unique_name(const char* seed)
+{
+  return sc_core::sc_gen_unique_name(seed);
+}
+
 timed_stream_base*
 timed_stream_base::lookup(const char* name)
 {
@@ -63,18 +69,21 @@ timed_stream_base::lookup(const char* name)
 
   timed_stream_base* str = dynamic_cast<timed_stream_base*>(candidate);
 
-#if 0
-  // timed_processor_base* prc = dynamic_cast<timed_processor_base*>(candidate);
+  if (!str) {
+    auto scope = sc_core::sc_get_current_object();
+    if (scope) {
+      std::stringstream lname;
+      lname << scope->name() << sc_core::SC_HIERARCHY_CHAR << name;
+      str = timed_stream_base::lookup(lname.str().c_str());
+    }
 
-  if( !candidate )
-    SYSX_REPORT_ERROR( report::stream_lookup )
-      % name << "candidate object not found";
-
-
-  if( !str /* && !prc */ )
-    SYSX_REPORT_ERROR( report::stream_lookup )
-      % name << "invalid stream object";
-#endif
+    if (!str) {
+      SYSX_REPORT_ERROR(report::stream_lookup) % name
+        << "object not found "
+        << "(scope: " << (scope ? scope->name() : "<top>") << ")";
+      return nullptr;
+    }
+  }
 
   return str;
 }

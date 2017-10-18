@@ -1,2 +1,1 @@
-* TODO Use SplitPolicy in timed_reader
 * TODO Update Doxygen documentation

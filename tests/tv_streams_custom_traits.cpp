@@ -21,6 +21,8 @@
 
 #include "gtest/gtest.h"
 
+#include <map>
+
 /// Example usage of custom traits
 
 enum class test_state
@@ -31,33 +33,41 @@ enum class test_state
   BLOCKED
 };
 
+namespace sysx {
+namespace utils {
+
+// Provide variant support for our custom type
+template<>
+struct variant_traits<test_state> : variant_traits_disabled<test_state>
+{
+};
+
+} // namespace utils
+} // namespace sysx
+
 // our custom state traits allow merging by accumulating, which will use the
 // operator+ defined below.  The intent is to be able to merge states where one
 // state is NONE.
-template<typename T>
-struct my_traits : tracing::timed_state_traits<T>
+struct my_traits : tracing::timed_state_traits<test_state>
 {
-  typedef tracing::timed_merge_policy_accumulate<T> merge_policy;
+  typedef tracing::timed_merge_policy_accumulate<test_state> merge_policy;
 };
 
 /// provide a way to print out the enum value
 std::ostream&
 operator<<(std::ostream& out, test_state const& e)
 {
-  typedef test_state event_type;
+// clang-format off
+#define _MAP(event) {test_state::event, #event}
+  // clang-format on
 
-#define _MAP(event)                                                            \
-  case event_type::event:                                                      \
-    return out << #event;
-  switch (e) {
-    _MAP(NONE);
-    _MAP(IDLE);
-    _MAP(RUNNING);
-    _MAP(BLOCKED);
-  }
+  static const std::map<test_state, const char*> cached = {
+    _MAP(NONE), _MAP(IDLE), _MAP(RUNNING), _MAP(BLOCKED),
+  };
+
 #undef _MAP
 
-  return out;
+  return out << cached.at(e);
 }
 
 test_state
@@ -70,125 +80,67 @@ operator+(test_state const& lhs, test_state const& rhs)
   return static_cast<test_state>(result);
 }
 
-using test_stream =
-                  tracing::timed_stream<test_state, my_traits>;
-
-struct CustomTraitsSemantics : public timed_stream_fixture<test_stream>
+struct CustomTraitsSemantics
+  : public timed_stream_fixture<test_state, my_traits>
 {
-
-  void SetUp()
-  {
-    seq.push_back(test_state::IDLE, dur);
-    seq.push_back(test_state::RUNNING, dur);
-    seq.push_back(test_state::BLOCKED, dur);
-  }
-
-  void expect_sequence(sequence_type const& s, std::string const& str)
-  {
-    std::stringstream strs;
-    strs << s;
-    EXPECT_EQ(str, strs.str());
-  }
-
-  // check merge result of s1 and s2 (including commutative feature)
-  void expect_merge_result(sequence_type const& s1,
-                           sequence_type const& s2,
-                           std::string const& str)
-  {
-    sequence_type s1m = s1;
-    sequence_type s2m = s2;
-
-    s1m.merge(s2);
-    s2m.merge(s1);
-
-    expect_sequence(s1m, str);
-    expect_sequence(s2m, str);
-  }
-
-  sequence_type seq;
 };
 
 //////////// CHECK MERGE SEMANTICS /////////////
 
 TEST_F(CustomTraitsSemantics, CheckJoin)
 {
-  sequence_type seq1, seq2;
 
-  seq1.push_back(test_state::NONE, dur);
-  seq2.push_back(test_state::BLOCKED, dur);
-  expect_merge_result(seq1, seq2, "{1 s; (BLOCKED,1 s) }");
+  writer.push(test_state::NONE, dur);
+  writer.push(test_state::BLOCKED, dur);
+  writer.commit();
+  expect_processor_output("0 s:(NONE,1 s)\n"
+                          "1 s:(BLOCKED,1 s)\n");
 
-  seq2.push_back(test_state::IDLE, dur);
-  expect_merge_result(seq1, seq2, "{2 s; (BLOCKED,1 s)(IDLE,1 s) }");
+  writer.push(test_state::IDLE, dur);
+  writer.commit();
+  expect_processor_output("2 s:(IDLE,1 s)\n");
+  writer.push(test_state::NONE, dur);
+  writer.push(test_state::NONE, dur);
+  writer.commit();
+  expect_processor_output("3 s:(NONE,2 s)\n");
 }
 
 TEST_F(CustomTraitsSemantics, CheckSplitMerge)
 {
-  sequence_type seq1, seq2;
+  writer.push(zero_time, test_state::NONE, dur * 2);
+  writer.push(dur * 2, test_state::BLOCKED, dur);
+  writer.push(zero_time, test_state::BLOCKED, dur);
+  writer.push(dur, test_state::NONE, dur * 2);
+  writer.commit(dur * 3);
 
-  seq1.push_back(test_state::NONE, dur * 2);
-  seq1.push_back(test_state::BLOCKED, dur);
-  expect_sequence(seq1, "{3 s; (NONE,2 s)(BLOCKED,1 s) }");
+  expect_processor_output("0 s:(BLOCKED,1 s)\n"
+                          "1 s:(NONE,1 s)\n"
+                          "2 s:(BLOCKED,1 s)\n");
 
-  seq2.push_back(test_state::BLOCKED, dur);
-  seq2.push_back(test_state::NONE, dur * 2);
-  expect_sequence(seq2, "{3 s; (BLOCKED,1 s)(NONE,2 s) }");
+  writer.push(zero_time, test_state::NONE, dur);
+  writer.push(zero_time, test_state::BLOCKED, dur * 2);
+  writer.commit(3 * dur);
 
-  expect_merge_result(
-    seq1, seq2, "{3 s; (BLOCKED,1 s)(NONE,1 s)(BLOCKED,1 s) }");
-
-  seq1.push_back(test_state::NONE, dur);
-  seq2.push_back(test_state::BLOCKED, dur * 2);
-  expect_merge_result(
-    seq1, seq2, "{5 s; (BLOCKED,1 s)(NONE,1 s)(BLOCKED,3 s) }");
-}
-
-TEST_F(CustomTraitsSemantics, CheckMergeEmptyInfinite)
-{
-  sequence_type seq1, seq2;
-
-  seq1.push_back(test_state::RUNNING, inf);
-  expect_sequence(seq1, "{inf; (RUNNING,inf) }");
-
-  expect_merge_result(seq1, seq2, "{inf; (RUNNING,inf) }");
+  expect_processor_output("3 s:(BLOCKED,2 s)\n"
+                          "5 s:(NONE,1 s)\n");
 }
 
 TEST_F(CustomTraitsSemantics, CheckMergeSingleInfinite)
 {
-  sequence_type seq1, seq2;
+  writer.push(test_state::RUNNING);
+  writer.push(zero_time, test_state::NONE, dur);
+  writer.commit(3 * dur);
 
-  seq1.push_back(test_state::RUNNING, inf);
-  expect_sequence(seq1, "{inf; (RUNNING,inf) }");
-
-  seq2.push_back(test_state::NONE, dur);
-  expect_sequence(seq2, "{1 s; (NONE,1 s) }");
-
-  expect_merge_result(seq1, seq2, "{inf; (RUNNING,inf) }");
+  // here both tuples are 'added' so we only see RUNNING
+  expect_processor_output("0 s:(RUNNING,3 s)\n");
 }
 
 TEST_F(CustomTraitsSemantics, CheckMergeBothInfinite)
 {
-  sequence_type seq1, seq2;
+  writer.push(test_state::RUNNING);
+  writer.push(test_state::NONE);
+  writer.commit(3 * dur);
 
-  seq1.push_back(test_state::RUNNING, inf);
-  expect_sequence(seq1, "{inf; (RUNNING,inf) }");
-
-  seq2.push_back(test_state::NONE, inf);
-  expect_sequence(seq2, "{inf; (NONE,inf) }");
-
-  expect_merge_result(seq1, seq2, "{inf; (RUNNING,inf) }");
+  // here the second call overwrites the inf tuple value in the stream
+  expect_processor_output("0 s:(NONE,3 s)\n");
 }
-
-TEST_F(CustomTraitsSemantics, CheckMergeBothInfiniteSplit)
-{
-  sequence_type seq1, seq2;
-  seq1.push_back(test_state::NONE, dur * 2);
-  seq1.push_back(test_state::RUNNING, inf);
-
-  seq2.push_back(test_state::IDLE, dur);
-  seq2.push_back(test_state::NONE, inf);
-
-  expect_merge_result(
-    seq1, seq2, "{inf; (IDLE,1 s)(NONE,1 s)(RUNNING,inf) }");
-}
-

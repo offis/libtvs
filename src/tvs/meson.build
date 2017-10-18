@@ -97,7 +97,6 @@ tracing_headers = files(
   'tracing/timed_stream.tpp',
   'tracing/timed_stream_policies.h',
   'tracing/timed_stream_policies.tpp',
-  'tracing/timed_stream_processor_base.h',
   'tracing/timed_stream_traits.h',
   'tracing/timed_value.h',
   'tracing/timed_variant.h',

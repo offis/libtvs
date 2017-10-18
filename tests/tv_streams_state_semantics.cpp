@@ -23,38 +23,16 @@
 
 #include "gtest/gtest.h"
 
-using test_stream = tracing::timed_stream<int>;
-
-struct StreamStateSemantics : public timed_stream_fixture<test_stream>
+class StreamStateSemantics
+  : public timed_stream_fixture<int, tracing::timed_state_traits<int>>
 {
-
-  typedef timed_stream_fixture<test_stream> base_type;
-  typedef print_processor<test_stream::value_type> proc_type;
-
-  StreamStateSemantics()
-    : base_type()
-    , stream("stream")
-    , writer(stream)
-    , proc("state_processor")
-    , test_tuple(4711, dur)
-  {
-  }
-
-  stream_type stream;
-  writer_type writer;
-  proc_type proc;
-
-  const test_stream::tuple_type test_tuple;
-
 protected:
-  void SetUp() { proc.attach(writer); }
-
-  void expect_processor_output(std::string const& str)
+  StreamStateSemantics()
+    : test_tuple(4711, dur)
   {
-    std::stringstream actual;
-    actual << proc;
-    EXPECT_EQ(str, actual.str());
   }
+
+  const tuple_type test_tuple;
 };
 
 // joining tuples with state behaviour should result in the same values of the
@@ -115,6 +93,21 @@ TEST_F(StreamStateSemantics, PushOffsetAndCommitWithoutDuration)
   expect_processor_output("");
 }
 
+// Test partially committing in a state-based stream
+TEST_F(StreamStateSemantics, PartialCommitTests)
+{
+  writer.push(4711);
+  writer.commit(dur * 1.5);
+  writer.push(4712);
+  writer.commit(dur);
+  writer.push(4713);
+  writer.commit(dur * 2);
+
+  expect_processor_output("0 s:(4711,1500 ms)\n"
+                          "1500 ms:(4712,1 s)\n"
+                          "2500 ms:(4713,2 s)\n");
+}
+
 // same for indefinite pushes
 TEST_F(StreamStateSemantics, PushIndefiniteAndCommitWithoutDuration)
 {
@@ -125,6 +118,17 @@ TEST_F(StreamStateSemantics, PushIndefiniteAndCommitWithoutDuration)
   EXPECT_EQ(zero_time, writer.end_time());
   expect_processor_output("");
 }
+
+// test push zero time
+TEST_F(StreamStateSemantics, DISABLED_PushAndCommitWithZeroTimeState)
+{
+  writer.push(4711, dur);
+  writer.push(4712, zero_time);
+  writer.commit();
+  expect_processor_output("0 s:(4711,1 s)\n"
+                          "1 s:(4712,0 s)\n");
+}
+
 
 // Pushing with an offset followed by a commit should fill up the empty interval
 // as defined by the empty_policy
@@ -224,4 +228,31 @@ TEST_F(StreamStateSemantics, PushIndefiniteTuples)
   // with no duration given, the stream should not advance any further
   writer.commit();
   EXPECT_EQ(dur * 5, writer.end_time());
+}
+
+
+TEST_F(StreamStateSemantics, PushZeroTimeAtEnd)
+{
+  writer.push(4711, dur);
+  writer.push(4712, zero_time);
+  writer.commit(dur);
+  EXPECT_EQ(dur, writer.end_time());
+
+  expect_processor_output("0 s:(4711,1 s)\n"
+                          "1 s:(4712,0 s)\n");
+}
+
+
+TEST_F(StreamStateSemantics, PushZeroTimeAtEnd2)
+{
+  writer.push(4711, dur);
+  writer.push(4712, zero_time);
+  writer.push(4713, dur);
+  writer.commit(dur*2);
+  EXPECT_EQ(dur*2, writer.end_time());
+
+  expect_processor_output("0 s:(4711,1 s)\n"
+                          "1 s:(4712,0 s)\n"
+                          "1 s:(4713,1 s)\n"
+                          );
 }

@@ -18,6 +18,8 @@
 #ifndef TVS_TESTS_TIMED_STREAM_FIXTURE_H_INCLUDED_
 #define TVS_TESTS_TIMED_STREAM_FIXTURE_H_INCLUDED_
 
+#include "print_processor.h"
+
 #include "gtest/gtest.h"
 
 #include "tvs/tracing.h"
@@ -44,15 +46,44 @@ struct timed_stream_fixture_b : public ::testing::Test
 };
 
 /// fixture class to provide typedefs used in the tests
-template<typename Stream>
+template <typename T, class Traits>
 struct timed_stream_fixture : public timed_stream_fixture_b
 {
-  typedef Stream stream_type;
+  typedef timed_stream_fixture_b base_type;
+
+  typedef tracing::timed_stream<T, Traits> stream_type;
+  typedef test_printer<T, Traits> printer_type;
 
   typedef typename stream_type::tuple_type tuple_type;
+  typedef typename stream_type::value_type value_type;
+
   typedef typename stream_type::reader_type reader_type;
   typedef typename stream_type::writer_type writer_type;
   typedef typename stream_type::sequence_type sequence_type;
+
+  timed_stream_fixture()
+    : base_type()
+    , stream("stream")
+    , writer(stream)
+    , printer("printer")
+    , reader("reader", stream)
+  {
+    printer.in(writer);
+  }
+
+  void expect_processor_output(std::string const& str)
+  {
+    std::stringstream actual;
+    printer.print(actual);
+    EXPECT_EQ(str, actual.str());
+    printer.clear();
+  }
+
+protected:
+  stream_type stream;
+  writer_type writer;
+  printer_type printer;
+  reader_type reader;
 };
 
 #endif // TVS_TESTS_TIMED_STREAM_FIXTURE_H_INCLUDED_

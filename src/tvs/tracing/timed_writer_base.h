@@ -28,6 +28,8 @@
 #include "tvs/tracing/timed_object.h"
 #include "tvs/tracing/timed_stream_base.h"
 
+#include "tvs/tracing/timed_variant.h"
+
 namespace tracing {
 
 enum writer_mode
@@ -63,6 +65,8 @@ public:
   time_type sync(time_type const& until) { return stream_->sync(until); }
   time_type sync(duration_type const& dur) { return stream_->sync(dur); }
   //!}
+
+  virtual void push_variant(timed_variant const&) = 0;
 
   virtual ~timed_writer_base();
 

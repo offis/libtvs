@@ -31,9 +31,9 @@
 
 namespace tracing {
 
-template<typename, template<typename> class>
+template<typename, typename>
 class timed_writer;
-template<typename, template<typename> class>
+template<typename, typename>
 class timed_reader;
 
 template<typename>
@@ -41,10 +41,11 @@ struct timed_state_traits;
 
 // timed_stream< int >  -> timed_stream< int, timed_stream_policies< int > >
 
-template<typename T, template<typename> class Traits = timed_state_traits>
+template<typename T, typename Traits = timed_state_traits<T>>
 class timed_stream : public timed_stream_base,
-                     protected Traits<T>::empty_policy,
-                     protected Traits<T>::split_policy
+                     protected Traits::empty_policy,
+                     protected Traits::split_policy,
+                     protected Traits::merge_policy
 {
   friend class timed_writer<T, Traits>;
   friend class timed_reader<T, Traits>;
@@ -58,8 +59,9 @@ public:
   typedef timed_reader<T, Traits> reader_type;
   typedef timed_writer<T, Traits> writer_type;
 
-  typedef typename Traits<T>::empty_policy empty_policy;
-  typedef typename Traits<T>::split_policy split_policy;
+  typedef typename Traits::empty_policy empty_policy;
+  typedef typename Traits::split_policy split_policy;
+  typedef typename Traits::merge_policy merge_policy;
 
   typedef timed_sequence<T, Traits> sequence_type;
 
@@ -69,6 +71,14 @@ public:
   }
 
   virtual duration_type duration() const { return buf_.duration(); }
+
+  void print(std::ostream& os = std::cout) const;
+
+  friend std::ostream& operator<<(std::ostream& os, this_type const& t)
+  {
+    t.print(os);
+    return os;
+  }
 
 protected:
   /** \name push interface */
@@ -100,11 +110,15 @@ protected:
   virtual void do_clear() { buf_.clear(); }
 
 private:
+  void merge_future(sequence_type&& other);
+
   sequence_type buf_;
   sequence_type future_;
 };
 
 } // namespace tracing
+
+#include "timed_stream.tpp"
 
 #endif /* TVS_TIMED_STREAM_H_INCLUDED_ */
 /* Taf!
