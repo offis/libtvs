@@ -76,6 +76,7 @@ install_headers(report_headers, subdir : 'tvs/utils/report')
 
 
 tracing_sources = files(
+  'tracing/object_host.cpp',
   'tracing/timed_duration.cpp',
   'tracing/timed_object.cpp',
   'tracing/timed_reader_base.cpp',

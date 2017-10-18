@@ -42,12 +42,16 @@ namespace tracing {
 #include "tvs/tracing/timed_stream.h"
 #include "tvs/tracing/timed_value.h"
 
+#include "tvs/tracing/timed_variant.h"
+
 #include "tvs/tracing/timed_reader.h"
 #include "tvs/tracing/timed_writer.h"
 
 // FIXME: cleanup includes
 #include "tvs/tracing/timed_stream.tpp"
 #include "tvs/tracing/timed_stream_processor_base.h"
+
+#include "tvs/tracing/timed_stream_traits.h"
 
 #endif /* TVS_H_INCLUDED_ */
 /* Taf!

@@ -27,22 +27,15 @@
 
 #include "tvs/utils/noncopyable.h"
 #include "tvs/tracing/timed_duration.h" // time_type
-//#include "tvs/tracing/timed_ifs.h"
+#include "tvs/tracing/object_host.h"
 
 namespace tracing {
 
-namespace impl {
-time_type
-sync_first_stream(timed_duration const& = timed_duration::zero_time);
-}
+#define TVS_SYNCHRONISATON_POINT()                                             \
+  ::tracing::object_host::sync_with_model(                                     \
+    ::tracing::timed_base::sync_current_scope())
 
-#define SYSX_ADVANCE_SIM(delay)                                                \
-  ::sc_core::wait(::tracing::impl::sync_first_stream(delay))
-
-#define SYSX_SYNCHRONISATION_POINT()                                           \
-  ::sc_core::wait(::tracing::impl::sync_first_stream())
-
-class timed_base
+class timed_base : protected object_host
 {
 public:
   typedef tracing::time_type time_type;
@@ -54,9 +47,18 @@ public:
   void commit(time_type const& until);
   void commit(duration_type const& duration);
 
+  /// Perform a commit until the maximum local time offset of all streams in the
+  /// scope.
   time_type sync();
+
+  /// Perform a commit on all streams in the scope with the given absolute time.
   time_type sync(time_type const& until);
+
+  /// Perform a commit on all streams in the scope with the given duration.
   time_type sync(duration_type const& duration);
+
+  /// Call sync() on the first stream found in the scope
+  static time_type sync_current_scope();
 
 protected:
   timed_base();
