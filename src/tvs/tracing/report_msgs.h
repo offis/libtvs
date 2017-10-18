@@ -45,6 +45,7 @@ SYSX_REPORT_DEFINE_MSG_(stream_attach,
                         "tracing/stream attach",
                         "attach() failed for stream '%s'");
 
+
 SYSX_REPORT_DEFINE_MSG_(stream_detach,
                         "tracing/stream detach",
                         "detach() failed for stream '%s'");
@@ -52,6 +53,10 @@ SYSX_REPORT_DEFINE_MSG_(stream_detach,
 SYSX_REPORT_DEFINE_MSG_(stream_lookup,
                         "tracing/stream lookup",
                         "stream lookup failed for '%s'");
+
+SYSX_REPORT_DEFINE_MSG_(header_written,
+                        "tracing/stream processor",
+                        "add() called after processor '%s' received input tokens");
 
 SYSX_REPORT_END_DEFINITION_
 } // namespace tracing

@@ -31,6 +31,7 @@ tests = [
   ['Process Semantics',       'process',       'tv_streams_process_semantics.cpp'],
   ['Custom Traits Semantics', 'custom_traits', 'tv_streams_custom_traits.cpp'],
   ['Sequence Semantics',      'sequence',      'tv_streams_sequence_semantics.cpp'],
+  ['VCD Testbench',           'vcd_testbench', 'stream_processing_test/main.cpp'],
   ]
 
 incs = include_directories('../src')
