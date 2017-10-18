@@ -53,6 +53,7 @@ using units::si::seconds;
 
 namespace /* anonymous */ {
 
+SYSX_UNITS_SCALED_CONSTANT_(time, seconds, pico);
 SYSX_UNITS_SCALED_CONSTANT_(time, seconds, nano);
 SYSX_UNITS_SCALED_CONSTANT_(time, seconds, micro);
 SYSX_UNITS_SCALED_CONSTANT_(time, seconds, milli);

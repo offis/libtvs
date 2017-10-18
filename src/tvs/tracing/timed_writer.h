@@ -61,9 +61,6 @@ public:
     : base_type(mode & STREAM_CREATE ? create_stream(nm, mode) : NULL)
     , stream_()
   {
-    // NOTE: The stream name does not necessarily have to be the same as
-    // nm, e.g. when an sc_object name changes due to invalid
-    // characters.
     base_type::attach(nm);
     stream_ = &static_cast<stream_type&>(base_type::stream());
   }
@@ -75,8 +72,7 @@ public:
     this->push(tuple_type(v, dur));
   }
 
-  void push(time_type const& offset,
-            value_type const& value,
+  void push(time_type const& offset, value_type const& value,
             duration_type const& dur)
   {
     this->push(offset, tuple_type(value, dur));
