@@ -53,9 +53,13 @@ if not systemc_dep.found()
   endif
 
   sc_libdir = get_option('sc_libdir')
-  sc_lib = cc.find_library('systemc', dirs: sc_libdir)
-  if not sc_lib.found()
-    error('SystemC library not found at sc_libdir')
+  if sc_libdir.strip() != ''
+    sc_lib = cc.find_library('systemc', dirs: sc_libdir)
+    if not sc_lib.found()
+      error('SystemC library not found at sc_libdir')
+    endif
+  else
+    error('Cannot find SystemC library in the default path, please specify sc_libdir.')
   endif
 
   systemc_dep = declare_dependency(dependencies: sc_lib,
