@@ -18,13 +18,13 @@
 #ifndef UNIQUE_PTR_H_INCLUDED_
 #define UNIQUE_PTR_H_INCLUDED_
 
-#if __cplusplus == 201103L
-
 #include <memory>
+
+#if __cplusplus == 201103L
 
 namespace std {
 
-template<typename T, typename... Args>
+template <typename T, typename... Args>
 unique_ptr<T>
 make_unique(Args&&... args)
 {
