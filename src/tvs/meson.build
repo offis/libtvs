@@ -82,6 +82,8 @@ tracing_sources = files(
   'tracing/timed_reader_base.cpp',
   'tracing/timed_stream_base.cpp',
   'tracing/timed_writer_base.cpp',
+  'tracing/processors/timed_stream_processor_base.cpp',
+  'tracing/processors/timed_stream_vcd_processor.cpp',
   )
 
 tracing_headers = files(
@@ -97,6 +99,8 @@ tracing_headers = files(
   'tracing/timed_stream.tpp',
   'tracing/timed_stream_policies.h',
   'tracing/timed_stream_policies.tpp',
+  'tracing/processors/timed_stream_processor_base.h',
+  'tracing/processors/timed_stream_vcd_processor.h',
   'tracing/timed_stream_traits.h',
   'tracing/timed_value.h',
   'tracing/timed_variant.h',
