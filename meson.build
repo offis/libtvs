@@ -17,12 +17,21 @@
 project('Timed-Value Streams', 'cpp',
         version : '0.9.0',
         meson_version: '>= 0.39',
-        default_options: ['cpp_std=c++11'],
         license : 'Apache 2.0')
 
 # default directories
 tvs_incdir  = get_option('includedir')
 tvs_datadir = get_option('datadir')
+
+code = '''
+#if __cplusplus < 201103L
+#error "Need at least C++11 support"
+#endif
+'''
+
+if not meson.get_compiler('cpp').compiles(code, name : 'c++11 (or higher)')
+  error('Need a compiler with C++11 (or higher) support.')
+endif
 
 
 proj_deps = []
