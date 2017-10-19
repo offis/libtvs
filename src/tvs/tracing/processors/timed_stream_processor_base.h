@@ -143,8 +143,6 @@ timed_stream_processor_base::in(tracing::timed_stream<T, Policy>& stream)
 {
   using reader_type = tracing::timed_reader<T, Policy>;
 
-  std::cout << "processor_base::in() for stream " << stream.basename() << "\n";
-
   std::stringstream name;
   name << stream.basename() << "_in";
 

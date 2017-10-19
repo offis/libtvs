@@ -59,9 +59,6 @@ struct test_printer : public tracing::timed_stream_print_processor
   {
     auto str = dynamic_cast<stream_type*>(stream_type::lookup(stream));
     SYSX_ASSERT(str != nullptr);
-
-
-
     this->in(*str);
   }
 
@@ -76,7 +73,6 @@ struct test_printer : public tracing::timed_stream_print_processor
 private:
   void print_tuple(std::ostream& out, tuple_base_type const& vbase)
   {
-    std::cout << "PRinting!!!\n";
     auto val = static_cast<tuple_type const&>(vbase);
     out << val;
   }

@@ -83,8 +83,6 @@ timed_stream_processor_base::do_commit(duration_type until)
 void
 timed_stream_processor_base::do_add_input(reader_ptr_type&& reader)
 {
-  std::cout << "Adding input to stream processor '" << this->name()
-            << "' and reader '" << reader->name() << "' \n";
   reader->listen(*this);
   inputs_.emplace_back(std::move(reader));
 }

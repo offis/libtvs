@@ -88,7 +88,6 @@ public:
 
   void push_variant(timed_variant const& var) override
   {
-    std::cout << "pushing via writer to stream " << stream_->name() << "\n";
     auto const& val = var.value().get<value_type>();
     this->push(val, var.duration());
   }
