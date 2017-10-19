@@ -15,7 +15,7 @@
 # limitations under the License.
 
 project('Timed-Value Streams', 'cpp',
-        version : '0.9.0',
+        version : '0.10.0',
         meson_version: '>= 0.39',
         license : 'Apache 2.0')
 
