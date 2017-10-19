@@ -36,25 +36,21 @@ namespace tracing {
 
 // -----------------------------------------------------------------------
 // forward declarations
-template<typename T, template<typename> class P>
+template <typename, typename>
 class const_timed_range;
-template<typename T, template<typename> class P>
+template <typename, typename>
 class timed_range;
 
 namespace impl {
-template<typename, typename>
+template <typename, typename>
 struct timed_sequence_do_push;
-template<typename, typename>
-struct timed_sequence_do_merge;
 } // namespace impl
 
 /// base class for timed sequences
 class timed_sequence_base
 {
-  template<typename, typename>
+  template <typename, typename>
   friend struct impl::timed_sequence_do_push;
-  template<typename, typename>
-  friend struct impl::timed_sequence_do_merge;
 
 public:
   typedef tracing::time_type time_type;
@@ -94,15 +90,15 @@ protected:
   duration_type duration_;
 };
 
-template<typename T, template<typename> class Traits>
-class timed_sequence : public timed_sequence_base, protected Traits<T>
+template <typename T, typename Traits>
+class timed_sequence : public timed_sequence_base,
+                       protected Traits::join_policy,
+                       protected Traits::split_policy
 {
   friend class const_timed_range<T, Traits>;
   friend class timed_range<T, Traits>;
-  template<typename, typename>
+  template <typename, typename>
   friend struct impl::timed_sequence_do_push;
-  template<typename, typename>
-  friend struct impl::timed_sequence_do_merge;
 
 public:
   // ---------------------------------------------------------------------
@@ -115,12 +111,10 @@ public:
   typedef timed_value<T> tuple_type;
   typedef std::deque<tuple_type> storage_type;
 
-  typedef Traits<T> traits_type;
+  typedef Traits traits_type;
 
   typedef typename traits_type::join_policy join_policy;
   typedef typename traits_type::split_policy split_policy;
-  typedef typename traits_type::merge_policy merge_policy;
-  typedef typename traits_type::empty_policy empty_policy;
 
   typedef typename storage_type::size_type size_type;
   typedef typename storage_type::iterator iterator;
@@ -128,8 +122,8 @@ public:
   typedef typename storage_type::reference reference;
   typedef typename storage_type::const_reference const_reference;
 
-  typedef timed_range<value_type, Traits> range_type;
-  typedef const_timed_range<value_type, Traits> const_range_type;
+  typedef timed_range<value_type, traits_type> range_type;
+  typedef const_timed_range<value_type, traits_type> const_range_type;
 
   // ---------------------------------------------------------------------
 
@@ -173,7 +167,7 @@ public:
   }
 
   /// append a range
-  template<typename InputIterator>
+  template <typename InputIterator>
   void push_back(InputIterator from, InputIterator to)
   {
     while (from != to)
@@ -181,7 +175,7 @@ public:
   }
 
   /// append another sequence
-  template<typename SequenceType>
+  template <typename SequenceType>
   void push_back(SequenceType const& seq);
 
   /// move contents of another sequence to the end of this one
@@ -254,8 +248,16 @@ public:
   duration_type pop_front(duration_type d)
   {
     SYSX_ASSERT(!empty());
+
+    if (d == duration_type::zero_time) {
+      buf_.pop_front();
+      return d;
+    }
+
     iterator it = buf_.begin();
     while (it != buf_.end() && d >= it->duration()) {
+      if (d == duration_type::zero_time)
+        break;
       d -= it->duration();
       del_duration(it->duration());
       ++it;
@@ -313,17 +315,8 @@ public:
   }
   ///\}
 
-  // ---------------------------------------------------------------------
-  /** \name merge with another sequence */
-  ///\{
-
-  template<typename SequenceType>
-  void merge(SequenceType other);
-
-  ///\}
-
-  /// split at a given offset, potentially adding silence to adjust the length
-  void split(duration_type const& offset, bool extend = true);
+  /// split at a given offset
+  void split(duration_type const& offset);
 
   // ---------------------------------------------------------------------
   /** \name sub-range interface */
@@ -387,6 +380,11 @@ public:
 
   // ---------------------------------------------------------------------
   void print(std::ostream& os = std::cout) const;
+
+  friend bool operator==(this_type const& lhs, this_type const& rhs)
+  {
+    return lhs.duration() == rhs.duration() && lhs.buf_ == rhs.buf_;
+  }
 
   friend std::ostream& operator<<(std::ostream& os, this_type const& t)
   {

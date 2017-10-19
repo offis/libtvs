@@ -23,41 +23,16 @@
 
 #include "gtest/gtest.h"
 
-using test_stream =
-  tracing::timed_stream<double, tracing::timed_process_traits>;
-
-struct StreamProcessSemantics : public timed_stream_fixture<test_stream>
+class StreamProcessSemantics
+  : public timed_stream_fixture<double, tracing::timed_process_traits<double>>
 {
-
-  typedef timed_stream_fixture<test_stream> base_type;
-  typedef print_processor<test_stream::value_type,
-                          tracing::timed_process_traits>
-    proc_type;
-
-  StreamProcessSemantics()
-    : base_type()
-    , stream("stream")
-    , writer(stream)
-    , proc("state_processor")
-    , test_tuple(4711, dur)
-  {
-  }
-
-  stream_type stream;
-  writer_type writer;
-  proc_type proc;
-
-  const test_stream::tuple_type test_tuple;
-
 protected:
-  void SetUp() { proc.attach(writer); }
-
-  void expect_processor_output(std::string const& str)
+  StreamProcessSemantics()
+    : test_tuple(4711, dur)
   {
-    std::stringstream actual;
-    actual << proc;
-    EXPECT_EQ(str, actual.str());
   }
+
+  const tuple_type test_tuple;
 };
 
 // joining tuples with process behaviour should not result in a join
@@ -80,6 +55,25 @@ TEST_F(StreamProcessSemantics, SplitPolicy)
   writer.commit(dur);
   expect_processor_output("1 s:(50,1 s)\n");
 }
+
+// check front() split policy
+TEST_F(StreamProcessSemantics, SplitPolicyFront)
+{
+  writer.push(100, dur * 2);
+  writer.commit();
+
+  auto front = reader.front(dur * 2);
+  EXPECT_EQ(front.duration(), dur * 2);
+
+  reader.pop();
+
+  writer.push(100, dur * 2);
+  writer.commit();
+
+  front = reader.front(dur);
+  EXPECT_EQ(front.duration(), dur);
+}
+
 
 // checking local time advances
 TEST_F(StreamProcessSemantics, LocalTimeAdvances)
@@ -286,28 +280,15 @@ TEST_F(StreamProcessSemantics, PushOffsetAndCommitFullDuration)
                           "1 s:(4711,1 s)\n");
 }
 
-// technically, this is not forbidden, but it does not make sense for
-// process-based values
-TEST_F(StreamProcessSemantics, PushIndefiniteTuples)
+// this is FORBIDDEN, it does not make sense for process-based values, as we
+// define a process-based value to have infinite duration.
+TEST_F(StreamProcessSemantics, PushIndefiniteTuplesDeath)
 {
-  writer.push(4711);
-
-  writer.commit(dur);
-  expect_processor_output("0 s:(4711,1 s)\n");
-
-  // stream should keep the state if no new push was issued
-  writer.commit(dur);
-  expect_processor_output("1 s:(4711,1 s)\n");
-
-  // check if we can push a new indefinite value
-  writer.push(1337);
-
-  writer.commit(dur * 3);
-  expect_processor_output("2 s:(1337,3 s)\n");
-
-  EXPECT_EQ(dur * 5, writer.end_time());
-
-  // with no duration given, the stream should not advance any further
-  writer.commit();
-  EXPECT_EQ(dur * 5, writer.end_time());
+  ASSERT_DEATH(
+               {
+                 // error: pushing an indefinite value on a process-based stream
+                 writer.push(4711);
+                 writer.commit(dur);
+               },
+               "");
 }

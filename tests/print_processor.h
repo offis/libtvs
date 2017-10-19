@@ -24,49 +24,64 @@
 #include <sstream>
 
 /**
- * \brief Simple stream sink for printing values to an output stream.
+ * \brief Simple printer that utilizes the generic print processor to print
+ * values to an output streambuffer.
  *
  * \tparam T The type of the timed_value
  * \tparam Traits The traits type of the stream
  */
-template<typename T,
-         template<typename> class Traits = tracing::timed_state_traits>
-struct print_processor : tracing::timed_stream_processor_base<T, Traits>
+template <typename T, typename Traits = ::tracing::timed_state_traits<T>>
+struct test_printer : public tracing::timed_stream_print_processor
 {
-  using this_type = print_processor;
-  using base_type = tracing::timed_stream_processor_base<T, Traits>;
-  using reader_type = typename base_type::reader_type;
+  using this_type = test_printer<T, Traits>;
+  using base_type = tracing::timed_stream_print_processor;
 
-  print_processor(char const* name)
-    : base_type(name)
+  using stream_type = tracing::timed_stream<T, Traits>;
+
+  using tuple_type = tracing::timed_value<T>;
+  using tuple_base_type = typename tuple_type::base_type;
+
+  enum output_type
+  {
+    OUTPUT_BUFFERED = 0,
+    OUTPUT_COUT,
+  };
+
+  test_printer(char const* name, output_type out = OUTPUT_BUFFERED)
+    : base_type(name, out == OUTPUT_COUT ? std::cout : buf_)
+    , buf_()
   {
   }
 
-  friend std::ostream& operator<<(std::ostream& out, this_type const& t)
+  using base_type::in;
+
+  void in(char const* stream)
   {
-    t.print(out);
-    return out;
+    auto str = dynamic_cast<stream_type*>(stream_type::lookup(stream));
+    SYSX_ASSERT(str != nullptr);
+
+
+
+    this->in(*str);
+  }
+
+  void print(std::ostream& out) const { out << buf_.str(); }
+
+  void clear()
+  {
+    buf_.clear();
+    buf_.str(std::string());
   }
 
 private:
-  /// Print out the buffered stringstream contents.
-  void print(std::ostream& out) const { out << output_.str(); }
-
-  /// Consume all available reader tokens by adding them to the output
-  /// stringstream.
-  void do_notify(reader_type& reader) override
+  void print_tuple(std::ostream& out, tuple_base_type const& vbase)
   {
-    // clear the stream before inserting any new values
-    output_.clear();
-    output_.str(std::string());
-
-    while (!reader.empty()) {
-      output_ << reader.local_time() << ":" << reader.front() << std::endl;
-      reader.pop();
-    }
+    std::cout << "PRinting!!!\n";
+    auto val = static_cast<tuple_type const&>(vbase);
+    out << val;
   }
 
-  std::stringstream output_;
+  std::stringstream buf_;
 };
 
 #endif // PRINT_PROCESSOR_H_INCLUDED_

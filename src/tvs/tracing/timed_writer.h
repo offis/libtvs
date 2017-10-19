@@ -28,23 +28,25 @@
 #include "tvs/tracing/timed_sequence.h"
 #include "tvs/tracing/timed_writer_base.h"
 
+#include "tvs/tracing/timed_variant.h"
+
 namespace tracing {
 
 // forward declarations
-template<typename T, template<typename> class P>
+template <typename, typename>
 class timed_stream;
 
-template<typename>
+template <typename>
 struct timed_state_traits;
 
-template<typename T, template<typename> class P = timed_state_traits>
+template <typename T, typename Traits = timed_state_traits<T>>
 class timed_writer : public timed_writer_base
 {
-  friend class timed_stream<T, P>;
+  friend class timed_stream<T, Traits>;
 
 public:
   typedef timed_writer_base base_type;
-  typedef timed_stream<T, P> stream_type;
+  typedef timed_stream<T, Traits> stream_type;
   typedef T value_type;
   typedef timed_value<T> tuple_type;
 
@@ -59,9 +61,6 @@ public:
     : base_type(mode & STREAM_CREATE ? create_stream(nm, mode) : NULL)
     , stream_()
   {
-    // NOTE: The stream name does not necessarily have to be the same as
-    // nm, e.g. when an sc_object name changes due to invalid
-    // characters.
     base_type::attach(nm);
     stream_ = &static_cast<stream_type&>(base_type::stream());
   }
@@ -73,8 +72,7 @@ public:
     this->push(tuple_type(v, dur));
   }
 
-  void push(time_type const& offset,
-            value_type const& value,
+  void push(time_type const& offset, value_type const& value,
             duration_type const& dur)
   {
     this->push(offset, tuple_type(value, dur));
@@ -87,6 +85,13 @@ public:
   {
     stream_->push(offset, tuple);
   }
+
+  void push_variant(timed_variant const& var) override
+  {
+    std::cout << "pushing via writer to stream " << stream_->name() << "\n";
+    auto const& val = var.value().get<value_type>();
+    this->push(val, var.duration());
+  }
   //!}
 
 protected:
@@ -98,7 +103,7 @@ private:
 
 /* ----------------------------- constructor --------------------------- */
 
-template<typename T, template<typename> class P>
+template <typename T, typename P>
 typename timed_writer<T, P>::stream_type*
 timed_writer<T, P>::create_stream(const char* name, writer_mode mode)
 {

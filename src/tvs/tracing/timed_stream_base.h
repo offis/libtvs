@@ -55,6 +55,8 @@ public:
 
   static timed_stream_base* lookup(const char* name);
 
+  static const char* gen_unique_name(const char* name);
+
 protected:
   explicit timed_stream_base(const char* nm = default_name());
 

@@ -40,6 +40,12 @@ class timed_variant : public timed_value<sysx::utils::variant>
   typedef timed_value<sysx::utils::variant> base_type;
 
 public:
+  void operator=(base_type const& rhs)
+  {
+    this->value(rhs.value());
+    this->duration(rhs.duration());
+  }
+
   /** \name constructors */
   ///\{
 
@@ -56,7 +62,7 @@ public:
   }
 
   /// value constructor - explicit arbitrary value, infinite duration
-  template<typename T>
+  template <typename T>
   explicit timed_variant(const T& v)
     : base_type(value_type(v))
   {
@@ -69,7 +75,7 @@ public:
   }
 
   /// detailed constructor - arbitrary value, explicit duration
-  template<typename T>
+  template <typename T>
   timed_variant(T const& v, duration_type const& d)
     : base_type(value_type(v), d)
   {
@@ -84,10 +90,45 @@ public:
 namespace sysx {
 namespace utils {
 
-template<typename T>
-struct variant_traits<::tracing::timed_value<T>> : variant_traits<T>
+#define VARIANT_TRAITS_DERIVED_(UnderlyingType, SpecializedType)               \
+  template <>                                                                  \
+  struct variant_traits<SpecializedType>                                       \
+    : variant_traits_convert<SpecializedType, UnderlyingType>                  \
+  {                                                                            \
+  }
+
+VARIANT_TRAITS_DERIVED_(tracing::timed_value<sysx::utils::variant>,
+                        tracing::timed_variant);
+
+#undef VARIANT_TRAITS_DERIVED_
+
+#if 0
+template <>
+struct variant_traits<tracing::timed_variant>
 {
+  typedef tracing::timed_variant type;
+  typedef tracing::timed_value<sysx::utils::variant> tv_type;
+
+  typedef variant_traits<tv_type> variant_type;
+
+  static bool pack(variant::reference dst, type const& src)
+  {
+    tv_type tuple(src.value(), src.duration());
+    return variant_type::pack(dst, tuple);
+  }
+
+  static bool unpack(type& dst, variant::const_reference src)
+  {
+    tv_type tuple;
+    if (variant_type::unpack(tuple, src)) {
+      dst.value(tuple.value());
+      dst.duration(tuple.duration());
+      return true;
+    }
+  }
 };
+
+#endif
 
 } // namespace utils
 } // namespace sysx

@@ -34,14 +34,14 @@
 namespace tracing {
 
 /// non-mutating reference to a (sub)range of a timed_sequence
-template<typename T, template<typename> class P>
+template<typename T, typename Traits>
 class const_timed_range
 {
-  friend class timed_sequence<T, P>;
+  friend class timed_sequence<T, Traits>;
 
 public:
   typedef const_timed_range this_type;
-  typedef timed_sequence<T, P> sequence_type;
+  typedef timed_sequence<T, Traits> sequence_type;
   typedef typename sequence_type::duration_type duration_type;
   typedef typename sequence_type::value_type value_type;
   typedef typename sequence_type::tuple_type tuple_type;
@@ -64,7 +64,8 @@ public:
   ///\}
 
   /// read front of the range
-  const_reference front() const { return *ref_.front(); }
+  const_reference front() const { return *begin(); }
+  const_reference back() const { return *(end() - 1); }
 
   void print(std::ostream& os = std::cout) const;
   friend std::ostream& operator<<(std::ostream& os, this_type const& t)
@@ -88,14 +89,14 @@ protected:
 }; // timed_range
 
 /// mutating reference to a (sub)range of a timed_sequence
-template<typename T, template<typename> class P>
-class timed_range : public const_timed_range<T, P>
+template<typename T, typename Traits>
+class timed_range : public const_timed_range<T, Traits>
 {
-  friend class timed_sequence<T, P>;
+  friend class timed_sequence<T, Traits>;
 
 public:
-  typedef const_timed_range<T, P> base_type;
-  typedef timed_range<T, P> this_type;
+  typedef const_timed_range<T, Traits> base_type;
+  typedef timed_range<T, Traits> this_type;
 
   typedef typename base_type::sequence_type sequence_type;
   typedef typename base_type::duration_type duration_type;
@@ -104,28 +105,44 @@ public:
   typedef typename sequence_type::reference reference;
   typedef typename sequence_type::iterator iterator;
 
-  /// update/replace (value of) first element in the sequence
+  /// read front of the range
+  reference front() const { return *this->begin_; }
+  reference back() const { return *(this->end_ - 1); }
+
+  /// update/replace (value of) first element in the range
   void front(value_type const& v) { this->ref_.buf_.front().value(v); }
 
-  /// update/replace first element in the sequence
+  /// update/replace first element in the range
   void front(value_type const& v, duration_type const& d)
   {
     front(tuple_type(v, d));
   }
 
-  /// update/replace first element in the sequence
+  /// update/replace first element in the range
   void front(tuple_type const& t)
   {
-    duration_type d = this->begin->duration();
+    duration_type d = this->front().duration();
     SYSX_ASSERT(!(d.is_infinite() ^ t.is_infinite()));
-    this->begin_ = t;
-    if (t.duration() < d) { // shorter tuple
-      this->ref_.del_duration(d - t.duration());
-      this->duration_ -= d - t.duration();
-    } else if (t.duration() > d) { // longer tuple
-      this->ref_.add_duration(t.duration() - d);
-      this->duration_ += t.duration() - d;
-    }
+    *this->begin_ = t;
+    update_range_duration(t, d);
+  }
+
+  /// update/replace (value of) first element in the range
+  void back(value_type const& v) { (this->end_ - 1)->value(v); }
+
+  /// update/replace first element in the range
+  void back(value_type const& v, duration_type const& d)
+  {
+    back(tuple_type(v, d));
+  }
+
+  /// update/replace last element in the range
+  void back(tuple_type const& t)
+  {
+    duration_type d = this->back().duration();
+    SYSX_ASSERT(!(d.is_infinite() ^ t.is_infinite()));
+    *(this->end_ - 1) = t;
+    update_range_duration(t, d);
   }
 
   /// replace the sub-sequence with another sequence (of the same duration)
@@ -146,15 +163,27 @@ protected:
     : base_type(owner, offset, until, covering)
   {
   }
+
+  void update_range_duration(tuple_type t, duration_type d)
+  {
+    if (t.duration() < d) { // shorter tuple
+      this->ref_.del_duration(d - t.duration());
+      this->duration_ -= d - t.duration();
+    } else if (t.duration() > d) { // longer tuple
+      this->ref_.add_duration(t.duration() - d);
+      this->duration_ += t.duration() - d;
+    }
+  }
+
 }; // timed_range
 
 // -----------------------------------------------------------------------
 
-template<typename T, template<typename> class P>
-const_timed_range<T, P>::const_timed_range(sequence_type& owner,
-                                           time_type offset,
-                                           time_type until,
-                                           bool covering)
+template<typename T, typename Traits>
+const_timed_range<T, Traits>::const_timed_range(sequence_type& owner,
+                                                time_type offset,
+                                                time_type until,
+                                                bool covering)
   : ref_(owner)
   , offset_()
   , duration_()
@@ -187,20 +216,23 @@ const_timed_range<T, P>::const_timed_range(sequence_type& owner,
       break;
     duration_ += d;
   }
+
+  while (end_ != owner.end() && end_->duration().is_delta())
+    end_++;
 }
 
-template<typename T, template<typename> class P>
+template<typename T, typename Traits>
 void
-const_timed_range<T, P>::print(std::ostream& os) const
+const_timed_range<T, Traits>::print(std::ostream& os) const
 {
   os << "{" << offset_ << ", " << this->duration() << "; ";
   if (begin_ == end_) {
     os << "- }";
     return;
   }
-  const_iterator it = begin_;
-  while (it != end_)
-    os << *it++;
+  for (auto elem : *this)
+    os << elem;
+
   os << " }";
 }
 

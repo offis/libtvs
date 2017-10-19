@@ -27,18 +27,20 @@ endif
 
 
 tests = [
-  ['State Semantics',     'state',     'tv_streams_state_semantics.cpp'],
-  ['Process Semantics',     'process',     'tv_streams_process_semantics.cpp'],
+  ['State Semantics',         'state',         'tv_streams_state_semantics.cpp'],
+  ['Process Semantics',       'process',       'tv_streams_process_semantics.cpp'],
   ['Custom Traits Semantics', 'custom_traits', 'tv_streams_custom_traits.cpp'],
-  ['Sequence Semantics', 'sequence', 'tv_streams_sequence_semantics.cpp'],
+  ['Sequence Semantics',      'sequence',      'tv_streams_sequence_semantics.cpp'],
   ]
 
 incs = include_directories('../src')
 deps = [ gtest, systemc_dep ]
 
+extra_srcs = 'common/gtest_scmain.cpp'
+
 foreach test : tests
   test(test[0],
-       executable(test[1], [ test[2], 'common/gtest_scmain.cpp' ],
+       executable(test[1], test[2], extra_srcs,
                   include_directories: incs,
                   link_with: tracing_lib,
                   dependencies: deps))

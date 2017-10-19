@@ -24,8 +24,8 @@
 #ifndef TVS_TIMED_VALUE_H_INCLUDED_
 #define TVS_TIMED_VALUE_H_INCLUDED_
 
-#include "tvs/utils/variant.h"
 #include "tvs/tracing/timed_duration.h"
+#include "tvs/utils/variant.h"
 
 namespace tracing {
 
@@ -80,7 +80,7 @@ private:
  *
  * \see timed_stream
  */
-template<typename T>
+template <typename T>
 struct timed_value : public timed_value_base
 {
   typedef T value_type;
@@ -142,7 +142,7 @@ private:
 
 /* --------------------------------------------------------------------- */
 
-template<typename T>
+template <typename T>
 void
 timed_value<T>::print(std::ostream& os) const
 {

@@ -27,72 +27,13 @@
 
 #include "tvs/tracing/timed_ranges.h"
 #include "tvs/tracing/timed_sequence.h"
-#include "tvs/tracing/timed_stream_policies.h" // JoinPolicy
+#include "tvs/tracing/timed_stream_policies.h"
 
 namespace tracing {
 
 // -----------------------------------------------------------------------
 
 namespace impl {
-
-/// generic sequence merge implementation
-template<typename SequenceType, typename EmptyPolicy>
-struct timed_sequence_do_merge
-{
-  typedef SequenceType sequence_type;
-
-  typedef typename sequence_type::tuple_type tuple_type;
-  typedef typename sequence_type::split_policy split_policy;
-  typedef typename sequence_type::merge_policy merge_policy;
-
-  template<typename OtherSequenceType>
-  static void merge(sequence_type& this_, OtherSequenceType&& other)
-  {
-    if (other.empty())
-      return;
-
-    if (this_.empty()) {
-      this_.move_back(other);
-      return;
-    }
-
-    sequence_type result;
-    sequence_type *seq_a = &this_, *seq_b = &other;
-
-    // iterate until one sequence is empty
-    while (!seq_a->empty() && !seq_b->empty()) {
-
-      // make sure seq_a points to the sequence with the longer front tuple
-      if (seq_a->front_duration() < seq_b->front_duration())
-        std::swap(seq_a, seq_b);
-
-      // split the front tuple of A, if necessary
-      tuple_type a_front = seq_a->front();
-      if (seq_a->front_duration() > seq_b->front_duration()) {
-        tuple_type rhs = a_front;
-        // split and consume rhs of split
-        a_front = split_policy::split(rhs, seq_b->front_duration());
-        seq_a->front(rhs);
-      } else {
-        // nothing to split, we can consume the whole tuple
-        seq_a->pop_front();
-      }
-
-      merge_policy::merge(a_front, seq_b->front());
-      result.push_back(a_front);
-      seq_b->pop_front();
-    }
-
-    // handle leftover tuples in both sequences
-    if (!seq_a->empty())
-      result.move_back(*seq_a);
-    if (!seq_b->empty())
-      result.move_back(*seq_b);
-
-    this_.clear();
-    this_.move_back(result);
-  }
-};
 
 /// generic sequence push back/front implementation
 template<typename SequenceType, typename JoinPolicy>
@@ -149,10 +90,10 @@ struct timed_sequence_do_push<
 
 } // namespace impl
 
-template<typename T, template<typename> class U>
+template<typename T, typename Traits>
 template<typename SequenceType>
 void
-timed_sequence<T, U>::push_back(SequenceType const& seq)
+timed_sequence<T, Traits>::push_back(SequenceType const& seq)
 {
   if (seq.empty())
     return;
@@ -163,57 +104,40 @@ timed_sequence<T, U>::push_back(SequenceType const& seq)
   push_type::back(*this, buf_, seq);
 }
 
-template<typename T, template<typename> class U>
-template<typename SequenceType>
+template<typename T, typename Traits>
 void
-timed_sequence<T, U>::merge(SequenceType seq)
+timed_sequence<T, Traits>::split(duration_type const& offset)
 {
-  typedef impl::timed_sequence_do_merge<SequenceType, empty_policy> merge_type;
-  merge_type::merge(*this, std::move(seq));
-}
+  SYSX_ASSERT(!offset.is_infinite() && "Cannot split at infinite offset.");
 
-template<typename T, template<typename> class U>
-void
-timed_sequence<T, U>::split(duration_type const& offset, bool extend)
-{
-  auto srange = this->range(offset);
+  auto srange = this->range(this->before(offset).duration(), offset);
 
-  if (srange.duration() == offset)
+  // check if we need to do anything
+  if (srange.offset() == offset)
     return;
 
-  if (srange.duration() < offset) {
-    if (extend)
-      this->push_back(empty_policy::empty(offset - srange.duration()));
-    return;
-  }
+  tuple_type rhs = srange.back();
 
-  // we need to split the last tuple in the srange
-  this_type tmp;
-  tmp.push_back(srange.begin(), srange.end());
+  // perform split of the last tuple (will shorten rhs)
+  auto lhs = split_policy::split(rhs, offset - srange.offset());
 
-  tuple_type rhs = tmp.back();
-  duration_type split = offset - this->before(offset).duration();
+  this_type seq;
 
-  this->pop_front(srange.duration());
+  // push the rhs back (possibly infinite)
+  seq.push_back(rhs);
 
-  if (rhs.is_infinite()) {
-    tmp.back(rhs.value(), split);
-  } else {
-    tmp.back(split_policy::split(rhs, split));
-  }
+  // push the lhs to front (avoid join)
+  seq.push_front(lhs);
 
-  tmp.push_back(rhs, /* join = */ false);
-
-  // append remaining sequence
-  tmp.push_back(*this);
-  this->swap(tmp);
+  // replace old range with the new sequence
+  srange.replace(seq);
 }
 
 // -----------------------------------------------------------------------
 
-template<typename T, template<typename> class U>
+template<typename T, typename Traits>
 void
-timed_sequence<T, U>::print(std::ostream& os) const
+timed_sequence<T, Traits>::print(std::ostream& os) const
 {
   os << "{" << this->duration() << "; ";
   if (begin() == end()) {

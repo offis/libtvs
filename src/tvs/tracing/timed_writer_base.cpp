@@ -48,14 +48,6 @@ timed_writer_base::~timed_writer_base()
 void
 timed_writer_base::attach(const char* name)
 {
-  if (stream_) {
-    SYSX_REPORT_ERROR(report::stream_attach) % name
-      << "writer is already attached to stream "
-         "'"
-      << stream_->name() << "'";
-    return;
-  }
-
   timed_stream_base* str = timed_stream_base::lookup(name);
   if (!str) {
     sc_core::sc_object* scope = sc_core::sc_get_current_object();
@@ -73,8 +65,7 @@ timed_writer_base::attach(const char* name)
     }
   }
 
-  stream_ = str;
-  str->attach(*this);
+  this->attach(*str);
 }
 
 void

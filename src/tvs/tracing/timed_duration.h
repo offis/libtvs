@@ -37,6 +37,10 @@ typedef sc_core::sc_time time_type;
 typedef sysx::units::time_type time_type;
 #endif
 
+class timed_duration;
+
+typedef timed_duration duration_type;
+
 /**
  * \brief duration handling
  *
@@ -53,7 +57,11 @@ class timed_duration
 {
 public:
   typedef timed_duration this_type;
+
+  // native time type for the streams
   typedef time_type value_type;
+
+  // boost::units time type
   typedef sysx::units::time_type units_type;
 
   timed_duration()
@@ -106,7 +114,7 @@ public:
     return this_type(sysx::units::infinity<value_type>());
   }
 
-  static this_type const zero_time;
+  static timed_duration const zero_time;
   ///\}
 
   /**\name arithmetic operators */

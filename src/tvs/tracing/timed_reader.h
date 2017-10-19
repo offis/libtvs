@@ -31,23 +31,23 @@
 
 namespace tracing {
 
-template<typename T, template<typename> class P>
+template<typename, typename>
 class timed_stream;
 
 template<typename>
 struct timed_state_traits;
 
-template<typename T, template<typename> class Traits = timed_state_traits>
-class timed_reader : public timed_reader_base, protected Traits<T>::split_policy
+template<typename T, typename Traits = timed_state_traits<T>>
+class timed_reader : public timed_reader_base
 {
   friend class timed_stream<T, Traits>;
 
 public:
   typedef timed_reader_base base_type;
   typedef base_type::time_type time_type;
+  typedef timed_reader<T, Traits> this_type;
 
   typedef T value_type;
-  typedef typename Traits<T>::split_policy split_policy;
   typedef timed_stream<T, Traits> stream_type;
   typedef timed_value<T> tuple_type;
 
@@ -84,15 +84,23 @@ public:
 
   // read (and potentially split) the first tuple
   tuple_type const& front() const { return buf_.front(); }
-  tuple_type const& front(duration_type const&)
+  tuple_type const& front(duration_type const& dur)
   {
-    return buf_.front(); /* TODO: add SplitPolicy! */
+    if (front_duration() > dur) {
+      buf_.split(dur);
+    }
+
+    return buf_.front();
   }
 
-  timed_variant front_variant() const { return timed_variant(buf_.front()); }
-  timed_variant front_variant(duration_type const&)
+  timed_variant front_variant() const { return timed_variant(buf_.front(), front_duration()); }
+  timed_variant front_variant(duration_type const& dur)
   {
-    return timed_variant(buf_.front() /* TODO: add SplitPolicy! */);
+    if (front_duration() > dur) {
+      buf_.split(dur);
+    }
+
+    return timed_variant(buf_.front().value(), front_duration());
   }
 
   /** \name const tuple iterators */
@@ -145,10 +153,18 @@ public:
   virtual size_type count() const { return buf_.size(); }
   virtual duration_type available_duration() const { return buf_.duration(); }
 
+  void print(std::ostream& os = std::cout) const { os << buf_; }
+
+  friend std::ostream& operator<<(std::ostream& os, this_type const& t)
+  {
+    t.print(os);
+    return os;
+  }
+
 private:
   void do_pop_duration(duration_type const& d)
   {
-    buf_.split(d, /* extend = */ false);
+    buf_.split(d);
     duration_type rem = buf_.pop_front(d);
 
     SYSX_ASSERT(rem == duration_type::zero_time || buf_.empty());

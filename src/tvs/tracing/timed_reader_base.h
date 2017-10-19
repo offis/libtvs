@@ -61,6 +61,7 @@ protected:
 class timed_reader_base : public timed_object
 {
   friend class timed_stream_base;
+  typedef timed_stream_base stream_type;
 
 public:
   typedef std::size_t size_type;
@@ -105,11 +106,14 @@ public:
   virtual ~timed_reader_base();
 
   void attach(const char* name);
-  void attach(timed_stream_base& stream);
+  void attach(stream_type& stream);
   void detach();
 
   listener_mode listen(timed_listener_if& listener,
                        listener_mode mode = timed_listener_if::NOTIFY_DEFAULT);
+
+  virtual stream_type& stream() { return *stream_; }
+  virtual stream_type const& stream() const { return *stream_; }
 
 protected:
   timed_reader_base(const char* name);
@@ -118,7 +122,7 @@ protected:
   void trigger(bool new_window);
 
 private:
-  timed_stream_base* stream_;
+  stream_type* stream_;
   timed_listener_if* listener_;
   listener_mode listen_mode_;
 };
