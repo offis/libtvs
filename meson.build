@@ -36,7 +36,7 @@ endif
 
 proj_deps = []
 
-sc_version_required = '2.3.2'
+sc_version_required = '2.3.1'
 
 # Check using pkg-config
 systemc_dep = dependency('systemc',
