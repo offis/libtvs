@@ -88,6 +88,7 @@ tracing_sources = files(
   )
 
 tracing_headers = files(
+  'tracing/object_host.h',
   'tracing/timed_duration.h',
   'tracing/timed_object.h',
   'tracing/timed_ranges.h',
@@ -100,8 +101,6 @@ tracing_headers = files(
   'tracing/timed_stream.tpp',
   'tracing/timed_stream_policies.h',
   'tracing/timed_stream_policies.tpp',
-  'tracing/processors/timed_stream_processor_base.h',
-  'tracing/processors/timed_stream_vcd_processor.h',
   'tracing/timed_stream_traits.h',
   'tracing/timed_value.h',
   'tracing/timed_variant.h',
@@ -110,6 +109,16 @@ tracing_headers = files(
   )
 
 install_headers(tracing_headers, subdir : 'tvs/tracing')
+
+processor_headers = files(
+    'tracing/processors/timed_stream_processor_base.h',
+    'tracing/processors/timed_stream_processor_binop.h',
+    'tracing/processors/timed_stream_vcd_processor.h',
+    'tracing/processors/timed_stream_print_processor.h',
+)
+
+install_headers(processor_headers, subdir : 'tvs/tracing/processors')
+
 install_headers('tracing.h',     subdir : 'tvs')
 
 
