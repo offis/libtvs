@@ -147,7 +147,7 @@ timed_stream_processor_base::in(tracing::timed_stream<T, Policy>& stream)
   std::stringstream name;
   name << stream.basename() << "_in";
 
-  this->do_add_input(std::make_unique<reader_type>(
+  this->do_add_input(detail::make_unique<reader_type>(
     stream_base_type::gen_unique_name(name.str().c_str()), stream));
 }
 
@@ -166,7 +166,7 @@ void
 timed_stream_processor_base::out(tracing::timed_stream<T, Policy>& stream)
 {
   using writer_type = tracing::timed_writer<T, Policy>;
-  this->do_add_output(std::make_unique<writer_type>(stream));
+  this->do_add_output(detail::make_unique<writer_type>(stream));
 }
 
 } // namespace tracing

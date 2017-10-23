@@ -49,6 +49,7 @@ internal_deps += declare_dependency(include_directories: proj_includes,
 utils_headers =  files(
   'utils/assert.h',
   'utils/boost.h',
+  'utils/cppver.h',
   'utils/debug.h',
   'utils/macros.h',
   'utils/noncopyable.h',

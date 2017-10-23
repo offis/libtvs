@@ -18,23 +18,30 @@
 #ifndef UNIQUE_PTR_H_INCLUDED_
 #define UNIQUE_PTR_H_INCLUDED_
 
+#include "tvs/utils/cppver.h"
+
 #include <memory>
 
-#if __cplusplus == 201103L
+namespace tracing {
+namespace detail {
 
-namespace std {
+#if TVS_CPLUSPLUS < 201103L
+#error "Need a compiler with support for variadic templates."
+#elif TVS_CPLUSPLUS > 201103L
+using std::make_unique;
+#else
 
-template <typename T, typename... Args>
-unique_ptr<T>
+template<typename T, typename... Args>
+std::unique_ptr<T>
 make_unique(Args&&... args)
 {
-  return unique_ptr<T>(new T{ forward<Args>(args)... });
+  return std::unique_ptr<T>(new T{ std::forward<Args>(args)... });
 }
 
-} // namespace std
+#endif // TVS_CPLUSPLUS
 
-#endif // __cplusplus == 201103L
+} // namespace detail
 
-// :tag: (utils,h)
+} // namespace tracing
 
 #endif // UNIQUE_PTR_H_INCLUDED_

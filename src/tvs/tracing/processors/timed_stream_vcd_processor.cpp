@@ -99,7 +99,7 @@ timed_stream_vcd_processor::timed_stream_vcd_processor(char const* name,
                                                        std::ostream& out,
                                                        char vcd_start_signal)
   : base_type(name)
-  , pimpl_(std::make_unique<timed_stream_vcd_impl>(this, vcd_start_signal))
+  , pimpl_(detail::make_unique<timed_stream_vcd_impl>(this, vcd_start_signal))
   , out_(out)
   , header_written_(false)
 {}

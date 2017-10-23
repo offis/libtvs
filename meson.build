@@ -23,13 +23,16 @@ project('Timed-Value Streams', 'cpp',
 tvs_incdir  = get_option('includedir')
 tvs_datadir = get_option('datadir')
 
-code = '''
-#if __cplusplus < 201103L
-#error "Need at least C++11 support"
+cpp_vercheck = '''
+#include "tvs/utils/cppver.h"
+
+#if TVS_CPLUSPLUS < 201103L
+#  error "Need at least C++11 support"
 #endif
 '''
 
-if not meson.get_compiler('cpp').compiles(code, name : 'c++11 (or higher)')
+if not meson.get_compiler('cpp').compiles(cpp_vercheck, name : 'c++11 (or higher)',
+                                          include_directories: include_directories('src'))
   error('Need a compiler with C++11 (or higher) support.')
 endif
 
