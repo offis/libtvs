@@ -24,6 +24,8 @@
 #ifndef TVS_OBJECT_HOST_H_INCLUDED_
 #define TVS_OBJECT_HOST_H_INCLUDED_
 
+#include "tvs/tracing/timed_duration.h"
+
 #include <functional>
 
 namespace tracing {
