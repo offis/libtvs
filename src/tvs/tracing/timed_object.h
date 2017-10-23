@@ -25,9 +25,9 @@
 #ifndef TVS_TIMED_OBJECT_H_INCLUDED_
 #define TVS_TIMED_OBJECT_H_INCLUDED_
 
-#include "tvs/utils/noncopyable.h"
-#include "tvs/tracing/timed_duration.h" // time_type
 #include "tvs/tracing/object_host.h"
+#include "tvs/tracing/timed_duration.h" // time_type
+#include "tvs/utils/noncopyable.h"
 
 namespace tracing {
 
@@ -95,7 +95,9 @@ private:
 };
 #endif // SYSX_NO_SYSTEMC
 
-class timed_object : public named_object, public timed_base
+class timed_object
+  : public named_object
+  , public timed_base
 {
 public:
   const char* kind() const { return "timed_object"; }
@@ -103,8 +105,7 @@ public:
 protected:
   explicit timed_object(const char* nm)
     : named_object(nm)
-  {
-  }
+  {}
 
   /// protected destructor - no polymorphic destruction
   virtual ~timed_object() /* = default */ {}

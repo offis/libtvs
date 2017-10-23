@@ -33,13 +33,13 @@
 namespace tracing {
 
 // forward declarations
-template <typename, typename>
+template<typename, typename>
 class timed_stream;
 
-template <typename>
+template<typename>
 struct timed_state_traits;
 
-template <typename T, typename Traits = timed_state_traits<T>>
+template<typename T, typename Traits = timed_state_traits<T>>
 class timed_writer : public timed_writer_base
 {
   friend class timed_stream<T, Traits>;
@@ -72,7 +72,8 @@ public:
     this->push(tuple_type(v, dur));
   }
 
-  void push(time_type const& offset, value_type const& value,
+  void push(time_type const& offset,
+            value_type const& value,
             duration_type const& dur)
   {
     this->push(offset, tuple_type(value, dur));
@@ -102,7 +103,7 @@ private:
 
 /* ----------------------------- constructor --------------------------- */
 
-template <typename T, typename P>
+template<typename T, typename P>
 typename timed_writer<T, P>::stream_type*
 timed_writer<T, P>::create_stream(const char* name, writer_mode mode)
 {

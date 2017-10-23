@@ -70,13 +70,11 @@ public:
 private:
   type_id()
     : ptr_(&typeid(void))
-  {
-  }
+  {}
 
   explicit type_id(std::type_info const& t)
     : ptr_(&t)
-  {
-  }
+  {}
 
 private:
   type_ptr ptr_;

@@ -34,8 +34,7 @@ namespace tracing {
 timed_writer_base::timed_writer_base(stream_type* own_stream)
   : stream_()
   , own_stream_(own_stream)
-{
-}
+{}
 
 timed_writer_base::~timed_writer_base()
 {

@@ -101,26 +101,22 @@ struct debug_msg : report_base
   ///\{
   explicit debug_msg(const char* msg_template = "")
     : base_type(msg_template, severity(SYSX_SVRTY_DEBUG_ | Level))
-  {
-  }
+  {}
 
   debug_msg(const char* msg_template, const char* const file, int line)
     : base_type(msg_template, severity(SYSX_SVRTY_DEBUG_ | Level), file, line)
-  {
-  }
+  {}
   ///\}
 
   /** \name \ref SYSX_DEBUG_INFO constructors */
   ///\{
   explicit debug_msg(base_type::severity sev)
     : base_type("", sev)
-  {
-  }
+  {}
 
   debug_msg(base_type::severity sev, const char* const file, int line)
     : base_type("", sev, file, line)
-  {
-  }
+  {}
   ///\}
 
   static const char* id()

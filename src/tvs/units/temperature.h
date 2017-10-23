@@ -36,8 +36,8 @@ using si::kelvins;
 
 namespace si {
 
-using units::si::temperature;
 using units::si::kelvins;
+using units::si::temperature;
 
 SYSX_UNITS_SCALED_CONSTANT_(temperature, kelvins, micro);
 SYSX_UNITS_SCALED_CONSTANT_(temperature, kelvins, milli);

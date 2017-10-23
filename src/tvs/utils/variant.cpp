@@ -24,8 +24,8 @@
 #include "tvs/utils/rapidjson.h"
 
 #include <algorithm> // std::swap
-#include <vector>    // std::vector
 #include <mutex>
+#include <vector> // std::vector
 
 namespace sysx {
 namespace utils {
@@ -560,7 +560,8 @@ variant::variant(variant_category cat)
       THIS->SetObject();
       break;
     case VARIANT_NULL:
-    default:
+    default
+      :
       /* do nothing */;
   }
 }
@@ -637,8 +638,9 @@ variant_ref::json_deserialize(std::string const& src)
     doc.Parse(src.c_str());
   } catch (rapidjson::ParseException const& e) {
     SYSX_REPORT_ERROR(report::variant_error)
-      << "JSON parsing failed: " << GetParseError_En(e.Code()) << "\n"
-                                                                  "\t'"
+      << "JSON parsing failed: " << GetParseError_En(e.Code())
+      << "\n"
+         "\t'"
       << src << "' (offset: " << e.Offset() << ")";
     return false;
   }

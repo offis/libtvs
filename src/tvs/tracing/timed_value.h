@@ -58,13 +58,11 @@ struct timed_value_base
 protected:
   timed_value_base()
     : duration_(duration_type::infinity())
-  {
-  }
+  {}
 
   explicit timed_value_base(const duration_type& d)
     : duration_(d)
-  {
-  }
+  {}
 
 private:
   duration_type duration_;
@@ -80,15 +78,15 @@ private:
  *
  * \see timed_stream
  */
-template <typename T>
+template<typename T>
 struct timed_value : public timed_value_base
 {
   typedef T value_type;
   typedef timed_value_base base_type;
   typedef timed_value this_type;
 
-  using base_type::time_type;
   using base_type::duration_type;
+  using base_type::time_type;
 
   /** \name constructors */
   ///\{
@@ -97,22 +95,19 @@ struct timed_value : public timed_value_base
   timed_value()
     : timed_value_base()
     , val_()
-  {
-  }
+  {}
 
   /// value constructor - explicit value, infinite duration
   explicit timed_value(value_type const& v)
     : timed_value_base()
     , val_(v)
-  {
-  }
+  {}
 
   /// detailed constructor - explicit value, explicit duration
   timed_value(value_type const& v, duration_type const& d)
     : timed_value_base(d)
     , val_(v)
-  {
-  }
+  {}
   ///\}
 
   /** \name value access */
@@ -142,7 +137,7 @@ private:
 
 /* --------------------------------------------------------------------- */
 
-template <typename T>
+template<typename T>
 void
 timed_value<T>::print(std::ostream& os) const
 {

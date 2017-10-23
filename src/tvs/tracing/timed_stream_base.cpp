@@ -44,8 +44,7 @@ timed_stream_base::timed_stream_base(const char* nm)
   : timed_object(nm)
   , writer_()
   , readers_()
-{
-}
+{}
 
 timed_stream_base::~timed_stream_base()
 {

@@ -36,20 +36,20 @@ namespace tracing {
 
 // -----------------------------------------------------------------------
 // forward declarations
-template <typename, typename>
+template<typename, typename>
 class const_timed_range;
-template <typename, typename>
+template<typename, typename>
 class timed_range;
 
 namespace impl {
-template <typename, typename>
+template<typename, typename>
 struct timed_sequence_do_push;
 } // namespace impl
 
 /// base class for timed sequences
 class timed_sequence_base
 {
-  template <typename, typename>
+  template<typename, typename>
   friend struct impl::timed_sequence_do_push;
 
 public:
@@ -65,8 +65,7 @@ public:
 protected:
   timed_sequence_base()
     : duration_()
-  {
-  }
+  {}
 
   /// update duration (from concrete sequence)
   void set_duration(duration_type const& d) { duration_ = d; }
@@ -90,14 +89,15 @@ protected:
   duration_type duration_;
 };
 
-template <typename T, typename Traits>
-class timed_sequence : public timed_sequence_base,
-                       protected Traits::join_policy,
-                       protected Traits::split_policy
+template<typename T, typename Traits>
+class timed_sequence
+  : public timed_sequence_base
+  , protected Traits::join_policy
+  , protected Traits::split_policy
 {
   friend class const_timed_range<T, Traits>;
   friend class timed_range<T, Traits>;
-  template <typename, typename>
+  template<typename, typename>
   friend struct impl::timed_sequence_do_push;
 
 public:
@@ -167,7 +167,7 @@ public:
   }
 
   /// append a range
-  template <typename InputIterator>
+  template<typename InputIterator>
   void push_back(InputIterator from, InputIterator to)
   {
     while (from != to)
@@ -175,7 +175,7 @@ public:
   }
 
   /// append another sequence
-  template <typename SequenceType>
+  template<typename SequenceType>
   void push_back(SequenceType const& seq);
 
   /// move contents of another sequence to the end of this one
@@ -393,9 +393,9 @@ public:
   }
 
 protected:
-  using base_type::duration_;
   using base_type::add_duration;
   using base_type::del_duration;
+  using base_type::duration_;
 
   storage_type buf_;
 }; // timed_sequence

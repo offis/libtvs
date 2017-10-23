@@ -26,8 +26,7 @@ public:
   explicit timed_stream_vcd_impl(tracing::timed_stream_vcd_processor* base,
                                  char vcd_start_signal)
     : signal_(vcd_start_signal)
-  {
-  }
+  {}
 
   void add_vcd(reader_base_type* reader,
                const char* name,
@@ -70,8 +69,7 @@ private:
       , bitwidth(bitwidth)
       , id_(id)
       , name(name)
-    {
-    }
+    {}
 
     char id() const { return id_; }
 
@@ -104,12 +102,9 @@ timed_stream_vcd_processor::timed_stream_vcd_processor(char const* name,
   , pimpl_(std::make_unique<timed_stream_vcd_impl>(this, vcd_start_signal))
   , out_(out)
   , header_written_(false)
-{
-}
+{}
 
-timed_stream_vcd_processor::~timed_stream_vcd_processor()
-{
-}
+timed_stream_vcd_processor::~timed_stream_vcd_processor() {}
 
 void
 timed_stream_vcd_processor::write_header()

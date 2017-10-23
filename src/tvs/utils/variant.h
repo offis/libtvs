@@ -91,8 +91,7 @@ protected:
 
   explicit variant_cref(impl* i = NULL)
     : pimpl_(i)
-  {
-  }
+  {}
 
 public:
   /** @name type queries */
@@ -206,8 +205,7 @@ class variant_ref : public variant_cref
 protected:
   explicit variant_ref(impl* i = NULL)
     : variant_cref(i)
-  {
-  }
+  {}
 
 public:
   /// exchange contents with another variant
@@ -335,8 +333,7 @@ class variant_string_cref : public variant_cref
 protected:
   explicit variant_string_cref(impl* i = NULL)
     : base_type(i)
-  {
-  }
+  {}
 
 public:
   typedef size_t size_type;
@@ -357,13 +354,13 @@ public:
 private:
   // exclude non-string value functions
   using base_type::get_bool;
-  using base_type::get_int;
-  using base_type::get_uint;
-  using base_type::get_int64;
-  using base_type::get_uint64;
   using base_type::get_double;
+  using base_type::get_int;
+  using base_type::get_int64;
   using base_type::get_list;
   using base_type::get_map;
+  using base_type::get_uint;
+  using base_type::get_uint64;
 
 private:
   // constant reference, no assignment
@@ -382,8 +379,7 @@ class variant_string_ref : public variant_string_cref
 protected:
   explicit variant_string_ref(impl* i = NULL)
     : base_type(i)
-  {
-  }
+  {}
 
 public:
   /// exchange contents with another string value
@@ -458,8 +454,7 @@ class variant_list_cref : public variant_cref
 protected:
   explicit variant_list_cref(impl* i = NULL)
     : base_type(i)
-  {
-  }
+  {}
 
 public:
   typedef size_t size_type;
@@ -481,13 +476,13 @@ public:
 private:
   // exclude non-list value functions
   using base_type::get_bool;
-  using base_type::get_int;
-  using base_type::get_uint;
-  using base_type::get_int64;
-  using base_type::get_uint64;
   using base_type::get_double;
-  using base_type::get_string;
+  using base_type::get_int;
+  using base_type::get_int64;
   using base_type::get_map;
+  using base_type::get_string;
+  using base_type::get_uint;
+  using base_type::get_uint64;
 
 private:
   // constant reference, no assignment
@@ -506,8 +501,7 @@ class variant_list_ref : public variant_list_cref
 protected:
   explicit variant_list_ref(impl* i = NULL)
     : base_type(i)
-  {
-  }
+  {}
 
 public:
   this_type operator=(this_type const&);
@@ -583,8 +577,7 @@ class variant_map_cref : public variant_cref
 protected:
   explicit variant_map_cref(impl* i = NULL)
     : base_type(i)
-  {
-  }
+  {}
 
 public:
   typedef size_t size_type;
@@ -645,13 +638,13 @@ protected:
 private:
   // exclude non-map value functions
   using base_type::get_bool;
-  using base_type::get_int;
-  using base_type::get_uint;
-  using base_type::get_int64;
-  using base_type::get_uint64;
   using base_type::get_double;
-  using base_type::get_string;
+  using base_type::get_int;
+  using base_type::get_int64;
   using base_type::get_list;
+  using base_type::get_string;
+  using base_type::get_uint;
+  using base_type::get_uint64;
 
 private:
   // constant reference, no assignment
@@ -670,8 +663,7 @@ class variant_map_ref : public variant_map_cref
 protected:
   explicit variant_map_ref(impl* i = NULL)
     : base_type(i)
-  {
-  }
+  {}
 
 public:
   this_type operator=(base_type const&);
@@ -794,8 +786,7 @@ public:
   variant()
     : variant_ref()
     , own_pimpl_()
-  {
-  }
+  {}
 
   /// constructor from basic type
   explicit variant(variant_category); ///< @todo drop this?

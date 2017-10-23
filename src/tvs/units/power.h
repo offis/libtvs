@@ -80,8 +80,8 @@ SYSX_UNITS_SCALED_CONSTANT_(capacitance, farads, milli);
 
 } // namespace anonymous
 
-using units::si::resistance;
 using units::si::ohms;
+using units::si::resistance;
 
 namespace /* anonymous */ {
 
@@ -130,12 +130,12 @@ SYSX_UNITS_SCALED_CONSTANT_(power, watts, kilo);
 
 } // namespace si
 
-using units::voltage_type;
+using units::capacity_type;
+using units::conductance_type;
 using units::energy_type;
 using units::power_type;
 using units::resistance_type;
-using units::conductance_type;
-using units::capacity_type;
+using units::voltage_type;
 
 } // namespace sysx
 

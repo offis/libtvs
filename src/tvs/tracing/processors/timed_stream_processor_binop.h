@@ -52,7 +52,7 @@ namespace tracing {
  * \tparam Traits The traits type of the stream
  *
  */
-template <typename T, typename Traits, typename BinaryOperation>
+template<typename T, typename Traits, typename BinaryOperation>
 struct timed_stream_binop_processor : timed_stream_processor_base
 {
   using this_type = timed_stream_binop_processor<T, Traits, BinaryOperation>;
@@ -69,8 +69,7 @@ struct timed_stream_binop_processor : timed_stream_processor_base
 
   timed_stream_binop_processor(char const* name)
     : base_type(name)
-  {
-  }
+  {}
 
   using base_type::in;
   using base_type::out;
@@ -121,7 +120,7 @@ protected:
 };
 
 #define _DECLARE_PROC(op)                                                      \
-  template <typename T, typename Traits>                                       \
+  template<typename T, typename Traits>                                        \
   using timed_stream_processor_##op =                                          \
     timed_stream_binop_processor<T, Traits, std::op<T>>
 

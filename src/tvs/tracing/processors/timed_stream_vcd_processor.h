@@ -59,22 +59,27 @@ struct timed_stream_vcd_processor : timed_stream_processor_base
   using duration_type = typename base_type::duration_type;
 
 public:
-  timed_stream_vcd_processor(char const* name, std::ostream& out,
+  timed_stream_vcd_processor(char const* name,
+                             std::ostream& out,
                              char vcd_start_signal = 'a');
 
   ~timed_stream_vcd_processor();
 
   /// FIXME: refactor with generic base interface
-  template <typename T, typename Policy>
-  void add(std::string name, tracing::timed_stream<T, Policy> const& stream,
-           std::string type, unsigned int bitwidth)
+  template<typename T, typename Policy>
+  void add(std::string name,
+           tracing::timed_stream<T, Policy> const& stream,
+           std::string type,
+           unsigned int bitwidth)
   {
     this->add<T, Policy>(name, stream.name(), type, bitwidth);
   }
 
   /// FIXME: refactor with generic base interface
-  template <typename T, typename Policy>
-  void add(const char* name, const char* stream_name, std::string type,
+  template<typename T, typename Policy>
+  void add(const char* name,
+           const char* stream_name,
+           std::string type,
            unsigned int bitwidth)
   {
     using reader_type = tracing::timed_reader<T, Policy>;
@@ -82,8 +87,8 @@ public:
     std::stringstream vcd_reader_name;
     vcd_reader_name << "reader_" << name;
 
-    auto reader =
-      std::make_unique<reader_type>(vcd_reader_name.str().c_str(), stream_name);
+    auto reader = detail::make_unique<reader_type>(
+      vcd_reader_name.str().c_str(), stream_name);
 
     this->add_vcd(reader.get(), name, type, bitwidth);
     this->do_add_input(std::move(reader));
@@ -93,7 +98,9 @@ protected:
   duration_type process(duration_type dur) override;
 
 private:
-  void add_vcd(reader_base_type* reader, const char* name, std::string type,
+  void add_vcd(reader_base_type* reader,
+               const char* name,
+               std::string type,
                unsigned int bitwidth);
 
   void write_header();

@@ -66,18 +66,15 @@ public:
 
   timed_duration()
     : val_()
-  {
-  }
+  {}
 
   timed_duration(value_type const& vd)
     : val_(vd)
-  {
-  }
+  {}
 
   explicit timed_duration(units_type const& ud)
     : val_(sysx::units::sc_time_cast<units_type>(ud))
-  {
-  }
+  {}
 
   operator value_type const&() const { return value(); }
 

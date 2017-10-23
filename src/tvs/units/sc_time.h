@@ -40,8 +40,8 @@
 #ifndef SYSX_UNITS_SC_TIME_H_INCLUDED_
 #define SYSX_UNITS_SC_TIME_H_INCLUDED_
 
-#include "tvs/utils/systemc.h"
 #include "tvs/units/time.h"
+#include "tvs/utils/systemc.h"
 
 namespace sysx {
 namespace units {

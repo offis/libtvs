@@ -73,7 +73,9 @@ DEFINE_PACK_(sc_core::sc_time)
   if (t.has_value())
     dst.set_list().push_back(t.value()).push_back(std::string(t.unit_symbol()));
   else
-    dst.set_list().push_back(t.to_double()).push_back(std::string(t.unit_symbol()));
+    dst.set_list()
+      .push_back(t.to_double())
+      .push_back(std::string(t.unit_symbol()));
 #else
   ///@todo normalize output to best matching unit
   dst.set_list().push_back(src.to_seconds()).push_back("s");

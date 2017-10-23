@@ -37,8 +37,7 @@ timed_reader_base::timed_reader_base(const char* name)
   , stream_()
   , listener_()
   , listen_mode_(timed_listener_if::NOTIFY_NONE)
-{
-}
+{}
 
 timed_reader_base::~timed_reader_base()
 {
@@ -57,8 +56,9 @@ timed_reader_base::attach(timed_stream_base& stream)
 {
   if (stream_) {
     SYSX_REPORT_ERROR(report::stream_attach) % stream.name()
-      << "reader '" << name() << "' "
-                                 "is already attached to stream '"
+      << "reader '" << name()
+      << "' "
+         "is already attached to stream '"
       << stream_->name() << "'";
     return;
   }

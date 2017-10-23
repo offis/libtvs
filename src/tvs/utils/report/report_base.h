@@ -29,8 +29,8 @@
  */
 #include "tvs/utils/report/message.h"
 
-#include <string>
 #include <sstream>
+#include <string>
 
 namespace sysx {
 namespace report {
@@ -43,12 +43,13 @@ namespace report {
  *
  * \see sc_core::sc_severity
  */
-enum report_severity {
-  SYSX_SVRTY_FATAL_  = 0, ///< unrecoverable errors, \see SC_FATAL
-  SYSX_SVRTY_ERROR_  = 1, ///< error, maybe recoverable, \see SC_ERROR
-  SYSX_SVRTY_WARNING_= 2, ///< possible problem, \see SC_WARNING
-  SYSX_SVRTY_INFO_   = 4, ///< informational message, \see SC_INFO
-  SYSX_SVRTY_DEBUG_  = 8, ///< debugging output (without prefix)
+enum report_severity
+{
+  SYSX_SVRTY_FATAL_ = 0,   ///< unrecoverable errors, \see SC_FATAL
+  SYSX_SVRTY_ERROR_ = 1,   ///< error, maybe recoverable, \see SC_ERROR
+  SYSX_SVRTY_WARNING_ = 2, ///< possible problem, \see SC_WARNING
+  SYSX_SVRTY_INFO_ = 4,    ///< informational message, \see SC_INFO
+  SYSX_SVRTY_DEBUG_ = 8,   ///< debugging output (without prefix)
   /// largest severity value
   SYSX_SVRTY_LAST_
 };
@@ -73,7 +74,7 @@ protected:
   typedef report_base base_type;
 
   static const char* const file_unknown; ///< used, if __FILE__ macro is missing
-  static const int         line_unknown; ///< used, if __LINE__ macro is missing
+  static const int line_unknown;         ///< used, if __LINE__ macro is missing
   static const char* const lib_prefix;   ///< prefix for message ids
 
 public:
@@ -81,13 +82,15 @@ public:
   typedef report_severity severity;
 
   /// report-type indicator
-  typedef struct tag {} is_report_type;
+  typedef struct tag
+  {
+  } is_report_type;
 
 protected:
   /**
    * \brief constructor to prepare report
    *
-   * This constructor is provided to set up a new report. It is 
+   * This constructor is provided to set up a new report. It is
    * used within the reporting macros to pass the current
    * file and line to the report.
    *
@@ -101,11 +104,10 @@ protected:
    *
    * \see ~report_base(), SYSX_REPORT_DEFINE_MSG_()
    */
-  explicit
-  report_base( const char * const     msg_tpl,
-               severity s             = SYSX_SVRTY_DEBUG_,
-               const char* const file = file_unknown,
-               int line               = line_unknown );
+  explicit report_base(const char* const msg_tpl,
+                       severity s = SYSX_SVRTY_DEBUG_,
+                       const char* const file = file_unknown,
+                       int line = line_unknown);
 
 public:
   /**
@@ -124,8 +126,7 @@ public:
    * \return stream_t   reference to output stream
    * \see ~report_base
    */
-  message& fill( const char* context = 0 );
-
+  message& fill(const char* context = 0);
 
   /**
    * \brief issue report
@@ -173,31 +174,29 @@ protected:
    *          Do NOT use this class as a member unless you know
    *          what you are doing.
    */
-   virtual ~report_base();
+  virtual ~report_base();
 
   /** disabled copy constructor */
-  report_base( const report_base& );
+  report_base(const report_base&);
 
 private:
-
   /**
    * \brief function name reduction helper
    *
    * This method reduces a string given by macros like
    * __PRETTY_FUNCTION__ to a shorter fraction: "methodname()".
-   * It is used, if the \c context parameter is given to 
+   * It is used, if the \c context parameter is given to
    * the stream() method.
    *
    */
-  static
-  std::string reduce_function( const char* );
+  static std::string reduce_function(const char*);
 
-  message      msg_;
-  bool         active_;
-  severity     sev_;
-  const char * const file_;
-  unsigned int       line_;
-  const char * id_;
+  message msg_;
+  bool active_;
+  severity sev_;
+  const char* const file_;
+  unsigned int line_;
+  const char* id_;
 
 }; /* class report_base */
 

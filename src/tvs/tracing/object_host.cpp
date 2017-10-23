@@ -21,8 +21,8 @@
  * \brief  Implementaion of the object host interface (for SystemC and generic)
  */
 
-#include "tvs/tracing/timed_stream_base.h"
 #include "tvs/tracing/object_host.h"
+#include "tvs/tracing/timed_stream_base.h"
 
 #include "tvs/utils/systemc.h"
 

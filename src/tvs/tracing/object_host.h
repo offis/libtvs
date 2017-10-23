@@ -46,7 +46,8 @@ struct object_host
 /// Register a synchronisation function to be called for synchronising the
 /// time with a model/implememtation.  By default, we use
 /// sc_core::wait(time_type).
-void register_sync(object_host::sync_fn_type fn);
+void
+register_sync(object_host::sync_fn_type fn);
 
 } // namespace tracing
 

@@ -17,14 +17,14 @@
 
 #include "tvs/utils/report/message.h"
 
-#include "tvs/utils/macros.h"
 #include "tvs/utils/assert.h"
+#include "tvs/utils/macros.h"
 #include "tvs/utils/report.h"
 
-#include <vector>
-#include <string>
-#include <sstream>
 #include <algorithm>
+#include <sstream>
+#include <string>
+#include <vector>
 
 namespace sysx {
 namespace report {
@@ -38,25 +38,23 @@ public:
   class substring;
   class replacer;
 
-  explicit     impl( const char* );
+  explicit impl(const char*);
   stream_type& inject();
   stream_type& append();
-  std::string  combine() const;
+  std::string combine() const;
   ~impl();
 
 private:
-
-  typedef std::vector<element*>  snippets_type;
+  typedef std::vector<element*> snippets_type;
   typedef std::vector<replacer*> replacers_type;
 
-  snippets_type                 snippets_;
-  replacers_type                replacers_;
-  replacers_type::iterator      current_;
-  std::stringstream             tail_;
+  snippets_type snippets_;
+  replacers_type replacers_;
+  replacers_type::iterator current_;
+  std::stringstream tail_;
 
   static const char replacer_pattern[];
   static const char replacer_unknown[];
-
 };
 
 const char message::impl::replacer_pattern[] = "%s";
@@ -64,58 +62,65 @@ const char message::impl::replacer_unknown[] = "<unknown>";
 
 /* -------------------------- con/destruction -------------------------- */
 
-message::message( const char* msg )
-  : impl_( new impl(msg) )
+message::message(const char* msg)
+  : impl_(new impl(msg))
 {}
 
 message::~message()
-  { delete impl_; }
+{
+  delete impl_;
+}
 
 /* --------------------------- forward calls --------------------------- */
 
 message::stream_type&
 message::inject()
-  { return impl_->inject();  }
+{
+  return impl_->inject();
+}
 
 message::stream_type&
 message::append()
-  { return impl_->append(); }
+{
+  return impl_->append();
+}
 
 std::string
 message::combine() const
-  { return impl_->combine(); }
+{
+  return impl_->combine();
+}
 
 /* --------------------------- implementation -------------------------- */
 
 class message::impl::element
 {
 public:
-  virtual void print( message::stream_type& ) const = 0;
-  virtual ~element(){}
+  virtual void print(message::stream_type&) const = 0;
+  virtual ~element() {}
 
 }; // message::impl::element
 
-class message::impl::substring
-  : public message::impl::element
+class message::impl::substring : public message::impl::element
 {
 public:
-  substring( const std::string& msg )
-    : msg_( msg){}
-
-  substring( const std::string&     msg,
-             std::string::size_type from,
-             std::string::size_type to    )
-    : msg_( msg, from, to-from )
+  substring(const std::string& msg)
+    : msg_(msg)
   {}
 
-  virtual void print( message::stream_type& out ) const
-    { out << msg_; }
+  substring(const std::string& msg,
+            std::string::size_type from,
+            std::string::size_type to)
+    : msg_(msg, from, to - from)
+  {}
+
+  virtual void print(message::stream_type& out) const { out << msg_; }
+
 private:
   const std::string msg_;
 }; // message::impl::substring
 
-class message::impl::replacer
-  : public message::impl::element
+class message::impl::replacer : public message::impl::element
 {
 public:
   replacer()
@@ -128,10 +133,10 @@ public:
     return str_;
   }
 
-  virtual void print( message::stream_type& out ) const
+  virtual void print(message::stream_type& out) const
   {
     /// print replaced value, iff set, replacer_unknown otherwise
-    if( filled_ ) {
+    if (filled_) {
       out << str_.str();
     } else {
       out << replacer_unknown;
@@ -144,44 +149,44 @@ private:
 
 }; // message::impl::replacer
 
-message::impl::impl( char const * const msg_tpl )
+message::impl::impl(char const* const msg_tpl)
   : snippets_()
   , replacers_()
-  , current_( replacers_.end() )
+  , current_(replacers_.end())
   , tail_()
 {
-  const size_t pat_sz  = sizeof( replacer_pattern ) - 1;
+  const size_t pat_sz = sizeof(replacer_pattern) - 1;
 
-  SYSX_ASSERT( msg_tpl );     // ensure valid message
-  std::string msg = msg_tpl;  // temporary string
+  SYSX_ASSERT(msg_tpl);      // ensure valid message
+  std::string msg = msg_tpl; // temporary string
 
   std::string::size_type from = 0;
-  std::string::size_type to   = 0;
+  std::string::size_type to = 0;
   std::string::size_type last = msg.size();
 
-  while( from < last ) {
+  while (from < last) {
 
     // look for next replacer/substring
-    to = msg.find( replacer_pattern, from );
-    bool pat_found = ( to != std::string::npos );
+    to = msg.find(replacer_pattern, from);
+    bool pat_found = (to != std::string::npos);
 
-    if ( !pat_found ) { // no other pattern
-      to = last;        // get remaining string
+    if (!pat_found) { // no other pattern
+      to = last;      // get remaining string
     }
 
     // store substring, if present
-    if( to - from ) {
-      snippets_.push_back( new substring( msg, from, to ) );
+    if (to - from) {
+      snippets_.push_back(new substring(msg, from, to));
     }
     // next search start
     from = to;
 
     // we found a pattern, store pattern replacer
-    if ( pat_found ) {
+    if (pat_found) {
       replacer* rpl = new replacer();
-      snippets_.push_back( rpl );
-      replacers_.push_back( rpl ); // remember replacer for inject()
-      from += pat_sz;              // skip placeholder
+      snippets_.push_back(rpl);
+      replacers_.push_back(rpl); // remember replacer for inject()
+      from += pat_sz;            // skip placeholder
     }
   }
   // reseat beginning position
@@ -193,21 +198,28 @@ message::impl::impl( char const * const msg_tpl )
 /// small helper struct to delete a pointer
 struct delete_helper
 {
-  template< typename Type >
-  void operator()( const Type * ptr )
-    { delete ptr; }
+  template<typename Type>
+  void operator()(const Type* ptr)
+  {
+    delete ptr;
+  }
 };
 
 /// small helper struct to print from a pointer to a std::ostream
 struct print_helper
 {
-  explicit print_helper( std::ostream& out ) : out_(out) {}
+  explicit print_helper(std::ostream& out)
+    : out_(out)
+  {}
 
-  template< typename Type >
-  void operator() ( const Type* const ptr )
-    { ptr->print( out_ ); }
+  template<typename Type>
+  void operator()(const Type* const ptr)
+  {
+    ptr->print(out_);
+  }
+
 private:
-    std::ostream& out_;
+  std::ostream& out_;
 };
 
 } // anonymous namespace
@@ -216,8 +228,7 @@ std::string
 message::impl::combine() const
 {
   std::stringstream result;
-  std::for_each( snippets_.begin(), snippets_.end()
-               , print_helper( result ) );
+  std::for_each(snippets_.begin(), snippets_.end(), print_helper(result));
   result << tail_.str();
   return result.str();
 }
@@ -225,21 +236,18 @@ message::impl::combine() const
 message::stream_type&
 message::impl::inject()
 {
-  if( sysx_unlikely(current_ == replacers_.end() ) ) {
-    SYSX_REPORT_FATAL( sysx::report::internal_error )
-      % "Invalid use of replacer"
-        << "\n  Intermediate report message: "
-        << combine();
+  if (sysx_unlikely(current_ == replacers_.end())) {
+    SYSX_REPORT_FATAL(sysx::report::internal_error) % "Invalid use of replacer"
+      << "\n  Intermediate report message: " << combine();
     std::terminate();
   }
 
-  // return current replacer stream 
+  // return current replacer stream
   stream_type& result = (*current_)->stream();
   // and increment marker
   ++current_;
   return result;
 }
-
 
 message::stream_type&
 message::impl::append()
@@ -249,8 +257,7 @@ message::impl::append()
 
 message::impl::~impl()
 {
-  std::for_each( snippets_.begin(), snippets_.end()
-               , delete_helper() );
+  std::for_each(snippets_.begin(), snippets_.end(), delete_helper());
 }
 
 } // namespace report

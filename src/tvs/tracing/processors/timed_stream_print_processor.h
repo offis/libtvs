@@ -38,8 +38,7 @@ struct timed_stream_print_processor : timed_stream_processor_base
   timed_stream_print_processor(char const* name, std::ostream& out)
     : base_type(name)
     , output_(out)
-  {
-  }
+  {}
 
 protected:
   virtual void print_tuple(std::ostream& out, timed_value_base const&) = 0;

@@ -48,8 +48,8 @@ is_infinite(time_type const& time);
 
 namespace si {
 
-using units::si::time;
 using units::si::seconds;
+using units::si::time;
 
 namespace /* anonymous */ {
 
@@ -73,9 +73,9 @@ SYSX_UNITS_SCALED_CONSTANT_(frequency, hertz, giga);
 
 } // namespace si
 
-using units::time_type;
-using units::frequency_type;
 using units::cycle_count_type;
+using units::frequency_type;
+using units::time_type;
 
 } // namespace sysx
 

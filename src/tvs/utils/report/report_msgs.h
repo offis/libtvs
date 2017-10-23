@@ -42,42 +42,40 @@ SYSX_REPORT_BEGIN_DEFINITION_
 
 /* ---------------- core library --------------- */
 
-SYSX_REPORT_DEFINE_MSG_( abort_called, "Core/Abort called",
-  "SYSX_ABORT() has been called due to an unrecoverable error."
-);
+SYSX_REPORT_DEFINE_MSG_(
+  abort_called,
+  "Core/Abort called",
+  "SYSX_ABORT() has been called due to an unrecoverable error.");
 
-SYSX_REPORT_DEFINE_MSG_( assertion_failed,   "Core/Assertion failed",
-  "Expression '%s' is unexpectedly false!\n"
-);
+SYSX_REPORT_DEFINE_MSG_(assertion_failed,
+                        "Core/Assertion failed",
+                        "Expression '%s' is unexpectedly false!\n");
 
-SYSX_REPORT_DEFINE_MSG_( internal_error, "Core/Internal error",
-  "An internal error has occured: %s\n"
-);
+SYSX_REPORT_DEFINE_MSG_(internal_error,
+                        "Core/Internal error",
+                        "An internal error has occured: %s\n");
 
-SYSX_REPORT_DEFINE_MSG_( not_implemented, "Core/Not implemented",
-  "%s is not implemented yet\n."
-);
+SYSX_REPORT_DEFINE_MSG_(not_implemented,
+                        "Core/Not implemented",
+                        "%s is not implemented yet\n.");
 
 /* ----------------- datatypes ----------------- */
 
-SYSX_REPORT_DEFINE_MSG_( index_out_of_bounds,
+SYSX_REPORT_DEFINE_MSG_(index_out_of_bounds,
                         "Datatype/Index out of bounds",
-  "%s: Invalid field index detected: %s >= %s (=size)!"
-);
+                        "%s: Invalid field index detected: %s >= %s (=size)!");
 
 /* ---------------- elaboration ---------------- */
 
-SYSX_REPORT_DEFINE_MSG_( called_after_elaboration,
+SYSX_REPORT_DEFINE_MSG_(called_after_elaboration,
                         "Elaboration/Simulation started",
-  "'%s' called after end of elaboration phase."
-);
+                        "'%s' called after end of elaboration phase.");
 
 /* -------------------------------------------- */
 
-SYSX_REPORT_DEFINE_MSG_(
-  plain_msg,
-  "Core/Plain",
-  SYSX_IMPL_NOTHING_ /* empty message */
+SYSX_REPORT_DEFINE_MSG_(plain_msg,
+                        "Core/Plain",
+                        SYSX_IMPL_NOTHING_ /* empty message */
 );
 
 SYSX_REPORT_END_DEFINITION_

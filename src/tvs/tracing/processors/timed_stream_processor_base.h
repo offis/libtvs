@@ -54,8 +54,9 @@ class timed_stream;
 /// \a process() member function with the minimum available duration on all
 /// streams.
 ///
-struct timed_stream_processor_base : public timed_object,
-                                     public timed_listener_if
+struct timed_stream_processor_base
+  : public timed_object
+  , public timed_listener_if
 {
   using base_type = timed_object;
   using this_type = timed_stream_processor_base;
@@ -72,19 +73,19 @@ struct timed_stream_processor_base : public timed_object,
   using duration_type = stream_base_type::duration_type;
 
   /// Add an input stream of a writer to this processor.
-  template <typename T, typename Policy>
+  template<typename T, typename Policy>
   void in(tracing::timed_writer<T, Policy>& writer);
 
   /// Add an input stream to this processor.
-  template <typename T, typename Policy>
+  template<typename T, typename Policy>
   void in(tracing::timed_stream<T, Policy>& stream);
 
   /// Add an output stream of a reader to this processor.
-  template <typename T, typename Policy>
+  template<typename T, typename Policy>
   void out(tracing::timed_reader<T, Policy>& reader);
 
   /// Add an output stream to this processor.
-  template <typename T, typename Policy>
+  template<typename T, typename Policy>
   void out(tracing::timed_stream<T, Policy>& stream);
 
 protected:
@@ -127,7 +128,7 @@ private:
   writer_ptr_type output_;
 };
 
-template <typename T, typename Policy>
+template<typename T, typename Policy>
 void
 timed_stream_processor_base::in(tracing::timed_writer<T, Policy>& writer)
 {
@@ -137,7 +138,7 @@ timed_stream_processor_base::in(tracing::timed_writer<T, Policy>& writer)
   this->in(*stream);
 }
 
-template <typename T, typename Policy>
+template<typename T, typename Policy>
 void
 timed_stream_processor_base::in(tracing::timed_stream<T, Policy>& stream)
 {
@@ -150,7 +151,7 @@ timed_stream_processor_base::in(tracing::timed_stream<T, Policy>& stream)
     stream_base_type::gen_unique_name(name.str().c_str()), stream));
 }
 
-template <typename T, typename Policy>
+template<typename T, typename Policy>
 void
 timed_stream_processor_base::out(tracing::timed_reader<T, Policy>& reader)
 {
@@ -160,7 +161,7 @@ timed_stream_processor_base::out(tracing::timed_reader<T, Policy>& reader)
   this->out(*stream);
 }
 
-template <typename T, typename Policy>
+template<typename T, typename Policy>
 void
 timed_stream_processor_base::out(tracing::timed_stream<T, Policy>& stream)
 {

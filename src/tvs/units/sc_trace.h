@@ -36,8 +36,8 @@
 #ifndef SYSX_UNITS_SC_TRACE_H_INCLUDED_
 #define SYSX_UNITS_SC_TRACE_H_INCLUDED_
 
-#include "tvs/utils/systemc.h"
 #include "tvs/units/common.h"
+#include "tvs/utils/systemc.h"
 
 /// SystemC core namespace
 namespace sc_core {

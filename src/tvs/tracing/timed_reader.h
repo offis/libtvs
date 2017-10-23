@@ -61,8 +61,7 @@ public:
   ///\{
   timed_reader(const char* name)
     : timed_reader_base(name)
-  {
-  }
+  {}
 
   timed_reader(const char* name, stream_type& stream)
     : timed_reader_base(name)
@@ -93,7 +92,10 @@ public:
     return buf_.front();
   }
 
-  timed_variant front_variant() const { return timed_variant(buf_.front(), front_duration()); }
+  timed_variant front_variant() const
+  {
+    return timed_variant(buf_.front(), front_duration());
+  }
   timed_variant front_variant(duration_type const& dur)
   {
     if (front_duration() > dur) {

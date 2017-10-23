@@ -52,34 +52,29 @@ public:
   /// default constructor - default value, infinite duration
   timed_variant()
     : base_type()
-  {
-  }
+  {}
 
   /// value constructor - explicit value, infinite duration
   explicit timed_variant(value_type const& v)
     : base_type(v)
-  {
-  }
+  {}
 
   /// value constructor - explicit arbitrary value, infinite duration
-  template <typename T>
+  template<typename T>
   explicit timed_variant(const T& v)
     : base_type(value_type(v))
-  {
-  }
+  {}
 
   /// detailed constructor - explicit value, explicit duration
   timed_variant(value_type const& v, duration_type const& d)
     : base_type(v, d)
-  {
-  }
+  {}
 
   /// detailed constructor - arbitrary value, explicit duration
-  template <typename T>
+  template<typename T>
   timed_variant(T const& v, duration_type const& d)
     : base_type(value_type(v), d)
-  {
-  }
+  {}
 
   ///\}
 
@@ -91,7 +86,7 @@ namespace sysx {
 namespace utils {
 
 #define VARIANT_TRAITS_DERIVED_(UnderlyingType, SpecializedType)               \
-  template <>                                                                  \
+  template<>                                                                   \
   struct variant_traits<SpecializedType>                                       \
     : variant_traits_convert<SpecializedType, UnderlyingType>                  \
   {                                                                            \

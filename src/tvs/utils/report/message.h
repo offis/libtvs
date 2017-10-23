@@ -38,51 +38,52 @@ namespace report {
  * \see sysx::report
  *
  */
-class message
-  : private sysx::utils::noncopyable
+class message : private sysx::utils::noncopyable
 {
   /// real message implementation
   class impl;
   /// pointer to real implementation
-  impl * const impl_;
+  impl* const impl_;
+
 public:
   typedef std::ostream stream_type;
 
   /// create a message from a template
-  explicit     message( char const * );
+  explicit message(char const*);
   /// set the next replacer
   stream_type& inject();
   /// append an additional string to the message
   stream_type& append();
   /// combine all parts to a single string
-  std::string  combine() const;
+  std::string combine() const;
   /// destructor
   ~message();
 };
 
 /// fill the current replacer
-template< typename T >
-message& operator % ( message& msg, T const& data )
+template<typename T>
+message&
+operator%(message& msg, T const& data)
 {
   msg.inject() << data;
   return msg;
 }
 
 /// append an arbitrary element
-template< typename T >
-message& operator << ( message& msg, T const& data )
+template<typename T>
+message&
+operator<<(message& msg, T const& data)
 {
   msg.append() << data;
   return msg;
 }
 
 /// support for at least some manipulators (at the end of the message)
-inline
-message& operator<<( message& msg,
-                     std::ostream& (*pfn)(std::ostream&) )
+inline message&
+operator<<(message& msg, std::ostream& (*pfn)(std::ostream&))
 {
   // Call manipulator function on apnnd's stream
-  pfn( msg.append() );
+  pfn(msg.append());
   return msg;
 }
 

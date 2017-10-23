@@ -19,16 +19,14 @@
 #define SYSX_UTILS_REPORT_MACROS_DEF_H_INCLUDED_
 
 /// mark beginning of report definition block
-#define SYSX_REPORT_BEGIN_DEFINITION_ \
-  namespace report {
+#define SYSX_REPORT_BEGIN_DEFINITION_ namespace report {
 
 /// mark end of report definition block
-#define SYSX_REPORT_END_DEFINITION_ \
-  } /* namespace report */
+#define SYSX_REPORT_END_DEFINITION_ } /* namespace report */
 
 /// SysX library name and message prefix
 #ifndef SYSX_LIBRARY_NAME
-#  define SYSX_LIBRARY_NAME "SysX"
+#define SYSX_LIBRARY_NAME "SysX"
 #endif
 #define SYSX_IMPL_REPORT_LIBRARY_PREFIX_ "/" SYSX_LIBRARY_NAME "/"
 
@@ -70,37 +68,39 @@
  *
  * \code
  *   sc_core::sc_report_handler::set_actions
- *      ( sysx::report::example_rpt::id(), sc_core::SC_DO_NOTHING ); 
+ *      ( sysx::report::example_rpt::id(), sc_core::SC_DO_NOTHING );
  * \endcode
  *
  * \see report_base, report_msgs.h
  * \hideinitializer
- * 
+ *
  */
-#define SYSX_REPORT_DEFINE_MSG_( Type, Id, MsgTemplate )     \
-  struct Type : ::sysx::report::report_base                  \
-  {                                                          \
-    typedef report_base base_type;                           \
-    SYSX_REPORT_IMPL_CTOR_( Type, MsgTemplate "" )           \
-    static const char * id()                                 \
-      { return SYSX_IMPL_REPORT_LIBRARY_PREFIX_ Id; }        \
-    static const char * raw_id()                             \
-      { return Id; }                                         \
-  protected:                                                 \
-    const char * get_id() const { return Type::raw_id(); }   \
+#define SYSX_REPORT_DEFINE_MSG_(Type, Id, MsgTemplate)                         \
+  struct Type : ::sysx::report::report_base                                    \
+  {                                                                            \
+    typedef report_base base_type;                                             \
+    SYSX_REPORT_IMPL_CTOR_(Type, MsgTemplate "")                               \
+    static const char* id() { return SYSX_IMPL_REPORT_LIBRARY_PREFIX_ Id; }    \
+    static const char* raw_id() { return Id; }                                 \
+                                                                               \
+  protected:                                                                   \
+    const char* get_id() const { return Type::raw_id(); }                      \
   }
 
 /**
  * \brief internal helper macro
  * \hideinitializer
  */
-#define SYSX_REPORT_IMPL_CTOR_( Type, MsgTemplate )     \
-  Type() : base_type( MsgTemplate ) {}                  \
-  Type( base_type::severity s )                         \
-    : base_type( MsgTemplate, s ) {}                    \
-  Type( base_type::severity s,                          \
-        const char * const  file, int line )            \
-    : base_type( MsgTemplate, s, file, line ) {}
+#define SYSX_REPORT_IMPL_CTOR_(Type, MsgTemplate)                              \
+  Type()                                                                       \
+    : base_type(MsgTemplate)                                                   \
+  {}                                                                           \
+  Type(base_type::severity s)                                                  \
+    : base_type(MsgTemplate, s)                                                \
+  {}                                                                           \
+  Type(base_type::severity s, const char* const file, int line)                \
+    : base_type(MsgTemplate, s, file, line)                                    \
+  {}
 
 #endif /* SYSX_UTILS_REPORT_MACROS_DEF_H_INCLUDED_ */
 /* Taf!

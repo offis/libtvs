@@ -117,13 +117,13 @@ max_value();
 namespace si {
 
 using units::si::femto;
-using units::si::pico;
-using units::si::nano;
-using units::si::micro;
-using units::si::milli;
+using units::si::giga;
 using units::si::kilo;
 using units::si::mega;
-using units::si::giga;
+using units::si::micro;
+using units::si::milli;
+using units::si::nano;
+using units::si::pico;
 
 } // namespace si
 

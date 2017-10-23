@@ -42,10 +42,11 @@ struct timed_state_traits;
 // timed_stream< int >  -> timed_stream< int, timed_stream_policies< int > >
 
 template<typename T, typename Traits = timed_state_traits<T>>
-class timed_stream : public timed_stream_base,
-                     protected Traits::empty_policy,
-                     protected Traits::split_policy,
-                     protected Traits::merge_policy
+class timed_stream
+  : public timed_stream_base
+  , protected Traits::empty_policy
+  , protected Traits::split_policy
+  , protected Traits::merge_policy
 {
   friend class timed_writer<T, Traits>;
   friend class timed_reader<T, Traits>;
@@ -67,8 +68,7 @@ public:
 
   explicit timed_stream(const char* nm = base_type::default_name())
     : base_type(nm)
-  {
-  }
+  {}
 
   virtual duration_type duration() const { return buf_.duration(); }
 

@@ -161,8 +161,7 @@ protected:
               time_type until,
               bool covering)
     : base_type(owner, offset, until, covering)
-  {
-  }
+  {}
 
   void update_range_duration(tuple_type t, duration_type d)
   {

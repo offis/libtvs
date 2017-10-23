@@ -25,9 +25,9 @@
 
 // forward declarations for some C++ std classes/templates
 namespace std {
-template <typename T1, typename T2>
+template<typename T1, typename T2>
 struct pair;
-template <typename T1, typename Alloc>
+template<typename T1, typename Alloc>
 class vector;
 } // namespace std
 
@@ -35,7 +35,7 @@ namespace tracing {
 class timed_duration;
 class timed_variant;
 
-template <typename T1>
+template<typename T1>
 struct timed_value;
 }
 
@@ -86,7 +86,7 @@ namespace utils {
  * To @em disable conversion support for a given type, you can refer
  * to the helper template @ref variant_traits_disabled.
  */
-template <typename T>
+template<typename T>
 struct variant_traits
 {
   typedef T type; ///< common type alias
@@ -114,7 +114,7 @@ struct variant_traits
  * \note In order to disable support for a given type at @em compile-time,
  *       the specialization of variant_traits can be left empty.
  */
-template <typename T>
+template<typename T>
 struct variant_traits_disabled
 {
   typedef T type;
@@ -137,7 +137,7 @@ template<> struct variant_traits<variant_list_cref> { /* disabled */ };
 template<> struct variant_traits<variant_list_ref>  { /* disabled */ };
 // clang-format on
 
-template <>
+template<>
 struct variant_traits<variant>
 {
 
@@ -158,7 +158,7 @@ struct variant_traits<variant>
 
 // ---------------------------------------------------------------------------
 /// helper to convert compatible types (implementation artefact)
-template <typename T, typename U>
+template<typename T, typename U>
 struct variant_traits_convert
 {
   typedef T type;
@@ -195,7 +195,7 @@ template struct variant_traits<std::string>;
 // (without range checks for now)
 
 #define VARIANT_TRAITS_DERIVED_(UnderlyingType, SpecializedType)               \
-  template <>                                                                  \
+  template<>                                                                   \
   struct variant_traits<SpecializedType>                                       \
     : variant_traits_convert<SpecializedType, UnderlyingType>                  \
   {                                                                            \
@@ -215,7 +215,7 @@ VARIANT_TRAITS_DERIVED_(double, float);
 // ----------------------------------------------------------------------------
 // C++ string literals
 
-template <int N>
+template<int N>
 struct variant_traits<char[N]>
 {
   typedef char type[N]; ///< common type alias
@@ -243,7 +243,7 @@ struct variant_traits<char[N]>
 // ----------------------------------------------------------------------------
 // C++ arrays
 
-template <typename T, int N>
+template<typename T, int N>
 struct variant_traits<T[N]>
 {
   typedef T type[N]; ///< common type alias
@@ -274,7 +274,7 @@ struct variant_traits<T[N]>
 // ----------------------------------------------------------------------------
 // std::pair<T1, T2>
 
-template <typename T1, typename T2>
+template<typename T1, typename T2>
 struct variant_traits<std::pair<T1, T2>>
 {
   typedef std::pair<T1, T2> type; ///< common type alias
@@ -306,7 +306,7 @@ struct variant_traits<std::pair<T1, T2>>
 // ----------------------------------------------------------------------------
 // std::vector<T, Alloc>
 
-template <typename T, typename Alloc>
+template<typename T, typename Alloc>
 struct variant_traits<std::vector<T, Alloc>>
 {
   typedef std::vector<T, Alloc> type; ///< common type alias
@@ -350,42 +350,42 @@ template struct variant_traits<sc_dt::sc_unsigned>;
 template struct variant_traits<sc_dt::sc_bv_base>;
 template struct variant_traits<sc_dt::sc_lv_base>;
 
-template <int N>
+template<int N>
 struct variant_traits<sc_dt::sc_int<N>> : variant_traits<sc_dt::sc_int_base>
 {
   typedef sc_dt::sc_int<N> type;
   /// @todo add bounds checks
 };
 
-template <int N>
+template<int N>
 struct variant_traits<sc_dt::sc_uint<N>> : variant_traits<sc_dt::sc_uint_base>
 {
   typedef sc_dt::sc_uint<N> type;
   /// @todo add bounds checks
 };
 
-template <int N>
+template<int N>
 struct variant_traits<sc_dt::sc_bigint<N>> : variant_traits<sc_dt::sc_signed>
 {
   typedef sc_dt::sc_bigint<N> type;
   /// @todo add bounds checks
 };
 
-template <int N>
+template<int N>
 struct variant_traits<sc_dt::sc_biguint<N>> : variant_traits<sc_dt::sc_unsigned>
 {
   typedef sc_dt::sc_biguint<N> type;
   /// @todo add bounds checks
 };
 
-template <int N>
+template<int N>
 struct variant_traits<sc_dt::sc_bv<N>> : variant_traits<sc_dt::sc_bv_base>
 {
   typedef sc_dt::sc_bv<N> type;
   /// @todo add bounds checks
 };
 
-template <int N>
+template<int N>
 struct variant_traits<sc_dt::sc_lv<N>> : variant_traits<sc_dt::sc_lv_base>
 {
   typedef sc_dt::sc_lv<N> type;
@@ -395,7 +395,7 @@ struct variant_traits<sc_dt::sc_lv<N>> : variant_traits<sc_dt::sc_lv_base>
 // ----------------------------------------------------------------------------
 // Timed-Value Stream types
 
-template <typename T>
+template<typename T>
 struct variant_traits<tracing::timed_value<T>>
 {
   typedef tracing::timed_value<T> type;
@@ -438,14 +438,14 @@ template struct variant_traits<sc_dt::sc_fix>;
 template struct variant_traits<sc_dt::sc_ufix>;
 template struct variant_traits<sc_dt::sc_fixed_fast>;
 
-template <int W, int I, sc_dt::sc_q_mode, sc_dt::sc_o_mode O, int N>
+template<int W, int I, sc_dt::sc_q_mode, sc_dt::sc_o_mode O, int N>
 struct variant_traits<sc_dt::sc_fixed<W, I, Q, O, N>> : variant_traits<sc_fix>
 {
   typedef sc_dt::sc_fixed<W, I, Q, O, N> type;
   /// @todo add bounds checks
 };
 
-template <int W, int I, sc_dt::sc_q_mode, sc_dt::sc_o_mode O, int N>
+template<int W, int I, sc_dt::sc_q_mode, sc_dt::sc_o_mode O, int N>
 struct variant_traits<sc_dt::sc_ufixed<W, I, Q, O, N>> : variant_traits<sc_ufix>
 {
   typedef sc_dt::sc_ufixed<W, I, Q, O, N> type;

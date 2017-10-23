@@ -37,8 +37,7 @@ namespace tracing {
 
 timed_base::timed_base()
   : time_()
-{
-}
+{}
 
 void
 timed_base::commit()
@@ -117,8 +116,7 @@ timed_base::sync_current_scope()
 
 named_object::named_object(const char* name)
   : name_(name)
-{
-}
+{}
 
 const char*
 named_object::name() const
