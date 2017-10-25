@@ -108,6 +108,11 @@ if get_option('enable_tests')
   subdir('tests')
 endif
 
+
+libtvs_dep = declare_dependency(link_with: tracing_lib,
+                                include_directories: proj_includes,
+                                dependencies: proj_deps)
+
 # Generate pkg-config file for this library
 pkg = import('pkgconfig')
 pkg.generate(name: 'tvs',
@@ -115,7 +120,6 @@ pkg.generate(name: 'tvs',
              libraries : tracing_lib,
              version : meson.project_version(),
              libraries_private: '-lsystemc')
-
 
 if get_option('enable_docs')
   doxygen = find_program('doxygen', required: false)
