@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-#ifndef UNIQUE_PTR_H_INCLUDED_
-#define UNIQUE_PTR_H_INCLUDED_
+#ifndef TVS_UNIQUE_PTR_H_INCLUDED_
+#define TVS_UNIQUE_PTR_H_INCLUDED_
 
 #include "tvs/utils/cppver.h"
 
@@ -41,7 +41,6 @@ make_unique(Args&&... args)
 #endif // TVS_CPLUSPLUS
 
 } // namespace detail
-
 } // namespace tracing
 
-#endif // UNIQUE_PTR_H_INCLUDED_
+#endif // TVS_UNIQUE_PTR_H_INCLUDED_
