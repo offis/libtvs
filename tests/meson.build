@@ -25,6 +25,8 @@ if not gtest.found()
                              dependencies : dependency('threads'))
 endif
 
+test_deps = [ gtest, libtvs_dep ]
+
 
 tests = [
   ['State Semantics',         'state',         'tv_streams_state_semantics.cpp'],
@@ -34,17 +36,11 @@ tests = [
   ['VCD Testbench',           'vcd_testbench', 'stream_processing_test/main.cpp'],
   ]
 
-incs = include_directories('../src')
-deps = [ gtest, systemc_dep ]
 
 extra_srcs = 'common/gtest_scmain.cpp'
 
 foreach test : tests
-  test(test[0],
-       executable(test[1], test[2], extra_srcs,
-                  include_directories: incs,
-                  link_with: tracing_lib,
-                  dependencies: deps))
+  test(test[0], executable(test[1], test[2], extra_srcs, dependencies: test_deps))
 endforeach
 
 

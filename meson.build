@@ -23,54 +23,45 @@ project('Timed-Value Streams', 'cpp',
 tvs_incdir  = get_option('includedir')
 tvs_datadir = get_option('datadir')
 
-cpp_vercheck = '''
-#include "tvs/utils/cppver.h"
 
+
+project_deps  = []
+project_deps += dependency('boost', version: '>=1.51')
+
+project_incs = include_directories('src')
+
+stdcheck_code = '''
+#include "tvs/utils/cppver.h"
 #if TVS_CPLUSPLUS < 201103L
 #  error "Need at least C++11 support"
 #endif
 '''
 
-if not meson.get_compiler('cpp').compiles(cpp_vercheck, name : 'c++11 (or higher)',
-                                          include_directories: include_directories('src'))
+if not meson.get_compiler('cpp').compiles(stdcheck_code, name : 'c++11 (or higher)',
+                                          include_directories: project_incs)
   error('Need a compiler with C++11 (or higher) support.')
 endif
 
-
-proj_deps = []
-
 sc_version_required = '2.3.1'
 
-# Check using pkg-config
-systemc_dep = dependency('systemc',
-                          version: '>= @0@'.format(sc_version_required),
-                          required: false)
+sc_libdir     = get_option('sc_libdir')
+sc_includedir = get_option('sc_includedir')
 
-# fall back to SystemC given via sc_includedir and sc_libdir options
-if not systemc_dep.found()
-
-  sc_includedir = include_directories(get_option('sc_includedir'), is_system: true)
+# Check if SystemC path was given manually before trying pkg-config
+if sc_libdir != '' or sc_includedir != ''
   cc = meson.get_compiler('cpp')
+
+  sc_includedir = include_directories(sc_includedir, is_system: true)
   if not cc.has_header('systemc', include_directories: sc_includedir)
-    error('SystemC headers not found at sc_includedir')
+    error('SystemC headers not found at @1@'.format())
   endif
 
-  sc_libdir = get_option('sc_libdir')
-  if sc_libdir.strip() != ''
-    sc_lib = cc.find_library('systemc', dirs: sc_libdir)
-    if not sc_lib.found()
-      error('SystemC library not found at sc_libdir')
-    endif
-  else
-    error('Cannot find SystemC library in the default path, please specify sc_libdir.')
+  sc_lib = cc.find_library('systemc', dirs: sc_libdir)
+  if not sc_lib.found()
+    error('SystemC library not found')
   endif
 
-  systemc_dep = declare_dependency(dependencies: sc_lib,
-                                    include_directories: sc_includedir)
-
-  # Manually check the SystemC version
-  sc_ver = sc_version_required.split('.')
-  if not cc.compiles('''
+  sc_vercheck_code = '''
 #include <systemc>
 #define _MAKE_VERSION(x,y,z) (((x)*1000000) + ((y)*1000) + (z))
 #if defined(IEEE_1666_SYSTEMC) && IEEE_1666_SYSTEMC >= 201101L
@@ -91,35 +82,50 @@ if not systemc_dep.found()
 #if __SCVER < _MAKE_VERSION(@0@, @1@, @2@)
 # error "SystemC version check failed."
 #endif
-'''.format(sc_ver[0], sc_ver[1], sc_ver[2]), dependencies: sc_lib, include_directories: sc_includedir)
-    error('Cannot find SystemC >= @0@ at @1@'.format(sc_version_required, sc_libdir))
+
+int sc_main(int argc, char* argv[]) { return 0; }
+'''
+
+  sc_ver = sc_version_required.split('.')
+  if not cc.links(sc_vercheck_code.format(sc_ver[0], sc_ver[1], sc_ver[2]),
+                  dependencies: sc_lib, include_directories: sc_includedir)
+    error('Cannot link against SystemC >= @0@ at @1@'.format(sc_version_required,
+                                                     sc_libdir))
   endif
+
+  systemc_dep = declare_dependency(dependencies: sc_lib,
+                                   include_directories: sc_includedir)
+  message('Using manually specified SystemC at @0@'.format(sc_libdir))
+else
+  # Check using pkg-config
+  systemc_dep = dependency('systemc',
+                           version: '>= @0@'.format(sc_version_required))
+  message('SystemC @0@ found using pkg-config'.format(systemc_dep.version()))
 endif
 
-proj_deps += systemc_dep
+project_deps += systemc_dep
 
-proj_deps += dependency('boost', version: '>=1.51')
-
-proj_includes = include_directories('src')
-
+# the library tracing_lib is defined in this subdirectory
 subdir('src/tvs')
+
+# This variable can be queried by parent projects to use the library as a
+# dependency
+libtvs_dep = declare_dependency(link_with: tracing_lib,
+                                include_directories: project_incs,
+                                dependencies: project_deps)
+
+pkg = import('pkgconfig')
+pkg.generate(name: 'tvs',
+             description: meson.project_name(),
+             url: 'http://www.github.com/offis/libtvs',
+             libraries : tracing_lib,
+             version : meson.project_version(),
+             requires_private: 'systemc >= @0@'.format(sc_version_required))
+
 
 if get_option('enable_tests')
   subdir('tests')
 endif
-
-
-libtvs_dep = declare_dependency(link_with: tracing_lib,
-                                include_directories: proj_includes,
-                                dependencies: proj_deps)
-
-# Generate pkg-config file for this library
-pkg = import('pkgconfig')
-pkg.generate(name: 'tvs',
-             description: meson.project_name(),
-             libraries : tracing_lib,
-             version : meson.project_version(),
-             libraries_private: '-lsystemc')
 
 if get_option('enable_docs')
   doxygen = find_program('doxygen', required: false)

@@ -16,15 +16,6 @@
 
 subdir('extern')
 
-internal_deps = []
-
-units_sources = files(
-  'units/common_impl.cpp',
-  )
-
-internal_deps += declare_dependency(include_directories: proj_includes,
-                                    sources: units_sources)
-
 units_headers = files(
   'units/common.h',
   'units/sc_time.h',
@@ -33,20 +24,7 @@ units_headers = files(
   'units/common_impl.tpp',
   )
 
-install_headers(units_headers, subdir : 'tvs/units')
-
-
-utils_sources = files(
-  'utils/report/message.cpp',
-  'utils/report/report_base.cpp',
-  'utils/variant.cpp',
-  'utils/variant_traits.cpp',
-  )
-
-internal_deps += declare_dependency(include_directories: proj_includes,
-                                    sources: utils_sources)
-
-utils_headers =  files(
+utils_headers = files(
   'utils/assert.h',
   'utils/boost.h',
   'utils/cppver.h',
@@ -62,30 +40,12 @@ utils_headers =  files(
   'utils/variant_traits.h',
   )
 
-install_headers(utils_headers, subdir : 'tvs/utils')
-
-
 report_headers = files(
   'utils/report/macros_def.h',
   'utils/report/macros_undef.h',
   'utils/report/report_base.h',
   'utils/report/report_msgs.h',
   'utils/report/message.h',
-  )
-
-install_headers(report_headers, subdir : 'tvs/utils/report')
-
-
-tracing_sources = files(
-  'tracing/object_host.cpp',
-  'tracing/timed_duration.cpp',
-  'tracing/timed_object.cpp',
-  'tracing/timed_reader_base.cpp',
-  'tracing/timed_stream_base.cpp',
-  'tracing/timed_writer_base.cpp',
-  'tracing/processors/timed_stream_processor_base.cpp',
-  'tracing/processors/timed_stream_vcd_processor.cpp',
-  'tracing/processors/timed_stream_print_processor.cpp',
   )
 
 tracing_headers = files(
@@ -109,23 +69,41 @@ tracing_headers = files(
   'tracing/timed_writer.h',
   )
 
-install_headers(tracing_headers, subdir : 'tvs/tracing')
-
 processor_headers = files(
-    'tracing/processors/timed_stream_processor_base.h',
-    'tracing/processors/timed_stream_processor_binop.h',
-    'tracing/processors/timed_stream_vcd_processor.h',
-    'tracing/processors/timed_stream_print_processor.h',
-)
+  'tracing/processors/timed_stream_processor_base.h',
+  'tracing/processors/timed_stream_processor_binop.h',
+  'tracing/processors/timed_stream_vcd_processor.h',
+  'tracing/processors/timed_stream_print_processor.h',
+  )
 
+install_headers('tracing.h',       subdir : 'tvs')
+install_headers(units_headers,     subdir : 'tvs/units')
+install_headers(utils_headers,     subdir : 'tvs/utils')
+install_headers(report_headers,    subdir : 'tvs/utils/report')
+install_headers(tracing_headers,   subdir : 'tvs/tracing')
 install_headers(processor_headers, subdir : 'tvs/tracing/processors')
 
-install_headers('tracing.h',     subdir : 'tvs')
+library_sources = files(
+    'units/common_impl.cpp',
 
+    'utils/report/message.cpp',
+    'utils/report/report_base.cpp',
+    'utils/variant.cpp',
+    'utils/variant_traits.cpp',
 
-tracing_lib = library('tvs', tracing_sources,
-                      dependencies : [proj_deps, internal_deps],
-                      include_directories : proj_includes,
+    'tracing/object_host.cpp',
+    'tracing/timed_duration.cpp',
+    'tracing/timed_object.cpp',
+    'tracing/timed_reader_base.cpp',
+    'tracing/timed_stream_base.cpp',
+    'tracing/timed_writer_base.cpp',
+    'tracing/processors/timed_stream_processor_base.cpp',
+    'tracing/processors/timed_stream_vcd_processor.cpp',
+    'tracing/processors/timed_stream_print_processor.cpp',
+)
+
+tracing_lib = library('tvs', library_sources,
+                      dependencies : project_deps,
+                      include_directories : project_incs,
                       install : true,
                       version : meson.project_version())
-
