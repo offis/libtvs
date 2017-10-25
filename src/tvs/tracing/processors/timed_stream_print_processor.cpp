@@ -20,40 +20,34 @@
  * \brief  generic timed-value stream print processor class implementation
  */
 
-#ifndef TVS_TIMED_STREAM_PRINT_PROCESSOR_H
-#define TVS_TIMED_STREAM_PRINT_PROCESSOR_H
-
-#include "tvs/tracing/processors/timed_stream_processor_base.h"
+#include "tvs/tracing/processors/timed_stream_print_processor.h"
 
 #include "tvs/tracing/timed_duration.h"
 
-#include <ostream>
-
 namespace tracing {
 
-struct timed_value_base;
+timed_stream_print_processor::timed_stream_print_processor(char const* name,
+                                                           std::ostream& out)
+  : base_type(name)
+  , output_(out)
+{}
 
-/**
- * \brief Simple stream sink for printing values to an output stream.
- */
-struct timed_stream_print_processor : timed_stream_processor_base
+timed_stream_print_processor::~timed_stream_print_processor() {}
+
+timed_stream_print_processor::duration_type
+timed_stream_print_processor::process(duration_type dur)
 {
-  using this_type = timed_stream_print_processor;
-  using base_type = timed_stream_processor_base;
+  for (auto&& reader : this->inputs()) {
+    while (reader->local_time() <= this->local_time() + dur &&
+           !reader->empty()) {
 
-  timed_stream_print_processor(char const* name, std::ostream& out);
-
-  virtual ~timed_stream_print_processor();
-
-protected:
-  virtual void print_tuple(std::ostream& out, timed_value_base const&) = 0;
-
-  /// Appends all available tokens for the given duration to the buffer.
-  duration_type process(duration_type dur) override;
-
-  std::ostream& output_;
-};
+      output_ << reader->local_time() << ":";
+      print_tuple(output_, reader->front(dur));
+      output_ << std::endl;
+      reader->pop();
+    }
+  }
+  return dur;
+}
 
 } // namespace tracing
-
-#endif /* TVS_TIMED_STREAM_PRINT_PROCESSOR_H */

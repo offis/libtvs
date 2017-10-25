@@ -28,12 +28,11 @@
 #include "tvs/tracing/timed_object.h"
 #include "tvs/tracing/timed_reader_base.h"
 #include "tvs/tracing/timed_stream_base.h"
+#include "tvs/tracing/timed_writer_base.h"
 
 #include "tvs/utils/unique_ptr.h"
 
 namespace tracing {
-
-class timed_writer_base;
 
 template<typename, typename>
 class timed_reader;

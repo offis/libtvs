@@ -85,6 +85,7 @@ tracing_sources = files(
   'tracing/timed_writer_base.cpp',
   'tracing/processors/timed_stream_processor_base.cpp',
   'tracing/processors/timed_stream_vcd_processor.cpp',
+  'tracing/processors/timed_stream_print_processor.cpp',
   )
 
 tracing_headers = files(
