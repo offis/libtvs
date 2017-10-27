@@ -83,7 +83,8 @@ if sc_libdir != '' or sc_includedir != ''
 # error "SystemC version check failed."
 #endif
 
-int sc_main(int argc, char* argv[]) { return 0; }
+extern "C" int
+sc_main(int argc, char* argv[]) { return 0; }
 '''
 
   sc_ver = sc_version_required.split('.')
