@@ -40,16 +40,21 @@
 
 #include "tvs/units/time.h"
 
+#include <boost/range/adaptor/transformed.hpp>
+#include <boost/range/algorithm.hpp>
+#include <boost/range/numeric.hpp>
+
 #include <map>
 
 namespace tracing {
 
 /**
- * \brief Stream processor for applying a (commutative & associative) binary
- * operation on all stream inputs and committing the result to the output sink.
+ * \brief Stream processor for applying a binary operation on all stream inputs
+ * and committing the result to the output sink.
  *
  * \tparam T The type of the timed_value
  * \tparam Traits The traits type of the stream
+ * \tparam BinaryOperation the operation, \see std::plus for an example
  *
  */
 template<typename T, typename Traits, typename BinaryOperation>
@@ -62,10 +67,8 @@ struct timed_stream_binop_processor : timed_stream_processor_base
   using writer_type = tracing::timed_writer<T, Traits>;
   using stream_type = tracing::timed_stream<T, Traits>;
 
-  using tuple_type = typename writer_type::tuple_type;
-  using value_type = T;
-
   using binop_type = BinaryOperation;
+  using output_type = typename binop_type::result_type;
 
   timed_stream_binop_processor(char const* name)
     : base_type(name)
@@ -76,7 +79,6 @@ struct timed_stream_binop_processor : timed_stream_processor_base
 
   void in(char const* stream)
   {
-    using stream_type = tracing::timed_stream<T, Traits>;
     auto str = dynamic_cast<stream_type*>(timed_stream_base::lookup(stream));
     SYSX_ASSERT(str != nullptr);
     this->in(*str);
@@ -84,7 +86,6 @@ struct timed_stream_binop_processor : timed_stream_processor_base
 
   void out(char const* stream)
   {
-    using stream_type = tracing::timed_stream<T, Traits>;
     auto str = dynamic_cast<stream_type*>(timed_stream_base::lookup(stream));
     SYSX_ASSERT(str != nullptr);
     this->out(*str);
@@ -96,22 +97,21 @@ protected:
   /// stream.
   duration_type process(duration_type dur) override
   {
-    value_type result;
-    binop_type op;
-    bool initialized = false;
+    using namespace boost::adaptors;
 
-    for (auto&& reader : this->inputs()) {
-      auto rd = dynamic_cast<reader_type*>(reader.get());
-      if (!initialized) {
-        result = rd->front().value();
-        initialized = true;
-      } else {
-        result = op(result, rd->front().value());
-      }
-      reader->pop();
-    }
+    output_type result{};
 
-    auto&& wr = dynamic_cast<writer_type&>(this->output());
+    result =
+      boost::accumulate(this->inputs() | transformed([](reader_ptr_type& rd) {
+                          auto& reader = static_cast<reader_type&>(*rd);
+                          auto ret = reader.front().value();
+                          reader.pop();
+                          return ret;
+                        }),
+                        result,
+                        binop_type());
+
+    auto& wr = static_cast<writer_type&>(this->output());
 
     wr.push(result, dur);
 
