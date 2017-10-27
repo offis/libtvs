@@ -100,15 +100,15 @@ protected:
   ///
   /// This method is called when the given duration is available on all input
   /// streams.  It should return the consumed time which is then used to advance
-  /// this processors's time via commit().
+  /// this processors's time via commit().  The user is responsible for
+  /// consuming the tuples on the input streams.
   virtual duration_type process(duration_type) = 0;
 
   /// Advance the (distributed) local time of this processor instance.
   ///
   /// This method is called by the timed_base class when synchronising the local
-  /// time via commit().  The default behaviour of this implementation is to pop
-  /// all tuples for the given duration from all input streams and call commit
-  /// on the output stream.
+  /// time via commit().  This default implementation commits the output stream
+  /// for the given duration.
   ///
   /// \param duration the duration which will consumed by the input stream and
   ///                 produced at the output stream
