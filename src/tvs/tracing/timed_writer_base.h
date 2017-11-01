@@ -30,6 +30,8 @@
 
 #include "tvs/tracing/timed_variant.h"
 
+#include <memory>
+
 namespace tracing {
 
 enum writer_mode
@@ -81,7 +83,7 @@ protected:
 
 private:
   stream_type* stream_;
-  stream_type* own_stream_;
+  std::unique_ptr<stream_type> own_stream_;
 };
 
 } // namespace tracing

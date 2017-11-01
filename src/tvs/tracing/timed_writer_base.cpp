@@ -39,7 +39,6 @@ timed_writer_base::timed_writer_base(stream_type* own_stream)
 timed_writer_base::~timed_writer_base()
 {
   detach();
-  delete own_stream_;
 }
 
 /* ---------------------------- attach/detach -------------------------- */
@@ -48,6 +47,7 @@ void
 timed_writer_base::attach(const char* name)
 {
   auto str = lookup(name);
+  SYSX_ASSERT(str != nullptr);
   this->attach(*str);
 }
 
