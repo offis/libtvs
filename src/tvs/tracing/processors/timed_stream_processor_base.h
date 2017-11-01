@@ -73,19 +73,19 @@ struct timed_stream_processor_base
 
   /// Add an input stream of a writer to this processor.
   template<typename T, typename Policy>
-  void in(tracing::timed_writer<T, Policy>& writer);
+  void in(timed_writer<T, Policy>&);
 
   /// Add an input stream to this processor.
   template<typename T, typename Policy>
-  void in(tracing::timed_stream<T, Policy>& stream);
+  void in(timed_stream<T, Policy>&);
 
   /// Add an output stream of a reader to this processor.
   template<typename T, typename Policy>
-  void out(tracing::timed_reader<T, Policy>& reader);
+  void out(timed_reader<T, Policy>&);
 
   /// Add an output stream to this processor.
   template<typename T, typename Policy>
-  void out(tracing::timed_stream<T, Policy>& stream);
+  void out(timed_stream<T, Policy>&);
 
 protected:
   timed_stream_processor_base(const char*);
@@ -131,7 +131,9 @@ template<typename T, typename Policy>
 void
 timed_stream_processor_base::in(tracing::timed_writer<T, Policy>& writer)
 {
-  using stream_type = tracing::timed_stream<T, Policy>;
+  using stream_type =
+    typename std::remove_reference<decltype(writer)>::type::stream_type;
+
   auto stream = dynamic_cast<stream_type*>(&writer.stream());
   SYSX_ASSERT(stream != nullptr);
   this->in(*stream);
@@ -141,7 +143,8 @@ template<typename T, typename Policy>
 void
 timed_stream_processor_base::in(tracing::timed_stream<T, Policy>& stream)
 {
-  using reader_type = tracing::timed_reader<T, Policy>;
+  using reader_type =
+    typename std::remove_reference<decltype(stream)>::type::reader_type;
 
   std::stringstream name;
   name << stream.basename() << "_in";
@@ -154,7 +157,9 @@ template<typename T, typename Policy>
 void
 timed_stream_processor_base::out(tracing::timed_reader<T, Policy>& reader)
 {
-  using stream_type = tracing::timed_stream<T, Policy>;
+  using stream_type =
+    typename std::remove_reference<decltype(reader)>::type::stream_type;
+
   auto stream = dynamic_cast<stream_type*>(&reader.stream());
   SYSX_ASSERT(stream != nullptr);
   this->out(*stream);
@@ -164,7 +169,8 @@ template<typename T, typename Policy>
 void
 timed_stream_processor_base::out(tracing::timed_stream<T, Policy>& stream)
 {
-  using writer_type = tracing::timed_writer<T, Policy>;
+  using writer_type =
+    typename std::remove_reference<decltype(stream)>::type::writer_type;
   this->do_add_output(detail::make_unique<writer_type>(stream));
 }
 
