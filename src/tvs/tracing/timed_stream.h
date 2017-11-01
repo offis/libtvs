@@ -66,7 +66,7 @@ public:
 
   typedef timed_sequence<T, Traits> sequence_type;
 
-  explicit timed_stream(const char* nm = base_type::default_name())
+  explicit timed_stream(const char* nm = "timed_stream")
     : base_type(nm)
   {}
 

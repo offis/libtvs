@@ -62,7 +62,7 @@ public:
     , stream_()
   {
     base_type::attach(nm);
-    stream_ = &static_cast<stream_type&>(base_type::stream());
+    stream_ = static_cast<stream_type*>(&base_type::stream());
   }
 
   //! push interface

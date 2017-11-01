@@ -54,11 +54,9 @@ public:
   virtual duration_type duration() const = 0;
 
 protected:
-  explicit timed_stream_base(const char* nm = default_name());
+  explicit timed_stream_base(const char* nm);
 
   duration_type do_commit(duration_type until);
-
-  static const char* default_name();
 
 private:
   virtual bool do_type_check(timed_reader_base const& r) const = 0;

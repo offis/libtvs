@@ -34,12 +34,6 @@ namespace tracing {
 
 /* ------------------------- timed_stream_base ------------------------- */
 
-const char*
-timed_stream_base::default_name()
-{
-  return "timed_stream";
-}
-
 timed_stream_base::timed_stream_base(const char* nm)
   : timed_object(nm)
   , writer_()
