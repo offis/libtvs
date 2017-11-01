@@ -54,14 +54,16 @@ timed_stream_processor_base::notify(reader_base_type&)
     return lhs->available_duration() < rhs->available_duration();
   };
 
-  if (std::all_of(inputs_.cbegin(), inputs_.cend(), availp)) {
+  const auto begin = inputs_.cbegin();
+  const auto end = inputs_.cend();
+
+  while (std::all_of(begin, end, availp)) {
 
     // update this output stream by advancing for the minimum duration available
     // across all input streams
-    auto const stream =
-      std::min_element(inputs_.cbegin(), inputs_.cend(), duration_cmp);
+    auto const stream = std::min_element(begin, end, duration_cmp);
 
-    SYSX_ASSERT(stream != inputs_.cend());
+    SYSX_ASSERT(stream != end);
 
     auto duration = (*stream)->available_duration();
 
