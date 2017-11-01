@@ -57,7 +57,7 @@ struct test_printer : public tracing::timed_stream_print_processor
 
   void in(char const* stream)
   {
-    auto str = dynamic_cast<stream_type*>(stream_type::lookup(stream));
+    auto str = dynamic_cast<stream_type*>(lookup(stream));
     SYSX_ASSERT(str != nullptr);
     this->in(*str);
   }

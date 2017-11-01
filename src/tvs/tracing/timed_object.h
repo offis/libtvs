@@ -35,7 +35,7 @@ namespace tracing {
   ::tracing::object_host::sync_with_model(                                     \
     ::tracing::timed_base::sync_current_scope())
 
-class timed_base : protected object_host
+class timed_base : public object_host
 {
 public:
   typedef tracing::time_type time_type;

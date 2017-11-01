@@ -47,23 +47,7 @@ timed_writer_base::~timed_writer_base()
 void
 timed_writer_base::attach(const char* name)
 {
-  timed_stream_base* str = timed_stream_base::lookup(name);
-  if (!str) {
-    sc_core::sc_object* scope = sc_core::sc_get_current_object();
-    if (scope) {
-      std::stringstream lname;
-      lname << scope->name() << sc_core::SC_HIERARCHY_CHAR << name;
-      str = timed_stream_base::lookup(lname.str().c_str());
-    }
-
-    if (!str) {
-      SYSX_REPORT_ERROR(report::stream_lookup) % name
-        << "object not found "
-        << "(scope: " << (scope ? scope->name() : "<top>") << ")";
-      return;
-    }
-  }
-
+  auto str = lookup(name);
   this->attach(*str);
 }
 

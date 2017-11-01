@@ -43,6 +43,10 @@ struct object_host
   /// Synchronise with the simulation/implementation model time and the
   /// configured sync function.
   static void sync_with_model(time_type until);
+
+  static const char* gen_unique_name(const char* name);
+
+  static timed_stream_base* lookup(const char* name);
 };
 
 /// Register a synchronisation function to be called for synchronising the

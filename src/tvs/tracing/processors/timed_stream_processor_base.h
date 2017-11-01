@@ -150,7 +150,7 @@ timed_stream_processor_base::in(tracing::timed_stream<T, Policy>& stream)
   name << stream.basename() << "_in";
 
   this->do_add_input(detail::make_unique<reader_type>(
-    stream_base_type::gen_unique_name(name.str().c_str()), stream));
+    gen_unique_name(name.str().c_str()), stream));
 }
 
 template<typename T, typename Policy>

@@ -26,6 +26,8 @@
 
 #include "tvs/utils/systemc.h"
 
+#include "report_msgs.h"
+
 #include <functional>
 
 namespace tracing {
@@ -82,6 +84,46 @@ object_host::for_each_stream_in_scope(object_host::cb_type func)
         break;
     }
   }
+}
+
+const char*
+object_host::gen_unique_name(const char* name)
+{
+#ifdef SYSX_NO_SYSTEMC
+  // TODO: implement for non-SystemC
+  return name;
+#else
+  return sc_core::sc_gen_unique_name(name);
+#endif // SYSX_NO_SYSTEMC
+}
+
+tracing::timed_stream_base*
+object_host::lookup(const char* name)
+{
+#ifdef SYSX_NO_SYSTEMC
+  SYSX_REPORT_FATAL(report::not_implemented);
+  return nullptr;
+#else
+  auto str = dynamic_cast<timed_stream_base*>(sc_core::sc_find_object(name));
+
+  if (!str) {
+    auto scope = sc_core::sc_get_current_object();
+    if (scope) {
+      std::stringstream lname;
+      lname << scope->name() << sc_core::SC_HIERARCHY_CHAR << name;
+      str = object_host::lookup(lname.str().c_str());
+    }
+
+    if (!str) {
+      SYSX_REPORT_ERROR(report::stream_lookup) % name
+        << "object not found "
+        << "(scope: " << (scope ? scope->name() : "<top>") << ")";
+      return nullptr;
+    }
+  }
+
+  return str;
+#endif // SYSX_NO_SYSTEMC
 }
 
 } // namespace tracing

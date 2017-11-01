@@ -79,14 +79,14 @@ struct timed_stream_binop_processor : timed_stream_processor_base
 
   void in(char const* stream)
   {
-    auto str = dynamic_cast<stream_type*>(timed_stream_base::lookup(stream));
+    auto str = dynamic_cast<stream_type*>(lookup(stream));
     SYSX_ASSERT(str != nullptr);
     this->in(*str);
   }
 
   void out(char const* stream)
   {
-    auto str = dynamic_cast<stream_type*>(timed_stream_base::lookup(stream));
+    auto str = dynamic_cast<stream_type*>(lookup(stream));
     SYSX_ASSERT(str != nullptr);
     this->out(*str);
   }
