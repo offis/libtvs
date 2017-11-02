@@ -256,3 +256,17 @@ TEST_F(StreamStateSemantics, PushZeroTimeAtEnd2)
                           "1 s:(4713,1 s)\n"
                           );
 }
+
+
+TEST_F(StreamStateSemantics, CheckFrontSplit)
+{
+  writer.push(0, dur*2);
+  writer.push(4711, zero_time);
+  writer.push(0, dur*122);
+  writer.commit();
+
+  auto result = reader.front(dur);
+
+  EXPECT_EQ(result.duration(), dur);
+
+}

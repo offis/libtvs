@@ -216,8 +216,11 @@ const_timed_range<T, Traits>::const_timed_range(sequence_type& owner,
     duration_ += d;
   }
 
-  while (end_ != owner.end() && end_->duration().is_delta())
-    end_++;
+  // catch all zero-time events at the edge of the range
+  if (duration_ == until - offset_) {
+    while (end_ != owner.end() && end_->duration().is_delta())
+      end_++;
+  }
 }
 
 template<typename T, typename Traits>
