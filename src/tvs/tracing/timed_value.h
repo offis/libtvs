@@ -137,6 +137,11 @@ private:
     return lhs.value() == rhs.value() && lhs.duration() == rhs.duration();
   }
 
+  friend bool operator!=(this_type const& lhs, this_type const& rhs)
+  {
+    return !(lhs == rhs);
+  }
+
   value_type val_;
 };
 
