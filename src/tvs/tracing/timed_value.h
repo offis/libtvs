@@ -124,6 +124,7 @@ struct timed_value : public timed_value_base
   /// print tuple to stream
   void print(std::ostream& = std::cout) const;
 
+private:
   /// print tuple to stream
   friend std::ostream& operator<<(std::ostream& os, this_type const& tv)
   {
@@ -131,7 +132,11 @@ struct timed_value : public timed_value_base
     return os;
   }
 
-private:
+  friend bool operator==(this_type const& lhs, this_type const& rhs)
+  {
+    return lhs.value() == rhs.value() && lhs.duration() == rhs.duration();
+  }
+
   value_type val_;
 };
 
