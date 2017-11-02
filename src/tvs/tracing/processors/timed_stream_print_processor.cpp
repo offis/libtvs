@@ -38,14 +38,10 @@ timed_stream_print_processor::duration_type
 timed_stream_print_processor::process(duration_type dur)
 {
   for (auto&& reader : this->inputs()) {
-    while (reader->local_time() <= this->local_time() + dur &&
-           !reader->empty()) {
-
-      output_ << reader->local_time() << ":";
-      print_tuple(output_, reader->front(dur));
-      output_ << std::endl;
-      reader->pop();
-    }
+    output_ << reader->local_time() << ":";
+    print_tuple(output_, reader->front(dur));
+    output_ << std::endl;
+    reader->pop();
   }
   return dur;
 }

@@ -151,17 +151,13 @@ timed_stream_vcd_processor::process(duration_type dur)
     char stream_id = pimpl_->reader_id(reader.get());
 
     // consume everything (including zero-time tuples) using timed_variant
-    duration_type consumed;
-    while (consumed < dur ||
-           reader->front_duration() == duration_type::zero_time) {
-      auto tuple = reader->front_variant(dur);
-      std::stringstream val_rep;
-      val_rep << tuple.value() << stream_id;
-      value_sequence.insert(
-        std::make_pair(this->local_time() + consumed, val_rep.str()));
-      consumed += tuple.duration();
-      reader->pop();
-    }
+    auto tuple = reader->front_variant(dur);
+
+    std::stringstream val_rep;
+    val_rep << tuple.value() << stream_id;
+    value_sequence.insert(
+      std::make_pair(this->local_time() + tuple.duration(), val_rep.str()));
+    reader->pop();
   }
 
   // now print the multimap (sorted by time) and update the time stamp in the

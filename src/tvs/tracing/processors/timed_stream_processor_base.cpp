@@ -47,29 +47,28 @@ timed_stream_processor_base::output()
 void
 timed_stream_processor_base::notify(reader_base_type&)
 {
-  const auto availp = [](reader_ptr_type const& r) { return r->available(); };
+  const auto availp = [](auto const& r) { return r->available(); };
 
-  const auto duration_cmp = [](reader_ptr_type const& lhs,
-                               reader_ptr_type const& rhs) {
-    return lhs->available_duration() < rhs->available_duration();
+  const auto duration_cmp = [](auto const& lhs, auto const& rhs) {
+    return lhs->front_duration() < rhs->front_duration();
   };
 
   const auto begin = inputs_.cbegin();
   const auto end = inputs_.cend();
 
+  duration_type consumed;
   while (std::all_of(begin, end, availp)) {
 
-    // update this output stream by advancing for the minimum duration available
-    // across all input streams
-    auto const stream = std::min_element(begin, end, duration_cmp);
+    // determine minimum front value duration on each run
+    auto const& stream = std::min_element(begin, end, duration_cmp);
+    auto duration = (*stream)->front_duration();
 
-    SYSX_ASSERT(stream != end);
-
-    auto duration = (*stream)->available_duration();
-
-    // update this stream processor's local time after processing
-    commit(process(duration));
+    // let the user process all readers with the minimum front duration
+    consumed += process(duration);
   }
+
+  // update this stream processor's local time after processing
+  commit(consumed);
 }
 
 timed_stream_processor_base::duration_type

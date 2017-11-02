@@ -101,19 +101,20 @@ protected:
 
     output_type result{};
 
-    result =
-      boost::accumulate(this->inputs() | transformed([](reader_ptr_type& rd) {
-                          auto& reader = static_cast<reader_type&>(*rd);
-                          auto ret = reader.front().value();
-                          reader.pop();
-                          return ret;
-                        }),
-                        result,
-                        binop_type());
+    result = boost::accumulate(this->inputs() | transformed([&dur](auto& rd) {
+                                 auto& reader = static_cast<reader_type&>(*rd);
+                                 return reader.front(dur);
+                               }),
+                               result,
+                               binop_type());
 
     auto& wr = static_cast<writer_type&>(this->output());
 
     wr.push(result, dur);
+
+    for (auto&& i : this->inputs()) {
+      i->pop();
+    }
 
     return dur;
   }
