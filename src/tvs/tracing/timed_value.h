@@ -83,7 +83,7 @@ struct timed_value : public timed_value_base
 {
   typedef T value_type;
   typedef timed_value_base base_type;
-  typedef timed_value this_type;
+  typedef timed_value<T> this_type;
 
   using base_type::duration_type;
   using base_type::time_type;
@@ -125,7 +125,7 @@ struct timed_value : public timed_value_base
   void print(std::ostream& = std::cout) const;
 
   /// print tuple to stream
-  friend std::ostream& operator<<(std::ostream& os, timed_value const& tv)
+  friend std::ostream& operator<<(std::ostream& os, this_type const& tv)
   {
     tv.print(os);
     return os;
