@@ -72,18 +72,20 @@ public:
     : val_(vd)
   {}
 
+#ifdef SYSX_HAVE_SYSTEMC_
   explicit timed_duration(units_type const& ud)
     : val_(sysx::units::sc_time_cast<units_type>(ud))
   {}
-
-  operator value_type const&() const { return value(); }
-
-  value_type const& value() const { return val_; }
 
   operator units_type() const
   {
     return sysx::units::sc_time_cast<units_type>(val_);
   }
+#endif
+
+  operator value_type const&() const { return value(); }
+
+  value_type const& value() const { return val_; }
 
   void swap(this_type& that)
   {
@@ -179,7 +181,7 @@ private:
 
 #ifdef SYSX_HAVE_SYSTEMC_
 #define SYSX_TIMED_DURATION_BINOP_UNITS_(Op)                                   \
-  SYSX_TIMED_DURATION_BINOP_OTHER_(Op, ::sysx::units::time_type)
+  SYSX_TIMED_DURATION_BINOP_OTHER_(Op, timed_duration::units_type)
 #else
 #define SYSX_TIMED_DURATION_BINOP_UNITS_(Op) /* empty */
 #endif
@@ -191,7 +193,7 @@ private:
     return d1 Op## = d2;                                                       \
   }                                                                            \
   SYSX_TIMED_DURATION_BINOP_UNITS_(Op)                                         \
-  SYSX_TIMED_DURATION_BINOP_OTHER_(Op, time_type)
+  SYSX_TIMED_DURATION_BINOP_OTHER_(Op, timed_duration::value_type)
 
 SYSX_TIMED_DURATION_BINOP_(+)
 SYSX_TIMED_DURATION_BINOP_(-)
@@ -209,7 +211,7 @@ SYSX_TIMED_DURATION_BINOP_(%)
 
 #ifdef SYSX_HAVE_SYSTEMC_
 #define SYSX_TIMED_DURATION_RELOP_UNITS_(Op)                                   \
-  SYSX_TIMED_DURATION_RELOP_OTHER_(Op, ::sysx::units::time_type)
+  SYSX_TIMED_DURATION_RELOP_OTHER_(Op, timed_duration::units_type)
 #else
 #define SYSX_TIMED_DURATION_RELOP_UNITS_(Op) /* empty */
 #endif
