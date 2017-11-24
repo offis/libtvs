@@ -28,6 +28,8 @@
 #include "tvs/tracing/timed_duration.h"
 #include "tvs/tracing/timed_object.h"
 
+#include <vector>
+
 namespace tracing {
 
 // forward declarations
@@ -38,7 +40,7 @@ class timed_writer_base;
 class timed_stream_base : public timed_object
 {
 public:
-  typedef sc_core::sc_time time_type;
+  typedef tracing::time_type time_type;
   typedef timed_duration duration_type;
 
   virtual ~timed_stream_base();

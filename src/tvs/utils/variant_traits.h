@@ -340,6 +340,8 @@ struct variant_traits<std::vector<T, Alloc>>
 // ----------------------------------------------------------------------------
 // SystemC builtin types
 
+#if !defined(SYSX_NO_SYSTEMC)
+
 // default instantiations (in variant_traits.cpp)
 template struct variant_traits<sc_core::sc_time>;
 template struct variant_traits<sc_dt::sc_logic>;
@@ -392,6 +394,8 @@ struct variant_traits<sc_dt::sc_lv<N>> : variant_traits<sc_dt::sc_lv_base>
   /// @todo add bounds checks
 };
 
+#endif // SYSX_NO_SYSTEMC
+
 // ----------------------------------------------------------------------------
 // Timed-Value Stream types
 
@@ -418,13 +422,12 @@ struct variant_traits<tracing::timed_value<T>>
   }
 };
 
-// timed_duration derived from sc_time
-VARIANT_TRAITS_DERIVED_(sc_core::sc_time, tracing::timed_duration);
-
 } /* namespace utils */
 } /* namespace sysx */
 
 #endif // SYSX_UTILS_VARIANT_TRAITS_H_INCLUDED_
+
+#if !defined(SYSX_NO_SYSTEMC)
 
 ///@todo add support for SystemC fixpoint types
 #if defined(SC_INCLUDE_FX) && !defined(SYSX_UTILS_VARIANT_TRAITS_H_INCLUDED_FX_)
@@ -455,6 +458,8 @@ struct variant_traits<sc_dt::sc_ufixed<W, I, Q, O, N>> : variant_traits<sc_ufix>
 } /* namespace utils */
 } /* namespace sysx */
 #endif // SC_INCLUDE_FX && ! SYSX_UTILS_VARIANT_TRAITS_H_INCLUDED_FX_
+
+#endif // SYSX_NO_SYSTEMC
 
 #ifdef VARIANT_TRAITS_DERIVED_
 #undef VARIANT_TRAITS_DERIVED_

@@ -68,7 +68,7 @@ timed_base::timed_base()
 void
 timed_base::commit()
 {
-  time_ += do_commit(timed_duration::zero_time);
+  time_ += time_type(do_commit(timed_duration::zero_time));
 }
 
 void
@@ -85,7 +85,7 @@ timed_base::commit(time_type const& until)
 void
 timed_base::commit(duration_type const& duration)
 {
-  time_ += do_commit(duration);
+  time_ += time_type(do_commit(duration));
 }
 
 timed_base::duration_type

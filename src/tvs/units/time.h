@@ -83,7 +83,7 @@ using units::time_type;
 
 // include compatiblity with sc_time, iff SystemC is available
 // (deliberately outside of include guards!)
-#if defined(SYSX_HAVE_SYSTEMC_)
+#if !defined(SYSX_NO_SYSTEMC)
 #include "tvs/units/sc_time.h"
 #endif // SYSX_SYSTEMC_INCLUDED_
 

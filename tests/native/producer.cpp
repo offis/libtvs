@@ -79,10 +79,9 @@ producer::elapsed()
   // uint64 overflows.
   auto now = duration_cast<nanoseconds>(clock_type::now() - start_);
 
-  sc_dt::uint64 dur = now.count() * 1e3;
-  auto sc_dur = sc_core::sc_time::from_value(dur);
+  auto dur = (1.0 * now.count()) * sysx::si::nanoseconds;
 
-  return sc_dur - this->local_time();
+  return tracing::duration_type(dur) - this->local_time();
 }
 
 void

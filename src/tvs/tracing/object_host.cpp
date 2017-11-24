@@ -26,7 +26,8 @@
 
 #include "tvs/utils/systemc.h"
 
-#include "report_msgs.h"
+#include "tvs/utils/report.h"
+#include "tvs/tracing/report_msgs.h"
 
 #include <functional>
 
@@ -72,7 +73,10 @@ sync_with_model(time_type until)
 void
 for_each_stream_in_scope(host::cb_type func)
 {
-
+#ifdef SYSX_NO_SYSTEMC
+  SYSX_REPORT_FATAL(sysx::report::not_implemented)
+    % "scope traversal";
+#else
   sc_core::sc_object* scope = sc_core::sc_get_current_object();
   SYSX_ASSERT(scope != nullptr);
 
@@ -86,6 +90,7 @@ for_each_stream_in_scope(host::cb_type func)
         break;
     }
   }
+#endif
 }
 
 const char*
@@ -93,6 +98,7 @@ gen_unique_name(const char* name)
 {
 #ifdef SYSX_NO_SYSTEMC
   // TODO: implement for non-SystemC
+  SYSX_REPORT_FATAL(sysx::report::not_implemented) % "unique name generation";
   return name;
 #else
   return sc_core::sc_gen_unique_name(name);
@@ -103,7 +109,7 @@ tracing::timed_stream_base*
 lookup(const char* name)
 {
 #ifdef SYSX_NO_SYSTEMC
-  SYSX_REPORT_FATAL(report::not_implemented);
+  SYSX_REPORT_FATAL(sysx::report::not_implemented) % "stream lookup";
   return nullptr;
 #else
   auto str = dynamic_cast<timed_stream_base*>(sc_core::sc_find_object(name));
