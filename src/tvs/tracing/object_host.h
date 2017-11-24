@@ -33,27 +33,31 @@ namespace tracing {
 class timed_object;
 class timed_stream_base;
 
-struct object_host
-{
-  using cb_type = std::function<bool(timed_stream_base*)>;
-  using sync_fn_type = std::function<void(time_type const&)>;
+namespace host {
 
-  static void for_each_stream_in_scope(cb_type);
+using cb_type = std::function<bool(timed_stream_base*)>;
+using sync_fn_type = std::function<void(time_type const&)>;
 
-  /// Synchronise with the simulation/implementation model time and the
-  /// configured sync function.
-  static void sync_with_model(time_type until);
+void for_each_stream_in_scope(cb_type);
 
-  static const char* gen_unique_name(const char* name);
+/// Synchronise with the simulation/implementation model time and the
+/// configured sync function.
+void
+sync_with_model(time_type until);
 
-  static timed_stream_base* lookup(const char* name);
-};
+const char*
+gen_unique_name(const char* name);
+
+timed_stream_base*
+lookup(const char* name);
+
+} // namespace host
 
 /// Register a synchronisation function to be called for synchronising the
 /// time with a model/implememtation.  By default, we use
 /// sc_core::wait(time_type).
 void
-register_sync(object_host::sync_fn_type fn);
+register_sync(host::sync_fn_type fn);
 
 } // namespace tracing
 

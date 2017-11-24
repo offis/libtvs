@@ -33,11 +33,11 @@
 namespace tracing {
 
 namespace {
-object_host::sync_fn_type sync_fn;
+host::sync_fn_type sync_fn;
 } // anonymous namespace
 
 void
-register_sync(object_host::sync_fn_type fn)
+register_sync(host::sync_fn_type fn)
 {
   if (sync_fn) {
     SYSX_REPORT_WARNING(sysx::report::plain_msg)
@@ -46,8 +46,10 @@ register_sync(object_host::sync_fn_type fn)
   sync_fn = fn;
 }
 
+namespace host {
+
 void
-object_host::sync_with_model(time_type until)
+sync_with_model(time_type until)
 {
   if (!sync_fn) {
 #ifndef SYSX_NO_SYSTEMC
@@ -68,7 +70,7 @@ object_host::sync_with_model(time_type until)
 ///
 /// The iteration stops when func returns true.
 void
-object_host::for_each_stream_in_scope(object_host::cb_type func)
+for_each_stream_in_scope(host::cb_type func)
 {
 
   sc_core::sc_object* scope = sc_core::sc_get_current_object();
@@ -87,7 +89,7 @@ object_host::for_each_stream_in_scope(object_host::cb_type func)
 }
 
 const char*
-object_host::gen_unique_name(const char* name)
+gen_unique_name(const char* name)
 {
 #ifdef SYSX_NO_SYSTEMC
   // TODO: implement for non-SystemC
@@ -98,7 +100,7 @@ object_host::gen_unique_name(const char* name)
 }
 
 tracing::timed_stream_base*
-object_host::lookup(const char* name)
+lookup(const char* name)
 {
 #ifdef SYSX_NO_SYSTEMC
   SYSX_REPORT_FATAL(report::not_implemented);
@@ -111,7 +113,7 @@ object_host::lookup(const char* name)
     if (scope) {
       std::stringstream lname;
       lname << scope->name() << sc_core::SC_HIERARCHY_CHAR << name;
-      str = object_host::lookup(lname.str().c_str());
+      str = host::lookup(lname.str().c_str());
     }
 
     if (!str) {
@@ -125,5 +127,7 @@ object_host::lookup(const char* name)
   return str;
 #endif // SYSX_NO_SYSTEMC
 }
+
+} // namespace host
 
 } // namespace tracing
