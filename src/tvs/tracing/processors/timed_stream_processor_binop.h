@@ -30,8 +30,6 @@
 
 #include <boost/format.hpp>
 
-#include "tvs/tracing/object_host.h"
-
 #include "tvs/tracing/processors/timed_stream_processor_base.h"
 
 #include "tvs/tracing/timed_reader_base.h"

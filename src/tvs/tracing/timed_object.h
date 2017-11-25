@@ -25,11 +25,45 @@
 #ifndef TVS_TIMED_OBJECT_H_INCLUDED_
 #define TVS_TIMED_OBJECT_H_INCLUDED_
 
-#include "tvs/tracing/object_host.h"
 #include "tvs/tracing/timed_duration.h" // time_type
 #include "tvs/utils/noncopyable.h"
 
+#include <functional>
+
 namespace tracing {
+
+class timed_object;
+class timed_stream_base;
+class named_object;
+
+namespace host {
+
+using cb_type = std::function<bool(timed_stream_base*)>;
+using sync_fn_type = std::function<void(time_type const&)>;
+
+void for_each_stream_in_scope(cb_type);
+
+/// Synchronise with the simulation/implementation model time and the
+/// configured sync function.
+void
+sync_with_model(time_type until);
+
+const char*
+gen_unique_name(const char* name);
+
+timed_stream_base*
+lookup(const char* name);
+
+void
+register_object(const char* name, named_object* base);
+
+} // namespace host
+
+/// Register a synchronisation function to be called for synchronising the time
+/// with a simulation model.  This defaults to sc_core::wait(time_type) iff
+/// SystemC support is available.
+void
+register_sync(host::sync_fn_type fn);
 
 /// Perform a commit until the maximum local time offset of all streams in the
 /// scope.

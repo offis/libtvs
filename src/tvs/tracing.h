@@ -42,8 +42,6 @@ namespace tracing {
 #include "tvs/tracing/timed_stream.h"
 #include "tvs/tracing/timed_value.h"
 
-#include "tvs/tracing/object_host.h"
-
 #include "tvs/tracing/timed_variant.h"
 
 #include "tvs/tracing/timed_reader.h"

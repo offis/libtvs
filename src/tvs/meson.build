@@ -49,7 +49,6 @@ report_headers = files(
   )
 
 tracing_headers = files(
-  'tracing/object_host.h',
   'tracing/timed_duration.h',
   'tracing/timed_object.h',
   'tracing/timed_ranges.h',
@@ -91,7 +90,6 @@ library_sources = files(
     'utils/variant.cpp',
     'utils/variant_traits.cpp',
 
-    'tracing/object_host.cpp',
     'tracing/timed_duration.cpp',
     'tracing/timed_object.cpp',
     'tracing/timed_reader_base.cpp',
