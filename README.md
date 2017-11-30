@@ -52,7 +52,7 @@ with ``gcc 6.3`` and ``clang 4.0``.
   
 External dependencies:
 
-- `SystemC >= 2.3.1` 
+- `SystemC >= 2.3.2`  (optional, default=yes)
 - `boost >= 1.51`
 
 ### Building the Library
@@ -70,33 +70,31 @@ After configuring the build directory, you can run the build using ``ninja``.
     
 ## Build Options
 
-These are the library-specific build options:
-
-    Project options:
-      Option                Description                        Current Value Possible Values
-      ------                -----------                        ------------- ---------------
-      enable_docs           Generate the Doxygen documentation false         [True, False]
-      enable_tests          Enable building the tests          true          [True, False]
-      sc_includedir         SystemC include directory
-      sc_libdir             SystemC library directory
+The library-specific build options can be queried using ``meson configure``.
 
 You can either directly specify the build options when configuring the build
 directory using ``meson -D<name>=<value> <...>`` or use ``mesonconf
 -D<name>=<value>`` after having configured the directory.  You can also use
 ``mesonconf`` to inspect all available build configuration options.
 
-## Manual SystemC Dependency
+## SystemC Dependency
     
-The build system will search for a suitable SystemC library via `pkg-config`.
-If a `pkg-config` file is not available, you can optionally specify custom
-SystemC library and include header paths via the options `-Dsc_includedir` and
-`-Dsc_libdir`:
+If a SystemC build is requested, the build system will search for a suitable
+SystemC library via `pkg-config`.  If a `pkg-config` file is not available, you
+can optionally specify custom SystemC library and include header paths via the
+options `-Dsc_includedir` and `-Dsc_libdir`:
 
     $ mkdir objdir
     $ cd objdir
     $ meson -Dsc_libdir=/opt/systemc-2.3.1/lib-linux64 \
           -Dsc_includedir=/opt/systemc-2.3.1/include ..
           
+Building with SystemC support enables re-use of the SystemC module hierarchy and
+data types.  Streams will be created as ``sc_object`` instances within the
+module hierarchy.  The interface of a ``timed_value`` will also internally use
+the ``sc_core::sc_time`` datatype for time and duration storage and provide
+conversion operators for ``boost::units``.
+
 ## Test Suite and Documentation
           
 By default, a test suite is built which contains unit tests and example files.
