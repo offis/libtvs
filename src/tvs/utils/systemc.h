@@ -19,9 +19,10 @@
  * \brief central SystemC include file
  *
  */
-#if defined(SYSX_NO_SYSTEMC) && !defined(SYSX_HAVE_SYSTEMC_)
-#warning SystemC support disabled by user!
-#define SYSX_HAVE_SYSTEMC_ 0
+#if defined(SYSX_NO_SYSTEMC)
+#  if !defined(SYSX_HAVE_SYSTEMC_)
+#  define SYSX_HAVE_SYSTEMC_ 0
+#  endif // SYSX_HAVE_SYSTEMC_
 #else
 
 // include main SystemC header (deliberately outside include guards)

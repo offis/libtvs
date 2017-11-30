@@ -28,10 +28,11 @@
 #include "tvs/utils/type_id.h"
 
 #include <iosfwd>
+#include <iostream> // std::cout
 
 namespace tracing {
 
-#ifdef SYSX_HAVE_SYSTEMC_
+#ifndef SYSX_NO_SYSTEMC
 typedef sc_core::sc_time time_type;
 #else
 typedef sysx::units::time_type time_type;
@@ -72,18 +73,20 @@ public:
     : val_(vd)
   {}
 
+#ifndef SYSX_NO_SYSTEMC
   explicit timed_duration(units_type const& ud)
     : val_(sysx::units::sc_time_cast<units_type>(ud))
   {}
 
-  operator value_type const&() const { return value(); }
-
-  value_type const& value() const { return val_; }
-
   operator units_type() const
   {
-    return sysx::units::sc_time_cast<units_type>(val_);
+    return sysx::units::sc_time_cast<units_type>(value());
   }
+#endif
+
+  operator value_type () const { return value(); }
+
+  value_type const& value() const { return val_; }
 
   void swap(this_type& that)
   {
@@ -111,16 +114,19 @@ public:
     return this_type(sysx::units::infinity<value_type>());
   }
 
-  static timed_duration const zero_time;
+  static value_type const zero_time;
   ///\}
 
   /**\name arithmetic operators */
   ///\{
   this_type& operator+=(this_type const&);
   this_type& operator-=(this_type const&);
-  this_type& operator%=(this_type const&);
   this_type& operator*=(double);
   this_type& operator/=(double);
+
+#if !defined(SYSX_NO_SYSTEMC)
+  this_type& operator%=(this_type const&);
+#endif
   ///\}
 
   /**\name relational operators */
@@ -177,9 +183,9 @@ private:
     return d1 Op## = timed_duration(d2);                                       \
   }
 
-#ifdef SYSX_HAVE_SYSTEMC_
+#ifndef SYSX_NO_SYSTEMC
 #define SYSX_TIMED_DURATION_BINOP_UNITS_(Op)                                   \
-  SYSX_TIMED_DURATION_BINOP_OTHER_(Op, ::sysx::units::time_type)
+  SYSX_TIMED_DURATION_BINOP_OTHER_(Op, timed_duration::units_type)
 #else
 #define SYSX_TIMED_DURATION_BINOP_UNITS_(Op) /* empty */
 #endif
@@ -191,11 +197,14 @@ private:
     return d1 Op## = d2;                                                       \
   }                                                                            \
   SYSX_TIMED_DURATION_BINOP_UNITS_(Op)                                         \
-  SYSX_TIMED_DURATION_BINOP_OTHER_(Op, time_type)
+  SYSX_TIMED_DURATION_BINOP_OTHER_(Op, timed_duration::value_type)
 
 SYSX_TIMED_DURATION_BINOP_(+)
 SYSX_TIMED_DURATION_BINOP_(-)
+
+#ifndef SYSX_NO_SYSTEMC
 SYSX_TIMED_DURATION_BINOP_(%)
+#endif
 
 #define SYSX_TIMED_DURATION_RELOP_OTHER_(Op, OtherType)                        \
   inline bool operator Op(OtherType const& d1, timed_duration const& d2)       \
@@ -207,9 +216,9 @@ SYSX_TIMED_DURATION_BINOP_(%)
     return d1 Op timed_duration(d2);                                           \
   }
 
-#ifdef SYSX_HAVE_SYSTEMC_
+#ifndef SYSX_NO_SYSTEMC
 #define SYSX_TIMED_DURATION_RELOP_UNITS_(Op)                                   \
-  SYSX_TIMED_DURATION_RELOP_OTHER_(Op, ::sysx::units::time_type)
+  SYSX_TIMED_DURATION_RELOP_OTHER_(Op, timed_duration::units_type)
 #else
 #define SYSX_TIMED_DURATION_RELOP_UNITS_(Op) /* empty */
 #endif
@@ -249,6 +258,25 @@ SYSX_TIMED_DURATION_SCALAR_OP_(/)
 #undef SYSX_TIMED_DURATION_SCALAR_OP_
 
 } // namespace tracing
+
+
+namespace sysx {
+namespace utils {
+
+#define VARIANT_TRAITS_DERIVED_(UnderlyingType, SpecializedType)  \
+  template<>                                                      \
+  struct variant_traits<SpecializedType>                          \
+    : variant_traits_convert<SpecializedType, UnderlyingType>     \
+  {                                                               \
+  }
+
+// timed_duration derived from underlying time type
+VARIANT_TRAITS_DERIVED_(tracing::time_type, tracing::timed_duration);
+
+#undef VARIANT_TRAITS_DERIVED_
+
+} /* namespace utils */
+} /* namespace sysx */
 
 #endif /* TVS_TIMED_DURATION_H_INCLUDED_ */
 /* Taf!

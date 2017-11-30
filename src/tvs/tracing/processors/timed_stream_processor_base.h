@@ -53,9 +53,8 @@ class timed_stream;
 /// \a process() member function with the minimum available duration on all
 /// streams.
 ///
-struct timed_stream_processor_base
-  : public timed_object
-  , public timed_listener_if
+struct timed_stream_processor_base : public timed_object,
+                                     public timed_listener_if
 {
   using base_type = timed_object;
   using this_type = timed_stream_processor_base;
@@ -150,7 +149,7 @@ timed_stream_processor_base::in(tracing::timed_stream<T, Policy>& stream)
   name << stream.basename() << "_in";
 
   this->do_add_input(detail::make_unique<reader_type>(
-    gen_unique_name(name.str().c_str()), stream));
+    host::gen_unique_name(name.str().c_str()), stream));
 }
 
 template<typename T, typename Policy>

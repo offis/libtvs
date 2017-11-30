@@ -33,7 +33,7 @@
 
 namespace tracing {
 
-const timed_duration timed_duration::zero_time;
+const timed_duration::value_type timed_duration::zero_time;
 
 /* --------------------------------------------------------------------- */
 
@@ -66,12 +66,14 @@ timed_duration::operator-=(timed_duration const& that)
   return *this;
 }
 
+#if !defined(SYSX_NO_SYSTEMC)
 timed_duration&
 timed_duration::operator%=(timed_duration const& that)
 {
   val_ %= that.val_;
   return *this;
 }
+#endif
 
 /* --------------------------------------------------------------------- */
 

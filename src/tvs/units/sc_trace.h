@@ -39,6 +39,8 @@
 #include "tvs/units/common.h"
 #include "tvs/utils/systemc.h"
 
+#ifndef SYSX_NO_SYSTEMC
+
 /// SystemC core namespace
 namespace sc_core {
 
@@ -66,6 +68,8 @@ sc_trace(sc_trace_file* tfp,
 }
 
 } // namespace sc_core
+
+#endif // SYSX_NO_SYSTEMC
 
 #endif // SYSX_UNITS_SC_TRACE_H_INCLUDED_
 /* Taf!

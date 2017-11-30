@@ -47,7 +47,7 @@ timed_reader_base::~timed_reader_base()
 void
 timed_reader_base::attach(const char* name)
 {
-  auto str = lookup(name);
+  auto str = host::lookup(name);
   attach(*str);
 }
 

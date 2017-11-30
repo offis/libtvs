@@ -109,7 +109,7 @@ timed_writer<T, P>::create_stream(const char* name, writer_mode mode)
 {
   // prefer to attach to existing stream
   if (mode & STREAM_ATTACH && // STREAM_AUTO (lazy create)
-      lookup(name))
+      host::lookup(name))
     return NULL;
 
   return new stream_type(name);

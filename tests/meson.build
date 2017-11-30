@@ -39,10 +39,13 @@ tests = [
 
 extra_srcs = 'common/gtest_scmain.cpp'
 
+if get_option('with_systemc')
+
 foreach test : tests
   test(test[0], executable(test[1], test[2], extra_srcs, dependencies: test_deps))
 endforeach
 
+endif
 
 subdir('native')
 

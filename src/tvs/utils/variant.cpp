@@ -293,7 +293,7 @@ variant_ref::operator=(variant_cref const& that)
   if (that.is_null())
     set_null();
   else {
-    sc_assert(THIS);
+    SYSX_ASSERT(THIS);
     THIS->CopyFrom(DEREF(that), json_allocator);
   }
   return *this;
@@ -310,7 +310,7 @@ variant_ref::set_null()
 variant_ref
 variant_ref::set_bool(bool v)
 {
-  sc_assert(THIS);
+  SYSX_ASSERT(THIS);
   THIS->SetBool(v);
   return this_type(THIS);
 }
@@ -318,7 +318,7 @@ variant_ref::set_bool(bool v)
 variant_ref
 variant_ref::set_int(int v)
 {
-  sc_assert(THIS);
+  SYSX_ASSERT(THIS);
   THIS->SetInt(v);
   return this_type(THIS);
 }
@@ -326,7 +326,7 @@ variant_ref::set_int(int v)
 variant_ref
 variant_ref::set_uint(unsigned v)
 {
-  sc_assert(THIS);
+  SYSX_ASSERT(THIS);
   THIS->SetUint(v);
   return this_type(THIS);
 }
@@ -334,7 +334,7 @@ variant_ref::set_uint(unsigned v)
 variant_ref
 variant_ref::set_int64(int64 v)
 {
-  sc_assert(THIS);
+  SYSX_ASSERT(THIS);
   THIS->SetInt64(v);
   return this_type(THIS);
 }
@@ -342,7 +342,7 @@ variant_ref::set_int64(int64 v)
 variant_ref
 variant_ref::set_uint64(uint64 v)
 {
-  sc_assert(THIS);
+  SYSX_ASSERT(THIS);
   THIS->SetUint64(v);
   return this_type(THIS);
 }
@@ -350,7 +350,7 @@ variant_ref::set_uint64(uint64 v)
 variant_ref
 variant_ref::set_double(double d)
 {
-  sc_assert(THIS);
+  SYSX_ASSERT(THIS);
   THIS->SetDouble(d);
   return this_type(THIS);
 }
@@ -358,7 +358,7 @@ variant_ref::set_double(double d)
 variant_string_ref
 variant_ref::set_string(const char* s, size_t len)
 {
-  sc_assert(THIS);
+  SYSX_ASSERT(THIS);
   THIS->SetString(s, len, json_allocator);
   return variant_string_ref(THIS);
 }
@@ -366,7 +366,7 @@ variant_ref::set_string(const char* s, size_t len)
 variant_list_ref
 variant_ref::set_list()
 {
-  sc_assert(THIS);
+  SYSX_ASSERT(THIS);
   THIS->SetArray();
   return variant_list_ref(THIS);
 }
@@ -374,7 +374,7 @@ variant_ref::set_list()
 variant_map_ref
 variant_ref::set_map()
 {
-  sc_assert(THIS);
+  SYSX_ASSERT(THIS);
   THIS->SetObject();
   return variant_map_ref(THIS);
 }
@@ -574,9 +574,9 @@ variant::variant(variant_category cat)
   }                                                                            \
   init()
 #define WRAPPER_ASSIGN_PRECOND_FOR_variant_list                                \
-  sc_assert(is_list() && that.is_list())
+  SYSX_ASSERT(is_list() && that.is_list())
 #define WRAPPER_ASSIGN_PRECOND_FOR_variant_map                                 \
-  sc_assert(is_map() && that.is_map())
+  SYSX_ASSERT(is_map() && that.is_map())
 
 #define WRAPPER_DO_INIT_(Kind) WRAPPER_DO_INIT_##Kind
 #define WRAPPER_DO_INIT_variant ((void)0)
@@ -600,7 +600,7 @@ variant::variant(variant_category cat)
                                                                                \
   Kind::impl* Kind::do_init()                                                  \
   {                                                                            \
-    sc_assert(!own_pimpl_);                                                    \
+    SYSX_ASSERT(!own_pimpl_);                                                    \
     pimpl_ = own_pimpl_ = variant_pool::create();                              \
     WRAPPER_DO_INIT_(Kind);                                                    \
     return THIS;                                                               \

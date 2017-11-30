@@ -31,11 +31,22 @@
 
 namespace tracing {
 
-#define TVS_SYNCHRONISATON_POINT()                                             \
-  ::tracing::object_host::sync_with_model(                                     \
-    ::tracing::timed_base::sync_current_scope())
+/// Perform a commit until the maximum local time offset of all streams in the
+/// scope.
+///
+/// \returns the absolute time which all streams in the scope have been advanced to.
+time_type
+sync();
 
-class timed_base : public object_host
+/// Perform a commit on all streams in the scope with the given absolute time.
+void
+sync(time_type const& until);
+
+
+#define TVS_SYNCHRONISATON_POINT()                                             \
+  ::tracing::host::sync_with_model(::tracing::sync())
+
+class timed_base
 {
 public:
   typedef tracing::time_type time_type;
@@ -47,18 +58,14 @@ public:
   void commit(time_type const& until);
   void commit(duration_type const& duration);
 
-  /// Perform a commit until the maximum local time offset of all streams in the
-  /// scope.
-  time_type sync();
-
-  /// Perform a commit on all streams in the scope with the given absolute time.
-  time_type sync(time_type const& until);
-
-  /// Perform a commit on all streams in the scope with the given duration.
-  time_type sync(duration_type const& duration);
-
-  /// Call sync() on the first stream found in the scope
-  static time_type sync_current_scope();
+  /// Perform a commit on all streams in the scope with the given duration,
+  /// relative to this stream's local time
+  time_type sync(duration_type const& duration)
+  {
+    time_type t = this->local_time() + duration;
+    ::tracing::sync(t);
+    return t;
+  }
 
 protected:
   timed_base();
@@ -95,9 +102,7 @@ private:
 };
 #endif // SYSX_NO_SYSTEMC
 
-class timed_object
-  : public named_object
-  , public timed_base
+class timed_object : public named_object, public timed_base
 {
 public:
   const char* kind() const { return "timed_object"; }
@@ -105,7 +110,8 @@ public:
 protected:
   explicit timed_object(const char* nm)
     : named_object(nm)
-  {}
+  {
+  }
 
   /// protected destructor - no polymorphic destruction
   virtual ~timed_object() /* = default */ {}

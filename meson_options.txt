@@ -16,6 +16,11 @@
 
 # Dependency configuration
 
+option('with_systemc',
+       type: 'boolean',
+       description: 'Whether to use SystemC time and hierarchy',
+       value: true)
+
 option('sc_libdir',
        type: 'string',
        description: 'SystemC library directory')
@@ -35,4 +40,3 @@ option('enable_tests',
         type: 'boolean',
         description: 'Enable building the tests',
         value: true)
-

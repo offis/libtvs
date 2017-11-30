@@ -46,7 +46,7 @@ timed_writer_base::~timed_writer_base()
 void
 timed_writer_base::attach(const char* name)
 {
-  auto str = lookup(name);
+  auto str = host::lookup(name);
   SYSX_ASSERT(str != nullptr);
   this->attach(*str);
 }

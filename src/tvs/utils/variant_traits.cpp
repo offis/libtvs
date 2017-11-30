@@ -66,6 +66,8 @@ DEFINE_BUILTIN_(std::string, string)
 // ----------------------------------------------------------------------------
 // SystemC builtin types
 
+#if !defined(SYSX_NO_SYSTEMC)
+
 DEFINE_PACK_(sc_core::sc_time)
 {
 #if SYSX_HAVE_SYSTEMC_ > SYSX_MAKE_VERSION(2, 3, 1)
@@ -87,8 +89,8 @@ static inline sc_core::sc_time
 sc_time_from_unit(double value, unsigned unit)
 {
   ///@todo add error handling
-  sc_assert(value >= 0.0);
-  sc_assert(unit <= sc_core::SC_SEC);
+  SYSX_ASSERT(value >= 0.0);
+  SYSX_ASSERT(unit <= sc_core::SC_SEC);
   sc_core::sc_time_unit tu = static_cast<sc_core::sc_time_unit>(unit);
   return sc_core::sc_time(value, tu);
 }
@@ -115,7 +117,7 @@ sc_time_from_symbol(double value, variant_string_cref sym)
   while (*cursor->sym && !(sym == cursor->sym[0] || sym == cursor->sym[1]))
     cursor++;
 
-  sc_assert(unsigned(cursor - symbol_table) <
+  SYSX_ASSERT(unsigned(cursor - symbol_table) <
             (sizeof(symbol_table) / sizeof(symbol)));
   return sc_time_from_unit(value, unsigned(cursor - symbol_table));
 #endif // SystemC > 2.3.1
@@ -327,6 +329,8 @@ DEFINE_UNPACK_(sc_dt::sc_lv_base)
   dst = src.get_string().c_str();
   return true;
 }
+
+#endif // SYSX_NO_SYSTEMC
 
 } /* namespace utils */
 } /* namespace sysx */

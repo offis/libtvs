@@ -152,7 +152,7 @@ struct variant_traits<::sysx::units::quantity<Unit, ValueType>>
 
 // include compatiblity with sc_trace, iff SystemC is available
 // (deliberately outside of include guards!)
-#if defined(SYSX_HAVE_SYSTEMC_)
+#if !defined(SYSX_NO_SYSTEMC)
 #include "tvs/units/sc_trace.h"
 #endif // SYSX_SYSTEMC_INCLUDED_
 /* Taf!

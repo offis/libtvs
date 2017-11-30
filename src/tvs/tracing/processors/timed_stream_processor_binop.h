@@ -30,6 +30,8 @@
 
 #include <boost/format.hpp>
 
+#include "tvs/tracing/object_host.h"
+
 #include "tvs/tracing/processors/timed_stream_processor_base.h"
 
 #include "tvs/tracing/timed_reader_base.h"
@@ -79,14 +81,14 @@ struct timed_stream_binop_processor : timed_stream_processor_base
 
   void in(char const* stream)
   {
-    auto str = dynamic_cast<stream_type*>(lookup(stream));
+    auto str = dynamic_cast<stream_type*>(host::lookup(stream));
     SYSX_ASSERT(str != nullptr);
     this->in(*str);
   }
 
   void out(char const* stream)
   {
-    auto str = dynamic_cast<stream_type*>(lookup(stream));
+    auto str = dynamic_cast<stream_type*>(host::lookup(stream));
     SYSX_ASSERT(str != nullptr);
     this->out(*str);
   }

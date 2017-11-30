@@ -63,8 +63,6 @@ public:
   void commit(time_type const& until) { stream_->commit(until); }
   void commit(duration_type const& dur) { stream_->commit(dur); }
 
-  time_type sync() { return stream_->sync(); }
-  time_type sync(time_type const& until) { return stream_->sync(until); }
   time_type sync(duration_type const& dur) { return stream_->sync(dur); }
   //!}
 

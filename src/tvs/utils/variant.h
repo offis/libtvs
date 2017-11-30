@@ -22,6 +22,9 @@
 #include "tvs/utils/report_msgs.h"
 #include "tvs/utils/systemc.h" // sc_dt::(u)int64, potentially strip out
 
+#include "tvs/utils/assert.h"
+
+
 #include <cstring> // std::strlen
 
 /**
@@ -33,9 +36,24 @@
 namespace sysx {
 namespace utils {
 
-// define our own typedefs to avoid SystemC dependency?
-using sc_dt::int64;
-using sc_dt::uint64;
+#ifndef _WIN32
+#if defined(__x86_64__)
+typedef long long int64;
+typedef unsigned long long uint64;
+#else
+typedef int64_t int64;
+typedef uint64_t uint64;
+#endif
+extern const uint64 UINT64_ZERO;
+extern const uint64 UINT64_ONE;
+extern const uint64 UINT64_32ONES;
+#else
+typedef __int64 int64;
+typedef unsigned __int64 uint64;
+extern const uint64 UINT64_ZERO;
+extern const uint64 UINT64_ONE;
+extern const uint64 UINT64_32ONES;
+#endif
 
 // forward declarations
 class variant;
@@ -953,7 +971,7 @@ variant::from_json(std::string const& json)
   variant v;
   bool ok = v.json_deserialize(json);
   (void)ok;
-  sc_assert(ok);
+  SYSX_ASSERT(ok);
   return v;
 }
 
@@ -963,7 +981,7 @@ variant::to_json(const_reference v)
   std::string json;
   bool ok = v.json_serialize(json);
   (void)ok;
-  sc_assert(ok);
+  SYSX_ASSERT(ok);
   return json;
 }
 
