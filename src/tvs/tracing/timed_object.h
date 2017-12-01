@@ -34,7 +34,6 @@ namespace tracing {
 
 class timed_object;
 class timed_stream_base;
-class named_object;
 
 namespace host {
 
@@ -53,9 +52,6 @@ gen_unique_name(const char* name);
 
 timed_stream_base*
 lookup(const char* name);
-
-void
-register_object(const char* name, named_object* base);
 
 } // namespace host
 
