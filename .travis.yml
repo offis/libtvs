@@ -9,6 +9,6 @@ before_install:
   - sudo apt-get install -y libboost-dev libgtest-dev
 
 install:
-  - pip install meson
+  - pip3 install meson
 
 script: ./.run-ci-build.sh
