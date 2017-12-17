@@ -11,8 +11,8 @@ before_install:
   - sudo apt-get -qq update
 
 install:
-  - sudo pip3 install meson
   - sudo apt-get install -qq g++-6 libboost-dev libboost-system-dev libgtest-dev python3 python3-pip
+  - sudo pip3 install meson
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 90
   - mkdir .tmp
   - curl -L https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-linux.zip -o .tmp/ninja-linux.zip
