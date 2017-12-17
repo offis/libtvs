@@ -37,7 +37,11 @@ struct timed_stream_fixture_b : public ::testing::Test
   tracing::timed_duration inf;
 
   timed_stream_fixture_b()
+#ifdef SYSX_NO_SYSTEMC
+    : stamp(tracing::time_type(1 * sysx::si::seconds))
+      #else
     : stamp(tracing::time_type(1, sc_core::SC_SEC))
+#endif
     , dur(stamp)
     , zero_time(tracing::timed_duration::zero_time)
     , inf(tracing::timed_duration::infinity())
