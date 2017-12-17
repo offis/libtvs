@@ -41,7 +41,7 @@ tracing::host::sync_fn_type sync_fn;
 #ifdef SYSX_NO_SYSTEMC
 
 /// object registry for timed_object instances
-std::map<const char*, tracing::named_object*> object_registry;
+std::map<std::string, tracing::named_object*> object_registry;
 
 #endif // SYSX_NO_SYSTEMC
 
@@ -107,12 +107,13 @@ for_each_stream_in_scope(host::cb_type func)
 const char*
 gen_unique_name(const char* name)
 {
-
 #ifdef SYSX_NO_SYSTEMC
   static std::vector<std::string> names_;
   static int num = 0;
 
-  if (lookup(name) != nullptr) {
+  auto it = object_registry.find(name);
+
+  if (it != object_registry.end()) {
     std::stringstream sstr;
     sstr << name << "_" << num++;
     names_.emplace_back(sstr.str());
@@ -132,8 +133,10 @@ lookup(const char* name)
 #ifdef SYSX_NO_SYSTEMC
   auto it = object_registry.find(name);
 
-  if (it == object_registry.end())
+  if (it == object_registry.end()) {
+    SYSX_REPORT_ERROR(report::stream_lookup) % name << "object not found";
     return nullptr;
+  }
 
   return dynamic_cast<timed_stream_base*>(it->second);
 #else
@@ -190,7 +193,8 @@ sync(time_type const& until)
 
 timed_base::timed_base()
   : time_()
-{}
+{
+}
 
 void
 timed_base::commit()
@@ -229,9 +233,15 @@ named_object::named_object(const char* name)
 {
   if (object_registry.find(name) != object_registry.end()) {
     SYSX_REPORT_FATAL(sysx::report::plain_msg)
-      << "timed_object " << name << "already defined.";
+      << "timed_object " << name << " already defined.";
   }
   object_registry[name] = this;
+  std::cout << "registered " << name << "\n";
+}
+
+named_object::~named_object()
+{
+  object_registry.erase(name());
 }
 
 const char*
