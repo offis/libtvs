@@ -1,5 +1,6 @@
 language: cpp
 dist: "trusty"
+sudo: required
 
 addons:
   apt:
@@ -16,6 +17,6 @@ before_install:
   - sudo apt-get install -y libboost-dev libgtest-dev
 
 install:
-  - pip3 install meson
+  - sudo pip3 install meson
 
 script: ./.run-ci-build.sh
