@@ -53,8 +53,9 @@ class timed_stream;
 /// \a process() member function with the minimum available duration on all
 /// streams.
 ///
-struct timed_stream_processor_base : public timed_object,
-                                     public timed_listener_if
+struct timed_stream_processor_base
+  : public timed_object
+  , public timed_listener_if
 {
   using base_type = timed_object;
   using this_type = timed_stream_processor_base;
@@ -71,20 +72,20 @@ struct timed_stream_processor_base : public timed_object,
   using duration_type = stream_base_type::duration_type;
 
   /// Add an input stream of a writer to this processor.
-  template<typename T, typename Policy>
-  void in(timed_writer<T, Policy>&);
+  template<typename T, typename Traits>
+  void in(timed_writer<T, Traits>&);
 
   /// Add an input stream to this processor.
-  template<typename T, typename Policy>
-  void in(timed_stream<T, Policy>&);
+  template<typename T, typename Traits>
+  void in(timed_stream<T, Traits>&);
 
   /// Add an output stream of a reader to this processor.
-  template<typename T, typename Policy>
-  void out(timed_reader<T, Policy>&);
+  template<typename T, typename Traits>
+  void out(timed_reader<T, Traits>&);
 
   /// Add an output stream to this processor.
-  template<typename T, typename Policy>
-  void out(timed_stream<T, Policy>&);
+  template<typename T, typename Traits>
+  void out(timed_stream<T, Traits>&);
 
 protected:
   timed_stream_processor_base(const char*);
@@ -117,6 +118,8 @@ protected:
   void do_add_input(reader_ptr_type&&);
   void do_add_output(writer_ptr_type&&);
 
+  ~timed_stream_processor_base() = default;
+
 private:
   /// Checks if a minimum token duration is available on all input streams and
   /// then calls process().
@@ -126,9 +129,9 @@ private:
   writer_ptr_type output_;
 };
 
-template<typename T, typename Policy>
+template<typename T, typename Traits>
 void
-timed_stream_processor_base::in(tracing::timed_writer<T, Policy>& writer)
+timed_stream_processor_base::in(tracing::timed_writer<T, Traits>& writer)
 {
   using stream_type =
     typename std::remove_reference<decltype(writer)>::type::stream_type;
@@ -138,9 +141,9 @@ timed_stream_processor_base::in(tracing::timed_writer<T, Policy>& writer)
   this->in(*stream);
 }
 
-template<typename T, typename Policy>
+template<typename T, typename Traits>
 void
-timed_stream_processor_base::in(tracing::timed_stream<T, Policy>& stream)
+timed_stream_processor_base::in(tracing::timed_stream<T, Traits>& stream)
 {
   using reader_type =
     typename std::remove_reference<decltype(stream)>::type::reader_type;
@@ -152,9 +155,9 @@ timed_stream_processor_base::in(tracing::timed_stream<T, Policy>& stream)
     host::gen_unique_name(name.str().c_str()), stream));
 }
 
-template<typename T, typename Policy>
+template<typename T, typename Traits>
 void
-timed_stream_processor_base::out(tracing::timed_reader<T, Policy>& reader)
+timed_stream_processor_base::out(tracing::timed_reader<T, Traits>& reader)
 {
   using stream_type =
     typename std::remove_reference<decltype(reader)>::type::stream_type;
@@ -164,14 +167,45 @@ timed_stream_processor_base::out(tracing::timed_reader<T, Policy>& reader)
   this->out(*stream);
 }
 
-template<typename T, typename Policy>
+template<typename T, typename Traits>
 void
-timed_stream_processor_base::out(tracing::timed_stream<T, Policy>& stream)
+timed_stream_processor_base::out(tracing::timed_stream<T, Traits>& stream)
 {
   using writer_type =
     typename std::remove_reference<decltype(stream)>::type::writer_type;
   this->do_add_output(detail::make_unique<writer_type>(stream));
 }
+
+/// Policy-based processor template.
+///
+/// \tparam T the value_type of the timed_value
+/// \tparam ProcessingPolicy the Policy on how to process the available tokens
+///         of the input reader(s)
+template<typename T, template<class> typename ProcessingPolicy>
+class timed_stream_processor
+  : public timed_stream_processor_base
+  , protected ProcessingPolicy<T>
+{
+
+  using policy_type = ProcessingPolicy<T>;
+  using base_type = timed_stream_processor_base;
+
+public:
+  timed_stream_processor(char const* name)
+    : base_type(name)
+  {}
+
+protected:
+  // apply policy_type::process() on all input readers.
+  virtual duration_type process(duration_type dur) override final
+  {
+    for (auto&& in : inputs()) {
+      policy_type::process(*in, dur);
+      in->pop_duration(dur);
+    }
+    return dur;
+  }
+};
 
 } // namespace tracing
 

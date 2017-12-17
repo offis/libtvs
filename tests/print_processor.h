@@ -24,22 +24,16 @@
 #include <sstream>
 
 /**
- * \brief Simple printer that utilizes the generic print processor to print
- * values to an output streambuffer.
+ * \brief Simple printer that buffers the underlying print processor output.
  *
  * \tparam T The type of the timed_value
  * \tparam Traits The traits type of the stream
  */
-template <typename T, typename Traits = ::tracing::timed_state_traits<T>>
-struct test_printer : public tracing::timed_stream_print_processor
+template<typename T>
+struct test_printer : public tracing::timed_stream_print_processor<T>
 {
-  using this_type = test_printer<T, Traits>;
-  using base_type = tracing::timed_stream_print_processor;
-
-  using stream_type = tracing::timed_stream<T, Traits>;
-
-  using tuple_type = tracing::timed_value<T>;
-  using tuple_base_type = typename tuple_type::base_type;
+  using this_type = test_printer<T>;
+  using base_type = tracing::timed_stream_print_processor<T>;
 
   enum output_type
   {
@@ -48,20 +42,13 @@ struct test_printer : public tracing::timed_stream_print_processor
   };
 
   test_printer(char const* name, output_type out = OUTPUT_BUFFERED)
-    : base_type(name, out == OUTPUT_COUT ? std::cout : buf_)
+    : base_type(name)
     , buf_()
   {
+    base_type::set_ostream(out == OUTPUT_COUT ? std::cout : buf_);
   }
 
   using base_type::in;
-
-  void in(char const* stream)
-  {
-    using tracing::host::lookup;
-    auto str = dynamic_cast<stream_type*>(lookup(stream));
-    SYSX_ASSERT(str != nullptr);
-    this->in(*str);
-  }
 
   void print(std::ostream& out) const { out << buf_.str(); }
 
@@ -72,12 +59,6 @@ struct test_printer : public tracing::timed_stream_print_processor
   }
 
 private:
-  void print_tuple(std::ostream& out, tuple_base_type const& vbase)
-  {
-    auto val = static_cast<tuple_type const&>(vbase);
-    out << val;
-  }
-
   std::stringstream buf_;
 };
 

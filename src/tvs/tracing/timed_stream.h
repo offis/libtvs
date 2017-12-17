@@ -116,6 +116,17 @@ private:
   sequence_type future_;
 };
 
+// retrieve a timed_stream<T, Traits> by its hieractical name
+template<typename T, typename Traits>
+tracing::timed_stream<T, Traits>&
+stream_by_name(const char* stream)
+{
+  using stream_type = timed_stream<T, Traits>;
+  auto str = dynamic_cast<stream_type*>(host::lookup(stream));
+  SYSX_ASSERT(str != nullptr);
+  return *str;
+}
+
 } // namespace tracing
 
 #include "timed_stream.tpp"

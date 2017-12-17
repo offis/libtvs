@@ -41,18 +41,17 @@ struct timed_stream_fixture_b : public ::testing::Test
     , dur(stamp)
     , zero_time(tracing::timed_duration::zero_time)
     , inf(tracing::timed_duration::infinity())
-  {
-  }
+  {}
 };
 
 /// fixture class to provide typedefs used in the tests
-template <typename T, class Traits>
+template<typename T, class Traits>
 struct timed_stream_fixture : public timed_stream_fixture_b
 {
   typedef timed_stream_fixture_b base_type;
 
   typedef tracing::timed_stream<T, Traits> stream_type;
-  typedef test_printer<T, Traits> printer_type;
+  typedef test_printer<T> printer_type;
 
   typedef typename stream_type::tuple_type tuple_type;
   typedef typename stream_type::value_type value_type;
@@ -63,10 +62,9 @@ struct timed_stream_fixture : public timed_stream_fixture_b
 
   timed_stream_fixture()
     : base_type()
-    , stream("stream")
-    , writer(stream)
+    , writer("writer", tracing::STREAM_CREATE)
     , printer("printer")
-    , reader("reader", stream)
+    , reader("reader", writer.name())
   {
     printer.in(writer);
   }
@@ -80,7 +78,6 @@ struct timed_stream_fixture : public timed_stream_fixture_b
   }
 
 protected:
-  stream_type stream;
   writer_type writer;
   printer_type printer;
   reader_type reader;

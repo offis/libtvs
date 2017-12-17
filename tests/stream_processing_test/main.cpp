@@ -66,7 +66,8 @@ protected:
   StreamProcessorVCDTests()
     : tb("tb", teststream)
   {
-    printer.in("tb.add_result");
+    printer.in(
+      tracing::stream_by_name<double, testbench::traits_type>("tb.add_result"));
     sc_start(1, sc_core::SC_US);
 
     std::cout << teststream.str();
