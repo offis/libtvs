@@ -14,7 +14,7 @@ compiler:
 
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y libboost-dev libboost-system-dev libgtest-dev ninja-build
+  - sudo apt-get install -y libboost-dev libboost-system-dev libgtest-dev
 
 install:
   - sudo pip3 install meson
@@ -23,6 +23,6 @@ install:
   - unzip .tmp/ninja-linux.zip -d .tmp
 
 before_script:
-  - export PATH=$PATH:$PWD/.tmp
+  - export PATH=$PWD/.tmp:$PATH
 
 script: ./.run-ci-build.sh
