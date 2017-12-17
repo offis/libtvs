@@ -54,6 +54,9 @@ namespace tracing {
 
 #include "tvs/tracing/timed_stream_traits.h"
 
+#include "tvs/tracing/timed_var.h"
+#include "tvs/tracing/timed_annotation.h"
+
 #endif /* TVS_H_INCLUDED_ */
 /* Taf!
  * :tag: (tracing,h)

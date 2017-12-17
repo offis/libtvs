@@ -66,6 +66,8 @@ tracing_headers = files(
   'tracing/timed_variant.h',
   'tracing/timed_writer_base.h',
   'tracing/timed_writer.h',
+  'tracing/timed_var.h',
+  'tracing/timed_annotation.h',
   )
 
 processor_headers = files(
@@ -90,6 +92,7 @@ library_sources = files(
     'utils/variant.cpp',
     'utils/variant_traits.cpp',
 
+    'tracing/timed_annotation.cpp',
     'tracing/timed_duration.cpp',
     'tracing/timed_object.cpp',
     'tracing/timed_reader_base.cpp',

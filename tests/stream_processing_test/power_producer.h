@@ -56,19 +56,22 @@ public:
 
   void produce()
   {
-    power_state state;
+    auto power_value = tracing::timed_var(writer_);
     while (true) {
 
-      int temp = rand() % 30;
-      if (temp < 10)
-        state = power_state::idle;
-      else if (temp < 20)
-        state = power_state::low_power;
-      else
-        state = power_state::high_performance;
-
       sc_core::sc_time duration(rand() % 100, sc_core::SC_NS);
-      writer_.push(power_values_.at(state), duration);
+
+      // block-based annotation
+      TVS_TIMED_BLOCK(duration)
+      {
+        int temp = rand() % 30;
+        if (temp < 10)
+          power_value = power_values_.at(power_state::idle);
+        else if (temp < 20)
+          power_value = power_values_.at(power_state::low_power);
+        else
+          power_value = power_values_.at(power_state::high_performance);
+      }
 
       // synchronise SystemC and stream time domains
       TVS_SYNCHRONISATON_POINT();
