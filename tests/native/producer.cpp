@@ -87,8 +87,9 @@ producer::elapsed()
 void
 producer::loop()
 {
+  int loops = 10;
 
-  while (true) {
+  while (loops-- > 0) {
 
     // block until next event arrives
     auto evt = wait_for_event();
