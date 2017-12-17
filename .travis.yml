@@ -1,4 +1,11 @@
 language: cpp
+dist: "trusty"
+
+addons:
+  apt:
+    packages:
+      - "python3"
+      - "python3-pip"
 
 compiler:
   - clang
