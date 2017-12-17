@@ -2,9 +2,7 @@ language: cpp
 dist: "trusty"
 sudo: required
 
-compiler:
-  - clang
-  - gcc
+compiler: gcc
 
 before_install:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
