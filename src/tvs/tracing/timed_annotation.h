@@ -45,7 +45,7 @@ class timed_annotation
 public:
   using this_type = timed_annotation;
 
-  timed_annotation(time_type const& duration)
+  timed_annotation(timed_duration const& duration)
     : duration_(duration)
   {
     // set up scope
