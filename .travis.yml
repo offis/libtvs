@@ -18,5 +18,11 @@ before_install:
 
 install:
   - sudo pip3 install meson
+  - mkdir .tmp
+  - curl -L https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-linux.zip -o .tmp/ninja-linux.zip
+  - unzip .tmp/ninja-linux.zip -d .tmp
+
+before_script:
+  - export PATH=$PATH:$PWD/.tmp
 
 script: ./.run-ci-build.sh
