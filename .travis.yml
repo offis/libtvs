@@ -14,7 +14,7 @@ compiler:
 
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y libboost-dev libgtest-dev ninja-build
+  - sudo apt-get install -y libboost-dev libboost-system-dev libgtest-dev ninja-build
 
 install:
   - sudo pip3 install meson
