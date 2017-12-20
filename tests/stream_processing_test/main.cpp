@@ -67,7 +67,7 @@ protected:
     : tb("tb", teststream)
   {
     printer.in(
-      tracing::stream_by_name<double, testbench::traits_type>("tb.add_result"));
+      tracing::stream_by_name<base_type::stream_type>("tb.add_result"));
     sc_start(1, sc_core::SC_US);
 
     std::cout << teststream.str();

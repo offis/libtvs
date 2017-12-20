@@ -84,8 +84,11 @@ public:
 
   void in(const char* name)
   {
-    using traits_type = tracing::timed_event_traits<value_type>;
-    base_type::in(tracing::stream_by_name<value_type, traits_type>(name));
+    using stream_type =
+      tracing::timed_stream<value_type,
+                            tracing::timed_event_traits<value_type>>;
+
+    base_type::in(tracing::stream_by_name<stream_type>(name));
   }
 
 private:

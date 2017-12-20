@@ -29,6 +29,8 @@
 #include "tvs/tracing/timed_stream_base.h"
 #include "tvs/tracing/timed_value.h"
 
+#include "report_msgs.h"
+
 namespace tracing {
 
 template<typename, typename>
@@ -117,13 +119,18 @@ private:
 };
 
 // retrieve a timed_stream<T, Traits> by its hieractical name
-template<typename T, typename Traits>
-tracing::timed_stream<T, Traits>&
+template<typename StreamType>
+StreamType&
 stream_by_name(const char* stream)
 {
-  using stream_type = timed_stream<T, Traits>;
+  using stream_type = StreamType;
   auto str = dynamic_cast<stream_type*>(host::lookup(stream));
-  SYSX_ASSERT(str != nullptr);
+
+  if (str == nullptr) {
+    SYSX_REPORT_ERROR(report::stream_lookup) % stream
+      << "stream type mismatch";
+  }
+
   return *str;
 }
 

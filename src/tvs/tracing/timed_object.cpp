@@ -132,10 +132,21 @@ lookup(const char* name)
 #ifdef SYSX_NO_SYSTEMC
   auto it = object_registry.find(name);
 
-  if (it == object_registry.end())
-    return nullptr;
+  timed_stream_base* str = nullptr;
 
-  return dynamic_cast<timed_stream_base*>(it->second);
+  if (it == object_registry.end()) {
+    SYSX_REPORT_ERROR(report::stream_lookup) % name
+      << "object not found in hierarchy";
+  } else {
+    str = dynamic_cast<timed_stream_base*>(it->second);
+    if (str == nullptr) {
+      SYSX_REPORT_ERROR(report::stream_lookup) % name
+        << "could not cast to timed_stream_base";
+    }
+  }
+
+  return str;
+
 #else
   auto str = dynamic_cast<timed_stream_base*>(sc_core::sc_find_object(name));
 
