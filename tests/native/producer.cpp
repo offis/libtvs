@@ -95,8 +95,9 @@ producer::loop()
   tracing::time_type now;
 
   auto evt_wr = tracing::timed_var(writer_.writer());
+  int loops = 10;
 
-  while (true) {
+  while (loops-- > 0) {
 
     // block until next event arrives
     auto evt = wait_for_event();

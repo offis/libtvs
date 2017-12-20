@@ -125,7 +125,7 @@ protected:
   named_object(const char* nm);
 
   /// protected destructor - no polymorphic destruction
-  virtual ~named_object() /* = default */ {}
+  virtual ~named_object();
 
 private:
   std::string name_;

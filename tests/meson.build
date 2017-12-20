@@ -34,19 +34,21 @@ tests = [
   ['Event Semantics',         'event',         'tv_streams_event_semantics.cpp'],
   ['Custom Traits Semantics', 'custom_traits', 'tv_streams_custom_traits.cpp'],
   ['Sequence Semantics',      'sequence',      'tv_streams_sequence_semantics.cpp'],
-  ['VCD Testbench',           'vcd_testbench', 'stream_processing_test/main.cpp'],
   ]
 
-
-extra_srcs = 'common/gtest_scmain.cpp'
-
 if get_option('with_systemc')
+  tests += [
+    ['VCD Testbench',           'vcd_testbench', 'stream_processing_test/main.cpp']
+    ]
+endif
+
+
+extra_srcs = files('common/gtest_scmain.cpp')
 
 foreach test : tests
-  test(test[0], executable(test[1], test[2], extra_srcs, dependencies: test_deps))
+  sources = [ files(test[2]) ] + extra_srcs
+  test(test[0], executable(test[1], test[2], sources, dependencies: test_deps))
 endforeach
-
-endif
 
 subdir('native')
 

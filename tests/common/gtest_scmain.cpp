@@ -17,8 +17,12 @@
 
 #include "gtest/gtest.h"
 
-extern "C" int
-sc_main(int argc, char** argv)
+int
+#ifdef SYSX_NO_SYSTEMC
+main(int argc, char* argv[])
+#else
+  sc_main(int argc, char* argv[])
+#endif
 {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

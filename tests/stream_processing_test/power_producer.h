@@ -59,7 +59,11 @@ public:
     auto power_value = tracing::timed_var(writer_);
     while (true) {
 
-      sc_core::sc_time duration(rand() % 100, sc_core::SC_NS);
+#ifdef SYSX_NO_SYSTEMC
+      tracing::time_type duration(rand() % 100 * 1.0 * sysx::si::nanoseconds);
+#else
+      tracing::time_type duration(rand() % 100, sc_core::SC_NS);
+#endif
 
       // block-based annotation
       TVS_TIMED_BLOCK(duration)
