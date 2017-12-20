@@ -245,7 +245,6 @@ named_object::named_object(const char* name)
       << "timed_object " << name << " already defined.";
   }
   object_registry[name] = this;
-  std::cout << "registered " << name << "\n";
 }
 
 named_object::~named_object()
