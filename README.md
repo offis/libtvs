@@ -1,5 +1,7 @@
 # Timed-Value Streams
 
+[![Travis](https://travis-ci.org/offis/libtvs.svg?branch=develop)](https://travis-ci.org/offis/libtvs)
+
 The *Timed Value Stream Library* provides an advanced framework for
 instrumentation, pre-processing and recording of functional and extra-functional
 properties in SystemC-based virtual prototyping simulations.
