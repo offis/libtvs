@@ -65,7 +65,7 @@ producer::wait_for_event()
     evt = events::event_one;
   }
 
-  auto duration = std::chrono::microseconds(rand() % 1000000);
+  auto duration = std::chrono::microseconds(rand() % 50000);
   std::this_thread::sleep_for(duration);
 
   return evt;
