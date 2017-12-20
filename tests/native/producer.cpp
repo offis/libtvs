@@ -92,9 +92,8 @@ producer::tstamp()
 void
 producer::loop()
 {
-  using sysx::units::sc_time_cast;
+  tracing::time_type now;
 
-  sysx::units::time_type now;
   auto evt_wr = tracing::timed_var(writer_.writer());
 
   while (true) {
@@ -104,11 +103,11 @@ producer::loop()
     std::set<events> new_evts{ evt };
 
     // How long did we sleep?
-    tracing::timed_duration dur = sc_time_cast(tstamp() - now);
+    tracing::timed_duration dur = tstamp() - tracing::timed_duration(now);
 
     TVS_TIMED_BLOCK(dur) { evt_wr = new_evts; }
 
     writer_.commit(dur);
-    now += sc_time_cast<sysx::units::time_type>(dur);
+    now += tracing::time_type(dur);
   }
 }
