@@ -56,6 +56,9 @@ struct timed_merge_policy_maximum;
 template<typename T>
 struct timed_merge_policy_override;
 
+template<typename T>
+struct timed_merge_policy_union;
+
 /* --------------------------- join policies -------------------------- */
 
 template<typename T>

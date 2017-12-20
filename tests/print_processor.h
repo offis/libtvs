@@ -30,11 +30,12 @@
  * \tparam Traits The traits type of the stream
  */
 template<typename T>
-struct test_printer : public tracing::timed_stream_print_processor<T>
+class test_printer : public tracing::timed_stream_print_processor<T>
 {
   using this_type = test_printer<T>;
   using base_type = tracing::timed_stream_print_processor<T>;
 
+public:
   enum output_type
   {
     OUTPUT_BUFFERED = 0,
@@ -60,6 +61,40 @@ struct test_printer : public tracing::timed_stream_print_processor<T>
 
 private:
   std::stringstream buf_;
+};
+
+template<typename EventT>
+class test_event_printer : public test_printer<std::set<EventT>>
+{
+  using value_type = std::set<EventT>;
+  using this_type = test_event_printer<EventT>;
+  using base_type = test_printer<value_type>;
+
+public:
+  using output_type = typename base_type::output_type;
+  using tuple_type = tracing::timed_value<value_type>;
+
+  using base_type::in;
+
+  test_event_printer(char const* name,
+                     output_type out = base_type::OUTPUT_BUFFERED)
+    : base_type(name, out)
+  {
+  }
+
+  void in(const char* name)
+  {
+    using traits_type = tracing::timed_event_traits<value_type>;
+    base_type::in(tracing::stream_by_name<value_type, traits_type>(name));
+  }
+
+private:
+  virtual void do_print_tuple(std::ostream& out,
+                              tuple_type const& val,
+                              tracing::time_type const& local_time) override
+  {
+    out << "@" << local_time + val.duration() << ": " << val.value() << "\n";
+  }
 };
 
 #endif // PRINT_PROCESSOR_H_INCLUDED_

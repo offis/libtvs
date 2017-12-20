@@ -116,6 +116,7 @@ struct timed_value : public timed_value_base
   void value(value_type const& v) { val_ = v; }
 
   value_type const& value() const { return val_; }
+  value_type& value() { return val_; }
 
   operator value_type const&() const { return value(); }
 

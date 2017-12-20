@@ -29,6 +29,8 @@ template<typename T1, typename T2>
 struct pair;
 template<typename T1, typename Alloc>
 class vector;
+template<typename T, typename Key, typename Alloc>
+class set;
 } // namespace std
 
 namespace tracing {
@@ -332,6 +334,36 @@ struct variant_traits<std::vector<T, Alloc>>
     ret.reserve(lst.size());
     for (; i < lst.size() && lst[i].try_get(cur); ++i)
       ret.push_back(cur);
+
+    return (i == lst.size()) ? (dst.swap(ret), true) : false;
+  }
+};
+
+template<typename T, typename Compare, typename Alloc>
+struct variant_traits<std::set<T, Compare, Alloc>>
+{
+  typedef std::set<T, Compare, Alloc> type; ///< common type alias
+  static bool pack(variant::reference dst, type const& src)
+  {
+    variant_list ret;
+    ret.reserve(src.size());
+
+    for (auto&& i : src)
+      ret.push_back(i);
+    ret.swap(dst.set_list());
+    return true;
+  }
+  static bool unpack(type& dst, variant::const_reference src)
+  {
+    if (!src.is_list())
+      return false;
+
+    variant::const_list_reference lst = src.get_list();
+    type ret;
+    T cur;
+    size_t i = 0;
+    for (; i < lst.size() && lst[i].try_get(cur); ++i)
+      ret.insert(cur);
 
     return (i == lst.size()) ? (dst.swap(ret), true) : false;
   }

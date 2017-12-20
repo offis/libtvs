@@ -80,6 +80,8 @@ struct timed_split_policy_decay
   typedef timed_value<T> tuple_type;
   typedef typename tuple_type::duration_type duration_type;
 
+  /// split the \a old tuple at \a split_at by reducing the duration of \a old
+  /// and returning a new default value as the lhs.
   static tuple_type split(tuple_type& old, duration_type const& split_at)
   {
     SYSX_ASSERT(split_at < old.duration());
@@ -90,8 +92,6 @@ struct timed_split_policy_decay
     // default value for new tuple
     return tuple_type(value_type(), split_at);
   }
-
-  // not implemented, yet
 };
 
 /* --------------------------- merge policies -------------------------- */
@@ -120,6 +120,21 @@ struct timed_merge_policy_accumulate
   {
     SYSX_ASSERT(back.duration() == other.duration());
     back.value(back.value() + other.value());
+  }
+};
+
+template<typename T>
+struct timed_merge_policy_union
+{
+  typedef T value_type;
+  typedef timed_value<T> tuple_type;
+  typedef typename tuple_type::duration_type duration_type;
+
+  static void merge(tuple_type& back, tuple_type const& other)
+  {
+    SYSX_ASSERT(back.duration() == other.duration());
+    auto const& rhs = other.value();
+    back.value().insert(rhs.begin(), rhs.end());
   }
 };
 

@@ -31,6 +31,7 @@ test_deps = [ gtest, libtvs_dep ]
 tests = [
   ['State Semantics',         'state',         'tv_streams_state_semantics.cpp'],
   ['Process Semantics',       'process',       'tv_streams_process_semantics.cpp'],
+  ['Event Semantics',         'event',         'tv_streams_event_semantics.cpp'],
   ['Custom Traits Semantics', 'custom_traits', 'tv_streams_custom_traits.cpp'],
   ['Sequence Semantics',      'sequence',      'tv_streams_sequence_semantics.cpp'],
   ['VCD Testbench',           'vcd_testbench', 'stream_processing_test/main.cpp'],

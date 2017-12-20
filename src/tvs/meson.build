@@ -66,6 +66,7 @@ tracing_headers = files(
   'tracing/timed_variant.h',
   'tracing/timed_writer_base.h',
   'tracing/timed_writer.h',
+  'tracing/timed_event_writer.h',
   'tracing/timed_var.h',
   'tracing/timed_annotation.h',
   )

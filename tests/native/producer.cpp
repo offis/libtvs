@@ -19,6 +19,8 @@
 
 #include "producer.h"
 
+#include "epoch.h"
+
 #include <chrono>
 #include <iostream>
 #include <thread>
@@ -42,8 +44,8 @@ operator<<(std::ostream& out, producer::events const& e)
 
 producer::producer()
   : base_type("producer")
-  , writer_("my_state_writer", tracing::STREAM_CREATE)
-  , start_(clock_type::now())
+  , writer_("my_event_writer", tracing::STREAM_CREATE)
+  , start_(get_epoch())
 {
 }
 
@@ -63,44 +65,50 @@ producer::wait_for_event()
     evt = events::event_one;
   }
 
-  auto duration = std::chrono::milliseconds(rand() % 100);
+  auto duration = std::chrono::microseconds(rand() % 1000000);
   std::this_thread::sleep_for(duration);
 
   return evt;
 }
 
-tracing::duration_type
-producer::elapsed()
+sysx::units::time_type
+producer::tstamp()
 {
   using namespace std::chrono;
 
+  // use nanoseconds since this day 0:00 UTC
+
   // get the current time elapsed since instantiating this obj.  Ideally we
-  // would use the time elapsed since the epoch (1. jan 1970), but then the
-  // uint64 overflows.
+  // would use the time elapsed since some absolute point in time (e.g. unix
+  // epoch start) , but then the uint64 overflows since we are using a higher
+  // resolution.
   auto now = duration_cast<nanoseconds>(clock_type::now() - start_);
 
   auto dur = (1.0 * now.count()) * sysx::si::nanoseconds;
 
-  return tracing::duration_type(dur) - this->local_time();
+  return dur;
 }
 
 void
 producer::loop()
 {
+  using sysx::units::sc_time_cast;
+
+  sysx::units::time_type now;
+  auto evt_wr = tracing::timed_var(writer_.writer());
 
   while (true) {
 
     // block until next event arrives
     auto evt = wait_for_event();
+    std::set<events> new_evts{ evt };
 
-    // How much time has elapsed since our last activity?
-    auto dur = elapsed();
+    // How long did we sleep?
+    tracing::timed_duration dur = sc_time_cast(tstamp() - now);
 
-    writer_.push(events::idle, dur);
-    writer_.push(evt, tracing::timed_duration::zero_time);
+    TVS_TIMED_BLOCK(dur) { evt_wr = new_evts; }
+
     writer_.commit(dur);
-
-    // advance this processor's local time according to the wallclock time
-    this->commit(dur);
+    now += sc_time_cast<sysx::units::time_type>(dur);
   }
 }

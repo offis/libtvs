@@ -42,26 +42,27 @@ struct producer : public tracing::timed_object
 
   void run();
 
-  tracing::timed_writer<events> writer_;
+  tracing::timed_event_writer<events> writer_;
+
+  /// the starting time of this processor
+  std::chrono::time_point<clock_type> start_;
 
 private:
   events wait_for_event();
 
-  tracing::duration_type elapsed();
+  sysx::units::time_type tstamp();
 
   void loop();
-
-  /// the starting time of this processor
-  std::chrono::time_point<clock_type> start_;
 };
 
-std::ostream& operator<<(std::ostream& out, producer::events const& e);
+std::ostream&
+operator<<(std::ostream& out, producer::events const& e);
 
 namespace sysx {
 namespace utils {
 
 // Provide variant support for our custom type
-template <>
+template<>
 struct variant_traits<producer::events>
 {
   using type = producer::events;

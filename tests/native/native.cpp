@@ -13,13 +13,13 @@ sc_main(int argc, char* argv[])
 #endif
 {
 
-  using printer_type = ::test_printer<producer::events>;
+  using printer_type = ::test_event_printer<producer::events>;
 
   printer_type printer("my_printer", printer_type::OUTPUT_COUT);
 
   producer prod;
 
-  printer.in(prod.writer_);
+  printer.in(prod.writer_.name());
 
   prod.run();
 

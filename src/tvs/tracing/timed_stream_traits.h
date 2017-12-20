@@ -48,6 +48,16 @@ struct timed_state_traits
   typedef timed_merge_policy_error<value_type> merge_policy;
 };
 
+template<typename T>
+struct timed_event_traits
+{
+  typedef T value_type;
+  typedef timed_empty_policy_default<value_type> empty_policy;
+  typedef timed_split_policy_decay<value_type> split_policy;
+  typedef timed_join_policy_separate<value_type> join_policy;
+  typedef timed_merge_policy_union<value_type> merge_policy;
+};
+
 } // namespace tracing
 
 #endif // TVS_TIMED_STREAM_TRAITS_H_INCLUDED_
