@@ -92,10 +92,10 @@ TEST_F(StreamEventSemantics, PartialCommit)
   // Push two events to an absolute time point which need to be 'merged'
   tracing::time_type abs{ dur };
   writer.push(0, abs);
-  writer.push(10, abs / 2);
+  writer.push(10, abs / 2.0);
 
   // note that we use the absolute time commit interface here
-  writer.commit(abs / 2);
+  writer.commit(abs / 2.0);
   writer.commit(abs);
 
   // a split/merge results in decaying of the old event value to the 'right'
@@ -110,7 +110,7 @@ TEST_F(StreamEventSemantics, SplitMergeSemantics)
   // Push two events to an absolute time point which need to be 'merged'
   tracing::time_type abs{ dur };
   writer.push(0, abs);
-  writer.push(10, abs / 2);
+  writer.push(10, abs / 2.0);
   writer.commit();
 
   // a split/merge results in decaying of the old event value to the 'right'
@@ -126,8 +126,8 @@ TEST_F(StreamEventSemantics, SplitMergeSemanticsTwo)
   tracing::time_type abs{ dur };
   writer.push(0, abs);
   writer.push(5, abs);
-  writer.push(10, abs / 2);
-  writer.push(10, abs / 4);
+  writer.push(10, abs / 2.0);
+  writer.push(10, abs / 4.0);
   writer.commit();
 
   // we expect to have the events ordered correctly
@@ -141,8 +141,8 @@ TEST_F(StreamEventSemantics, SplitMergeSemanticsThree)
   tracing::time_type abs{ dur };
   writer.push(0, abs);
   writer.push(5, abs);
-  writer.push(10, abs / 2);
-  writer.push(10, abs / 4);
+  writer.push(10, abs / 2.0);
+  writer.push(10, abs / 4.0);
 
   // now, push again over the whole 'duration'
   writer.push(10, abs);
@@ -159,15 +159,15 @@ TEST_F(StreamEventSemantics, SplitMergeCommitSemantics)
   tracing::time_type abs{ dur };
   writer.push(0, abs);
   writer.push(5, abs);
-  writer.push(10, abs / 2);
-  writer.push(10, abs / 4);
+  writer.push(10, abs / 2.0);
+  writer.push(10, abs / 4.0);
 
   // now further split the stream by performing partial commits
-  writer.commit(dur / 8);
-  writer.commit(dur / 8);
+  writer.commit(dur / 8.0);
+  writer.commit(dur / 8.0);
 
-  writer.commit(dur / 4);
-  writer.commit(dur / 4);
+  writer.commit(dur / 4.0);
+  writer.commit(dur / 4.0);
 
   // the last commit should update up to the last event of the pushed events
   writer.commit();
