@@ -46,9 +46,11 @@ SC_MODULE(testbench)
     , proc_plus("proc_plus")
     , add_result("add_result")
   {
+    // clang-format off
     vcd.add<double, traits_type>("power_from_p1", "p1.my_power_writer", "real", 31);
     vcd.add<double, traits_type>("power_from_p2", "p2.my_power_writer", "real", 31);
     vcd.add<double, traits_type>("power_from_p3", "p3.my_power_writer", "real", 31);
+    // clang-format on
 
     proc_plus.in("p1.my_power_writer");
     proc_plus.in("p2.my_power_writer");
@@ -59,6 +61,8 @@ SC_MODULE(testbench)
 struct StreamProcessorVCDTests
   : public timed_stream_fixture<double, testbench::traits_type>
 {
+  using base_type = timed_stream_fixture<double, testbench::traits_type>;
+
 protected:
   testbench tb;
   std::stringstream teststream;
