@@ -46,13 +46,13 @@ TEST_F(SequenceSemantics, CheckFront)
 {
   sequence_type seq1;
   seq1.push_front(0, dur);
-  EXPECT_EQ(0, seq1.front());
+  EXPECT_EQ(0, seq1.front().value());
 
   seq1.front(1, dur);
-  EXPECT_EQ(1, seq1.front());
+  EXPECT_EQ(1, seq1.front().value());
 
   seq1.front(2);
-  EXPECT_EQ(2, seq1.front());
+  EXPECT_EQ(2, seq1.front().value());
 
   tuple_type tup(1, dur * 2);
   seq1.front(tup);
@@ -66,7 +66,7 @@ TEST_F(SequenceSemantics, CheckBack)
 {
   sequence_type seq1;
   seq1.push_back(0, dur);
-  EXPECT_EQ(0, seq1.back());
+  EXPECT_EQ(0, seq1.back().value());
 
   tuple_type tup(1, dur * 2);
   seq1.back(tup);

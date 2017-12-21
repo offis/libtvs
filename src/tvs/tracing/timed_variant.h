@@ -40,11 +40,6 @@ class timed_variant : public timed_value<sysx::utils::variant>
   typedef timed_value<sysx::utils::variant> base_type;
 
 public:
-  void operator=(base_type const& rhs)
-  {
-    this->value(rhs.value());
-    this->duration(rhs.duration());
-  }
 
   /** \name constructors */
   ///\{
@@ -85,45 +80,44 @@ public:
 namespace sysx {
 namespace utils {
 
-#define VARIANT_TRAITS_DERIVED_(UnderlyingType, SpecializedType)               \
-  template<>                                                                   \
-  struct variant_traits<SpecializedType>                                       \
-    : variant_traits_convert<SpecializedType, UnderlyingType>                  \
-  {                                                                            \
-  }
-
-VARIANT_TRAITS_DERIVED_(tracing::timed_value<sysx::utils::variant>,
-                        tracing::timed_variant);
-
-#undef VARIANT_TRAITS_DERIVED_
-
-#if 0
-template <>
+template<>
 struct variant_traits<tracing::timed_variant>
 {
   typedef tracing::timed_variant type;
-  typedef tracing::timed_value<sysx::utils::variant> tv_type;
-
-  typedef variant_traits<tv_type> variant_type;
 
   static bool pack(variant::reference dst, type const& src)
   {
-    tv_type tuple(src.value(), src.duration());
-    return variant_type::pack(dst, tuple);
-  }
+    variant_list ret;
+    variant::list_reference dst_list = dst.set_list();
 
+    ret.push_back(src.value());
+    ret.push_back(src.duration());
+    ret.swap(dst_list);
+
+    return true;
+  }
   static bool unpack(type& dst, variant::const_reference src)
   {
-    tv_type tuple;
-    if (variant_type::unpack(tuple, src)) {
-      dst.value(tuple.value());
-      dst.duration(tuple.duration());
-      return true;
-    }
+    if (!src.is_list())
+      return false;
+
+    variant::const_list_reference src_list = src.get_list();
+    if (src_list.size() != 2)
+      return false;
+
+    // variant type, no try_*
+    dst.value(src_list[0]);
+
+    tracing::duration_type dur;
+
+    if (!src_list[1].try_get(dur))
+      return false;
+
+    dst.duration(dur);
+
+    return true;
   }
 };
-
-#endif
 
 } // namespace utils
 } // namespace sysx

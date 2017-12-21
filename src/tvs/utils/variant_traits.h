@@ -131,32 +131,13 @@ struct variant_traits_disabled
 
 // clang-format off
 template<typename T> struct variant_traits<T*>      { /* disabled */ };
-
+template<> struct variant_traits<variant>           { /* disabled */ };
 template<> struct variant_traits<variant_cref>      { /* disabled */ };
 template<> struct variant_traits<variant_ref>       { /* disabled */ };
 template<> struct variant_traits<variant_list>      { /* disabled */ };
 template<> struct variant_traits<variant_list_cref> { /* disabled */ };
 template<> struct variant_traits<variant_list_ref>  { /* disabled */ };
 // clang-format on
-
-template<>
-struct variant_traits<variant>
-{
-
-  typedef variant type;
-
-  static bool pack(variant::reference dst, type const& src)
-  {
-    dst = src;
-    return true;
-  }
-
-  static bool unpack(type& dst, variant::const_reference src)
-  {
-    dst = src;
-    return true;
-  }
-};
 
 // ---------------------------------------------------------------------------
 /// helper to convert compatible types (implementation artefact)

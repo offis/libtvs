@@ -103,7 +103,7 @@ protected:
 
     result = boost::accumulate(this->inputs() | transformed([&dur](auto& rd) {
                                  auto& reader = static_cast<reader_type&>(*rd);
-                                 return reader.front(dur);
+                                 return reader.front(dur).value();
                                }),
                                result,
                                binop_type());

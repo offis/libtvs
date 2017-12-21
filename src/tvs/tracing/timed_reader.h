@@ -89,20 +89,21 @@ public:
       buf_.split(dur);
     }
 
-    return buf_.front();
+    return front();
   }
 
   timed_variant front_variant() const
   {
-    return timed_variant(buf_.front(), front_duration());
+    return timed_variant(buf_.front().value(), front_duration());
   }
+
   timed_variant front_variant(duration_type const& dur)
   {
     if (front_duration() > dur) {
       buf_.split(dur);
     }
 
-    return timed_variant(buf_.front().value(), front_duration());
+    return front_variant();
   }
 
   /** \name const tuple iterators */
