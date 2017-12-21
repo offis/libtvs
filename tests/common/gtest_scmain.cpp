@@ -17,7 +17,7 @@
 
 #include "gtest/gtest.h"
 
-int
+extern "C" int
 #ifdef SYSX_NO_SYSTEMC
 main(int argc, char* argv[])
 #else
