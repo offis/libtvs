@@ -42,9 +42,9 @@ operator<<(std::ostream& out, producer::events const& e)
   return out << cached.at(e);
 }
 
-producer::producer()
-  : base_type("producer")
-  , writer_("my_event_writer", tracing::STREAM_CREATE)
+producer::producer(char const* name)
+  : base_type(name)
+  , writer_("producer_writer", tracing::STREAM_CREATE)
   , start_(get_epoch())
 {
 }

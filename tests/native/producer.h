@@ -38,11 +38,15 @@ struct producer : public tracing::timed_object
     event_two,
   };
 
-  producer();
+  using writer_type = tracing::timed_event_writer<events>;
+  using stream_type = writer_type::stream_type;
+
+
+  producer(char const* name = "producer");
 
   void run();
 
-  tracing::timed_event_writer<events> writer_;
+  writer_type writer_;
 
   /// the starting time of this processor
   std::chrono::time_point<clock_type> start_;
