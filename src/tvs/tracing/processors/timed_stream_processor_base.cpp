@@ -37,13 +37,6 @@ timed_stream_processor_base::timed_stream_processor_base(const char* name)
   : base_type(name)
 {}
 
-timed_stream_processor_base::writer_base_type&
-timed_stream_processor_base::output()
-{
-  SYSX_ASSERT(output_);
-  return *output_.get();
-}
-
 void
 timed_stream_processor_base::notify(reader_base_type&)
 {
@@ -74,8 +67,8 @@ timed_stream_processor_base::notify(reader_base_type&)
 timed_stream_processor_base::duration_type
 timed_stream_processor_base::do_commit(duration_type until)
 {
-  if (output_)
-    output_->commit(until);
+  for (auto&& out : outputs())
+    out->commit(until);
 
   return until;
 }
@@ -90,7 +83,7 @@ timed_stream_processor_base::do_add_input(reader_ptr_type&& reader)
 void
 timed_stream_processor_base::do_add_output(writer_ptr_type&& writer)
 {
-  output_ = std::move(writer);
+  outputs_.emplace_back(std::move(writer));
 }
 
 } // namespace tracing

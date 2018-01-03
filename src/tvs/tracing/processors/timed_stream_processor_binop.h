@@ -108,9 +108,10 @@ protected:
                                result,
                                binop_type());
 
-    auto& wr = static_cast<writer_type&>(this->output());
-
-    wr.push(result, dur);
+    for (auto&& out : this->outputs()) {
+      auto& wr = static_cast<writer_type&>(*out);
+      wr.push(result, dur);
+    }
 
     for (auto&& i : this->inputs()) {
       i->pop();
