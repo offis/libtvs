@@ -15,7 +15,7 @@
 # limitations under the License.
 
 
-gtest = dependency('gtest', main: false, required: false)
+gtest = dependency('gtest', required: false)
 
 # unfortunately, gtest wrap file does not declare a dependency
 if not gtest.found()
