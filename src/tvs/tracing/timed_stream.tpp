@@ -59,8 +59,15 @@ timed_stream<T, Traits>::merge_future(sequence_type&& other)
     if (seq_a->front_duration() < seq_b->front_duration())
       std::swap(seq_a, seq_b);
 
-    // split the front tuple of A
-    seq_a->split(seq_b->front_duration());
+    // special case: handle 'split' at 0
+    if (seq_b->front_duration() == duration_type::zero_time) {
+      tuple_type zero_front = seq_a->front();
+      zero_front.duration(duration_type::zero_time);
+      seq_a->push_front(zero_front);
+    } else {
+      // split the front tuple of A
+      seq_a->split(seq_b->front_duration());
+    }
 
     tuple_type a_front = seq_a->front();
     merge_policy::merge(a_front, seq_b->front());
