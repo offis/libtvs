@@ -117,9 +117,15 @@ public:
   // ---------------------------------------------------------------------
   /** \name sub-range interface */
   ///\{
-  range_type before(duration_type const& until) { return buf_.before(until); }
+  range_type before(duration_type const& until)
+  {
+    buf_.split(until);
+    return buf_.before(until);
+  }
+
   const_range_type before(duration_type const& until) const
   {
+    buf_.split(until);
     return buf_.before(until);
   }
   const_range_type cbefore(duration_type const& until) const
@@ -127,9 +133,14 @@ public:
     return before(until);
   }
 
-  range_type range(duration_type const& until) { return buf_.range(until); }
+  range_type range(duration_type const& until)
+  {
+    buf_.split(until);
+    return buf_.range(until);
+  }
   const_range_type range(duration_type const& until) const
   {
+    buf_.split(until);
     return buf_.range(until);
   }
   const_range_type crange(duration_type const& until) const
@@ -139,11 +150,15 @@ public:
 
   range_type range(duration_type const& from, duration_type const& to)
   {
+    buf_.split(from);
+    buf_.split(to);
     return buf_.range(from, to);
   }
   const_range_type range(duration_type const& from,
                          duration_type const& to) const
   {
+    buf_.split(from);
+    buf_.split(to);
     return buf_.range(from, to);
   }
   const_range_type crange(duration_type const& from,
