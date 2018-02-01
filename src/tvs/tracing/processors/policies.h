@@ -70,8 +70,11 @@ protected:
   void process(timed_reader_base& in, timed_duration const& dur)
   {
     SYSX_ASSERT(output_ != nullptr);
-    auto val = static_cast<tuple_type const&>(in.front(dur));
-    this->do_print_tuple(*output_, val, in.local_time());
+    while (in.available()) {
+      auto val = static_cast<tuple_type const&>(in.front());
+      this->do_print_tuple(*output_, val, in.local_time());
+      in.pop();
+    }
   }
 
 private:

@@ -57,11 +57,13 @@ timed_stream_processor_base::notify(reader_base_type&)
     auto duration = (*stream)->front_duration();
 
     // let the user process all readers with the minimum front duration
-    consumed += process(duration);
+    auto advance = process(duration);
 
     // wait until next token arrives when no duration was returned
-    if (consumed == duration_type::zero_time)
-      return;
+    if (advance == duration_type::zero_time)
+      break;
+
+    consumed += advance;
   }
 
   // update this stream processor's local time after processing

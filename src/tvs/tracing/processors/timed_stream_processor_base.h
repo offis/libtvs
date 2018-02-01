@@ -202,7 +202,6 @@ protected:
   {
     for (auto&& in : inputs()) {
       policy_type::process(*in, dur);
-      in->pop_duration(dur);
     }
     return dur;
   }
