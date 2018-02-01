@@ -146,8 +146,13 @@ template<typename T, typename P>
 void
 timed_stream<T, P>::do_pre_commit_reader(duration_type const& dur)
 {
+
+  // do we need to prepare anything at all?
+  if (dur == duration())
+    return;
+
   // check if we can just split inside existing buffer
-  if (dur <= duration()) {
+  if (dur < duration()) {
     buf_.split(dur);
     return;
   }
@@ -177,6 +182,9 @@ timed_stream<T, P>::do_commit_reader(timed_reader_base& r,
 {
   typedef timed_reader<T, P> reader_type;
   reader_type& reader = static_cast<reader_type&>(r);
+
+  if (dur == duration_type::zero_time)
+    return;
 
   bool new_window = reader.buf_.empty();
 
