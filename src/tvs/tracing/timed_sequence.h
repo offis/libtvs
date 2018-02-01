@@ -244,14 +244,19 @@ public:
     buf_.pop_front();
   }
 
-  /// remove front of the sequence for a given duration
+  /// remove front of the sequence for a given duration.  In case of a zero-time
+  /// duration, the first tuple is popped if it is a zero-time tuple.
+  /// Otherwise, all elements up to the given duration are removed, excluding
+  /// any zero-time tuples at the end of the duration interval.
   duration_type pop_front(duration_type d)
   {
     SYSX_ASSERT(!empty());
 
-    if (d == duration_type::zero_time) {
-      buf_.pop_front();
-      return d;
+    if (d == buf_.front().duration()) {
+      if (d == duration_type::zero_time) {
+        pop_front();
+        return d;
+      }
     }
 
     iterator it = buf_.begin();
