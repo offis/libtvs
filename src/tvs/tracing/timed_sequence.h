@@ -259,9 +259,11 @@ public:
       }
     }
 
-    iterator it = buf_.begin();
+    auto it = buf_.begin();
+    // don't remove zero-time tuples on the 'edge'
     while (it != buf_.end() && d >= it->duration()) {
-      if (d == duration_type::zero_time)
+      if (d == duration_type::zero_time &&
+          it->duration() == duration_type::zero_time)
         break;
       d -= it->duration();
       del_duration(it->duration());
