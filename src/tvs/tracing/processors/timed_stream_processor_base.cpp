@@ -58,6 +58,10 @@ timed_stream_processor_base::notify(reader_base_type&)
 
     // let the user process all readers with the minimum front duration
     consumed += process(duration);
+
+    // wait until next token arrives when no duration was returned
+    if (consumed == duration_type::zero_time)
+      return;
   }
 
   // update this stream processor's local time after processing
