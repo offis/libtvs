@@ -156,7 +156,7 @@ lookup(const char* name)
     if (scope) {
       std::stringstream lname;
       lname << scope->name() << sc_core::SC_HIERARCHY_CHAR << name;
-      str = host::lookup(lname.str().c_str());
+      str = dynamic_cast<timed_stream_base*>(sc_core::sc_find_object(lname.str().c_str()));
     }
 
     if (!str) {
