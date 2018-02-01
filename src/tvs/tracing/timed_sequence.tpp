@@ -109,10 +109,16 @@ void
 timed_sequence<T, Traits>::split(duration_type const& offset)
 {
   SYSX_ASSERT(!offset.is_infinite() && "Cannot split at infinite offset.");
+  SYSX_ASSERT(offset <= this->duration() &&
+              "Cannot split beyond sequence duration.");
+
+  // empty sequence split semantics
+  if (this->empty())
+    return;
 
   auto srange = this->range(this->before(offset).duration(), offset);
 
-  // check if we need to do anything
+  // is there already a split at the offset?
   if (srange.offset() == offset)
     return;
 
