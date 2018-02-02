@@ -30,6 +30,8 @@
 
 #include "tvs/tracing/processors/timed_stream_processor_base.h"
 
+#include "tvs/tracing/processors/vcd_traits.h"
+
 #include "tvs/tracing/timed_reader_base.h"
 #include "tvs/tracing/timed_stream_base.h"
 #include "tvs/tracing/timed_writer_base.h"
@@ -44,6 +46,89 @@
 
 namespace tracing {
 
+struct vcd_stream_container_base
+{
+  using reader_base_type = timed_reader_base;
+
+  explicit vcd_stream_container_base(char id)
+    : id_(id)
+  {}
+
+  virtual void header_defn(std::ostream&) const = 0;
+  virtual void print_value(std::ostream&, duration_type const&) = 0;
+  virtual void default_value(std::ostream& out) const = 0;
+
+  virtual reader_base_type& reader() = 0;
+
+  virtual char const* scope() const = 0;
+
+  virtual ~vcd_stream_container_base() {}
+
+protected:
+  char id_;
+};
+
+template<typename StreamType>
+struct vcd_stream_container : vcd_stream_container_base
+{
+  using reader_type = typename StreamType::reader_type;
+  using value_type = typename StreamType::value_type;
+
+  using traits_type = vcd_traits<value_type>;
+
+  using base_type = vcd_stream_container_base;
+
+  vcd_stream_container(reader_type& reader, char id)
+    : base_type(id)
+    , reader_(reader)
+  {}
+
+private:
+  void header_defn(std::ostream& out) const override
+  {
+    // clang-format off
+    out << "$var "
+        << traits_type::header_identifier_value << " "
+        << traits_type::bitwidth_value << " "
+        << this->id_ << " "
+        << this->reader_.stream().name() << " $end\n";
+    // clang-format on
+  }
+
+  char const* scope() const override
+  {
+    return this->reader_.stream().get_parent_object()->name();
+  }
+
+  reader_base_type& reader() override { return reader_; }
+
+  void default_value(std::ostream& out) const override
+  {
+    do_print_val(out, value_type());
+  }
+
+  void print_value(std::ostream& out, duration_type const& dur) override
+  {
+    value_type val = this->reader_.front(dur).value();
+    do_print_val(out, val);
+  }
+
+  void do_print_val(std::ostream& out, value_type const& val) const
+  {
+    if (traits_type::bitwidth_value == 1) {
+      traits_type::print(out, val);
+    } else {
+      out << traits_type::trace_identifier_value;
+      traits_type::print(out, val);
+      out << " ";
+    }
+
+    out << this->id_ << "\n";
+  }
+
+  reader_type& reader_;
+};
+
 /**
  * \brief Simple stream sink for printing values to an output stream.
  *
@@ -56,60 +141,48 @@ struct timed_stream_vcd_processor : timed_stream_processor_base
   using base_type = timed_stream_processor_base;
 
   using reader_type = tracing::timed_reader_base;
-  using duration_type = typename base_type::duration_type;
+
+  using vcd_stream_ptr_type = std::unique_ptr<vcd_stream_container_base>;
 
 public:
   timed_stream_vcd_processor(char const* name,
                              std::ostream& out,
-                             char vcd_start_signal = 'a');
+                             char vcd_start_signal = 33);
 
   ~timed_stream_vcd_processor();
 
-  /// FIXME: refactor with generic base interface
-  template<typename T, typename Policy>
-  void add(std::string name,
-           tracing::timed_stream<T, Policy> const& stream,
-           std::string type,
-           unsigned int bitwidth)
+  template<typename T, typename Traits>
+  void add(timed_stream<T, Traits>& stream)
   {
-    this->add<T, Policy>(name, stream.name(), type, bitwidth);
-  }
+    using stream_type = timed_stream<T, Traits>;
+    using reader_type = timed_reader<T, Traits>;
+    using container_type = vcd_stream_container<stream_type>;
 
-  /// FIXME: refactor with generic base interface
-  template<typename T, typename Policy>
-  void add(const char* name,
-           const char* stream_name,
-           std::string type,
-           unsigned int bitwidth)
-  {
-    using reader_type = tracing::timed_reader<T, Policy>;
+    std::stringstream ss;
+    ss << "vcd_reader_" << stream.basename();
+    auto reader = std::make_unique<reader_type>(ss.str().c_str(), stream);
 
-    std::stringstream vcd_reader_name;
-    vcd_reader_name << "reader_" << name;
+    vcd_streams_.emplace_back(
+      std::make_unique<container_type>(*reader, vcd_id_++));
 
-    auto reader = detail::make_unique<reader_type>(
-      vcd_reader_name.str().c_str(), stream_name);
-
-    this->add_vcd(reader.get(), name, type, bitwidth);
+    // move the reader (including ownership) to the backend of the processor,
+    // making it sensitive to the committed values
     this->do_add_input(std::move(reader));
   }
 
-protected:
-  duration_type process(duration_type dur) override;
-
 private:
-  void add_vcd(reader_base_type* reader,
-               const char* name,
-               std::string type,
-               unsigned int bitwidth);
+  duration_type process(duration_type dur) override;
 
   void write_header();
 
-  struct timed_stream_vcd_impl;
-  const std::unique_ptr<timed_stream_vcd_impl> pimpl_;
+  std::vector<vcd_stream_ptr_type> vcd_streams_;
 
   std::ostream& out_;
+  char vcd_id_;
   bool header_written_;
+
+  // use boost
+  sysx::units::time_type scale_;
 };
 
 } // namespace tracing
