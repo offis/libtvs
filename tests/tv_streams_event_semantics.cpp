@@ -40,7 +40,6 @@ protected:
   StreamEventSemantics()
     : base_type()
     , writer("writer", tracing::STREAM_CREATE)
-    , printer("printer")
   {
     printer.in(writer.name());
   }

@@ -12,10 +12,10 @@
 
 namespace tracing {
 
-timed_stream_vcd_processor::timed_stream_vcd_processor(char const* name,
+timed_stream_vcd_processor::timed_stream_vcd_processor(char const* modscope,
                                                        std::ostream& out,
                                                        char vcd_start_signal)
-  : base_type(name)
+  : named_object(modscope)
   , out_(out)
   , vcd_id_(vcd_start_signal)
   , header_written_(false)

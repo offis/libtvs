@@ -54,7 +54,7 @@ class timed_stream;
 /// streams.
 ///
 struct timed_stream_processor_base
-  : public timed_object
+  : public timed_base
   , public timed_listener_if
 {
   using base_type = timed_object;
@@ -89,7 +89,7 @@ struct timed_stream_processor_base
   void out(timed_stream<T, Traits>&);
 
 protected:
-  timed_stream_processor_base(const char*);
+  timed_stream_processor_base();
 
   /// Returns a reference to the container of all attached input readers.
   reader_collection_type& inputs() { return inputs_; }
@@ -192,9 +192,7 @@ class timed_stream_processor
   using base_type = timed_stream_processor_base;
 
 public:
-  timed_stream_processor(char const* name)
-    : base_type(name)
-  {}
+  timed_stream_processor() = default;
 
 protected:
   // apply policy_type::process() on all input readers.
