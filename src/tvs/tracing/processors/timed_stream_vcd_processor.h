@@ -50,7 +50,7 @@ namespace tracing {
  * \tparam T The type of the timed_value
  * \tparam Traits The traits type of the stream
  */
-struct timed_stream_vcd_processor : timed_stream_processor_base
+struct timed_stream_vcd_processor : timed_stream_processor_base, named_object
 {
   using this_type = timed_stream_vcd_processor;
   using base_type = timed_stream_processor_base;
@@ -59,7 +59,7 @@ struct timed_stream_vcd_processor : timed_stream_processor_base
   using duration_type = typename base_type::duration_type;
 
 public:
-  timed_stream_vcd_processor(char const* name,
+  timed_stream_vcd_processor(char const* modscope,
                              std::ostream& out,
                              char vcd_start_signal = 'a');
 

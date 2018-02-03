@@ -67,7 +67,7 @@ struct timed_stream_fixture : public timed_stream_fixture_b
   timed_stream_fixture()
     : base_type()
     , writer("writer", tracing::STREAM_CREATE)
-    , printer("printer")
+    , printer()
     , reader("reader", writer.name())
   {
     printer.in(writer);

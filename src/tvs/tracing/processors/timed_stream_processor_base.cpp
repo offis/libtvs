@@ -33,9 +33,7 @@
 
 namespace tracing {
 
-timed_stream_processor_base::timed_stream_processor_base(const char* name)
-  : base_type(name)
-{}
+timed_stream_processor_base::timed_stream_processor_base() = default;
 
 void
 timed_stream_processor_base::notify(reader_base_type&)

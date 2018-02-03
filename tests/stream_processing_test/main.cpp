@@ -43,7 +43,7 @@ SC_MODULE(testbench)
     , p2("p2", 4, 5, 6)
     , p3("p3", 7, 8, 9)
     , vcd("sink", out)
-    , proc_plus("proc_plus")
+    , proc_plus()
     , add_result("add_result")
   {
     // clang-format off

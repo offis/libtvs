@@ -95,10 +95,10 @@ private:
   std::vector<vcd_reader> vcd_readers_;
 };
 
-timed_stream_vcd_processor::timed_stream_vcd_processor(char const* name,
+timed_stream_vcd_processor::timed_stream_vcd_processor(char const* modscope,
                                                        std::ostream& out,
                                                        char vcd_start_signal)
-  : base_type(name)
+  : named_object(modscope)
   , pimpl_(detail::make_unique<timed_stream_vcd_impl>(this, vcd_start_signal))
   , out_(out)
   , header_written_(false)

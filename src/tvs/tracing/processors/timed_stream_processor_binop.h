@@ -70,9 +70,7 @@ struct timed_stream_binop_processor : timed_stream_processor_base
   using binop_type = BinaryOperation;
   using output_type = typename binop_type::result_type;
 
-  timed_stream_binop_processor(char const* name)
-    : base_type(name)
-  {}
+  timed_stream_binop_processor() = default;
 
   using base_type::in;
   using base_type::out;

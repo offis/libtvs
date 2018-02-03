@@ -42,9 +42,8 @@ public:
     OUTPUT_COUT,
   };
 
-  test_printer(char const* name, output_type out = OUTPUT_BUFFERED)
-    : base_type(name)
-    , buf_()
+  test_printer(output_type out = OUTPUT_BUFFERED)
+    : buf_()
   {
     base_type::set_ostream(out == OUTPUT_COUT ? std::cout : buf_);
   }
@@ -76,9 +75,8 @@ public:
 
   using base_type::in;
 
-  test_event_printer(char const* name,
-                     output_type out = base_type::OUTPUT_BUFFERED)
-    : base_type(name, out)
+  test_event_printer(output_type out = base_type::OUTPUT_BUFFERED)
+    : base_type(out)
   {
   }
 

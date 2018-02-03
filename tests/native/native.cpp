@@ -15,7 +15,7 @@ sc_main(int argc, char* argv[])
 
   using printer_type = ::test_event_printer<producer::events>;
 
-  printer_type printer("my_printer", printer_type::OUTPUT_COUT);
+  printer_type printer(printer_type::OUTPUT_COUT);
 
   producer prod;
 
