@@ -44,6 +44,22 @@ max_time();
 bool
 is_infinite(time_type const& time);
 
+#if defined(SYSX_NO_SYSTEMC)
+
+template<typename T>
+T
+sc_time_cast(const time_type& t);
+
+template<>
+inline time_type
+sc_time_cast(const time_type& t)
+{
+  return t;
+}
+
+#endif
+
+
 } // namespace units
 
 namespace si {

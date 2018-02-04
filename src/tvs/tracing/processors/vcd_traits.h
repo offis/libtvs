@@ -25,6 +25,7 @@
 
 #include <ostream>
 #include <iomanip>
+#include <climits>
 
 template<typename T>
 struct vcd_traits
