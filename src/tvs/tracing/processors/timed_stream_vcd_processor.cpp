@@ -55,7 +55,7 @@ timed_stream_vcd_processor::process(duration_type /* unused */)
     header_written_ = true;
   }
 
-  auto scaled =
+  unsigned long scaled =
     sysx::units::sc_time_cast<sysx::units::time_type>(this->local_time()) /
     scale_;
 
