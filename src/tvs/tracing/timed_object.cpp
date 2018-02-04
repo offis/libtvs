@@ -68,7 +68,7 @@ sync_with_model(time_type until)
 #ifndef SYSX_NO_SYSTEMC
     SYSX_REPORT_WARNING(sysx::report::plain_msg)
       << "Setting sc_core::wait as the default synchronisation function.";
-    sync_fn = [](time_type const& until) { ::sc_core::wait(until); };
+    sync_fn = [](time_type const& until) { ::sc_core::wait(until - sc_core::sc_time_stamp()); };
 #else
     SYSX_REPORT_FATAL(sysx::report::plain_msg)
       << "Cannot synchronise: no sync method specified."
