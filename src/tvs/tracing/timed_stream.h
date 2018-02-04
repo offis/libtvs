@@ -74,7 +74,7 @@ public:
 
   virtual duration_type duration() const { return buf_.duration(); }
 
-  void print(std::ostream& os = std::cout) const;
+  void print(std::ostream& os = std::cout) const override;
 
   friend std::ostream& operator<<(std::ostream& os, this_type const& t)
   {

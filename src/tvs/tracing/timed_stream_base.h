@@ -55,6 +55,14 @@ public:
   time_type end_time() const { return local_time() + duration(); }
   virtual duration_type duration() const = 0;
 
+  virtual void print(std::ostream& os = std::cout) const = 0;
+
+  friend std::ostream& operator<<(std::ostream& os, timed_stream_base const& t)
+  {
+    t.print(os);
+    return os;
+  }
+
 protected:
   explicit timed_stream_base(const char* nm);
 

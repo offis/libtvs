@@ -115,6 +115,8 @@ public:
   virtual stream_type& stream() { return *stream_; }
   virtual stream_type const& stream() const { return *stream_; }
 
+  virtual void print(std::ostream&) const = 0;
+
 protected:
   timed_reader_base(const char* name);
 

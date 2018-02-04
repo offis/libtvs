@@ -171,9 +171,9 @@ public:
   virtual size_type count() const { return buf_.size(); }
   virtual duration_type available_duration() const { return buf_.duration(); }
 
-  void print(std::ostream& os = std::cout) const
+  void print(std::ostream& os = std::cout) const override
   {
-    os << "@" << local_time() << ": " << buf_;
+    os << name() << "@" << local_time() << ": " << buf_;
   }
 
   friend std::ostream& operator<<(std::ostream& os, this_type const& t)
