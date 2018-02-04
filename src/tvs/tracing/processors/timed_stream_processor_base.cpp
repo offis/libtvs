@@ -40,18 +40,17 @@ timed_stream_processor_base::notify(reader_base_type&)
 {
   const auto availp = [](auto const& r) { return r->available(); };
 
-  const auto duration_cmp = [](auto const& lhs, auto const& rhs) {
-    return lhs->front_duration() < rhs->front_duration();
+  const auto time_cmp = [](auto const& lhs, auto const& rhs) {
+    return lhs->available_until() < rhs->available_until();
   };
 
   const auto begin = inputs_.cbegin();
   const auto end = inputs_.cend();
 
-  duration_type consumed;
   while (std::all_of(begin, end, availp)) {
 
     // determine minimum front value duration on each run
-    auto const& stream = std::min_element(begin, end, duration_cmp);
+    auto const& stream = std::min_element(begin, end, time_cmp);
     auto duration = (*stream)->front_duration();
 
     // let the user process all readers with the minimum front duration
@@ -61,11 +60,9 @@ timed_stream_processor_base::notify(reader_base_type&)
     if (advance == duration_type::zero_time)
       break;
 
-    consumed += advance;
+    // update this stream processor's local time after processing
+    commit(advance);
   }
-
-  // update this stream processor's local time after processing
-  commit(consumed);
 }
 
 timed_stream_processor_base::duration_type

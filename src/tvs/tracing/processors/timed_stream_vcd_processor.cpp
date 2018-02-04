@@ -47,26 +47,34 @@ timed_stream_vcd_processor::write_header()
 }
 
 timed_stream_vcd_processor::duration_type
-timed_stream_vcd_processor::process(duration_type dur)
+timed_stream_vcd_processor::process(duration_type /* unused */)
 {
-  using sysx::units::sc_time_cast;
-  using sysx::units::time_type;
 
   if (!header_written_) {
     write_header();
     header_written_ = true;
   }
 
-  unsigned long stamp = sc_time_cast<time_type>(this->local_time()) / scale_;
-  out_ << "#" << stamp << "\n";
+  auto scaled =
+    sysx::units::sc_time_cast<sysx::units::time_type>(this->local_time()) /
+    scale_;
 
-  // FIXME: avoid splitting?
+  out_ << "#" << scaled << "\n";
+
+  // figure out the next local time to advance to
+  std::vector<time_type> next;
+
+  // write the first tuple of all synchronised streams
   for (auto&& vcd : this->vcd_streams_) {
-    vcd->print_value(out_, dur);
-    vcd->reader().pop_duration(dur);
+    auto& rd = vcd->reader();
+    if (rd.local_time() == this->local_time()) {
+      vcd->print_front_value(out_);
+      rd.pop();
+    }
+    next.push_back(rd.local_time());
   }
 
-  return dur;
+  return *std::min_element(next.begin(), next.end()) - local_time();
 }
 
 } // namespace tracing
