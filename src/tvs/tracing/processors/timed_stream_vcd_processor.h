@@ -61,14 +61,7 @@ struct vcd_stream_container_base
 
   virtual reader_base_type& reader() const = 0;
 
-  char const* scope() const
-  {
-    if (scope_.empty()) {
-      return this->reader().stream().get_parent_object()->name();
-    }
-
-    return scope_.c_str();
-  }
+  char const* scope() const;
 
   virtual ~vcd_stream_container_base() {}
 

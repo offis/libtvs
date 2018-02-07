@@ -12,6 +12,19 @@
 
 namespace tracing {
 
+char const*
+vcd_stream_container_base::scope() const
+{
+
+#ifndef SYSX_NO_SYSTEMC
+  if (scope_.empty()) {
+    return this->reader().stream().get_parent_object()->name();
+  }
+#endif
+
+  return scope_.c_str();
+}
+
 timed_stream_vcd_processor::timed_stream_vcd_processor(char const* modscope,
                                                        std::ostream& out,
                                                        char vcd_start_signal)
