@@ -75,6 +75,7 @@ processor_headers = files(
   'tracing/processors/timed_stream_processor_base.h',
   'tracing/processors/timed_stream_processor_binop.h',
   'tracing/processors/timed_stream_vcd_processor.h',
+  'tracing/processors/vcd_traits.h',
   'tracing/processors/timed_stream_print_processor.h',
   )
 
