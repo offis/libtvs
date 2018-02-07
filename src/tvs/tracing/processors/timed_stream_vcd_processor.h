@@ -93,7 +93,7 @@ private:
         << traits_type::header_identifier_value << " "
         << traits_type::bitwidth_value << " "
         << this->id_ << " "
-        << this->reader_.stream().name() << " $end\n";
+        << this->reader_.stream().basename() << " $end\n";
     // clang-format on
   }
 

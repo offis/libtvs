@@ -18,7 +18,9 @@ vcd_stream_container_base::scope() const
 
 #ifndef SYSX_NO_SYSTEMC
   if (scope_.empty()) {
-    return this->reader().stream().get_parent_object()->name();
+    auto parent = this->reader().stream().get_parent_object();
+    if (parent != nullptr)
+      return parent->name();
   }
 #endif
 
@@ -43,11 +45,19 @@ timed_stream_vcd_processor::write_header()
   out_ << "$timescale " << sysx::units::engineering_prefix << scale_
        << " $end\n";
 
+  out_ << "$scope module " << this->name() << " $end\n";
+
   for (const auto& vcd : this->vcd_streams_) {
-    out_ << "$scope module " << vcd->scope() << " $end\n";
-    vcd->header_defn(out_);
-    out_ << "$upscope $end\n";
+    if (vcd->scope() != std::string("")) {
+      out_ << "$scope module " << vcd->scope() << " $end\n";
+      vcd->header_defn(out_);
+      out_ << "$upscope $end\n";
+    } else {
+      vcd->header_defn(out_);
+    }
   }
+
+  out_ << "$upscope $end\n";
 
   out_ << "$enddefinitions $end\n"
        << "$dumpvars\n";
