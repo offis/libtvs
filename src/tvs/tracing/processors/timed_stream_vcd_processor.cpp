@@ -31,7 +31,7 @@ timed_stream_vcd_processor::write_header()
        << " $end\n";
 
   for (const auto& vcd : this->vcd_streams_) {
-    out_ << "$scope module " << this->name() << " $end\n";
+    out_ << "$scope module " << vcd->scope() << " $end\n";
     vcd->header_defn(out_);
     out_ << "$upscope $end\n";
   }

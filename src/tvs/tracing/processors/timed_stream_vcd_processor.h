@@ -50,22 +50,31 @@ struct vcd_stream_container_base
 {
   using reader_base_type = timed_reader_base;
 
-  explicit vcd_stream_container_base(char id)
+  explicit vcd_stream_container_base(char id, std::string const& scope)
     : id_(id)
+    , scope_(scope)
   {}
 
   virtual void header_defn(std::ostream&) const = 0;
   virtual void print_front_value(std::ostream&) = 0;
   virtual void default_value(std::ostream& out) const = 0;
 
-  virtual reader_base_type& reader() = 0;
+  virtual reader_base_type& reader() const = 0;
 
-  virtual char const* scope() const = 0;
+  char const* scope() const
+  {
+    if (scope_.empty()) {
+      return this->reader().stream().get_parent_object()->name();
+    }
+
+    return scope_.c_str();
+  }
 
   virtual ~vcd_stream_container_base() {}
 
 protected:
   char id_;
+  std::string scope_;
 };
 
 template<typename StreamType>
@@ -78,8 +87,8 @@ struct vcd_stream_container : vcd_stream_container_base
 
   using base_type = vcd_stream_container_base;
 
-  vcd_stream_container(reader_type& reader, char id)
-    : base_type(id)
+  vcd_stream_container(reader_type& reader, std::string const& scope, char id)
+    : base_type(id, scope)
     , reader_(reader)
   {}
 
@@ -95,12 +104,7 @@ private:
     // clang-format on
   }
 
-  char const* scope() const override
-  {
-    return this->reader_.stream().get_parent_object()->name();
-  }
-
-  reader_base_type& reader() override { return reader_; }
+  reader_base_type& reader() const override { return reader_; }
 
   void default_value(std::ostream& out) const override
   {
@@ -135,7 +139,9 @@ private:
  * \tparam T The type of the timed_value
  * \tparam Traits The traits type of the stream
  */
-struct timed_stream_vcd_processor : timed_stream_processor_base, named_object
+struct timed_stream_vcd_processor
+  : timed_stream_processor_base
+  , named_object
 {
   using this_type = timed_stream_vcd_processor;
   using base_type = timed_stream_processor_base;
@@ -152,7 +158,7 @@ public:
   ~timed_stream_vcd_processor();
 
   template<typename T, typename Traits>
-  void add(timed_stream<T, Traits>& stream)
+  void add(timed_stream<T, Traits>& stream, std::string scope = "")
   {
     using stream_type = timed_stream<T, Traits>;
     using reader_type = timed_reader<T, Traits>;
@@ -163,7 +169,7 @@ public:
     auto reader = std::make_unique<reader_type>(ss.str().c_str(), stream);
 
     vcd_streams_.emplace_back(
-      std::make_unique<container_type>(*reader, vcd_id_++));
+                              std::make_unique<container_type>(*reader, scope, vcd_id_++));
 
     // move the reader (including ownership) to the backend of the processor,
     // making it sensitive to the committed values
