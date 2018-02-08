@@ -93,9 +93,12 @@ protected:
 
   /// Returns a reference to the container of all attached input readers.
   reader_collection_type& inputs() { return inputs_; }
+  reader_collection_type const& inputs() const { return inputs_; }
 
   /// Returns a reference to the attached output writers.
   writer_collection_type& outputs() { return outputs_; }
+  writer_collection_type const& outputs() const { return outputs_; }
+
 
   /// User-defined implementation for updating the state of this processor.
   ///
