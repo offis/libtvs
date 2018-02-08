@@ -27,9 +27,19 @@
 
 #include "tvs/tracing/timed_writer.h"
 
+#include "tvs/tracing/timed_stream_traits.h"
+
 #include <set>
 
 namespace tracing {
+
+template<typename T>
+using event_set_type = std::set<T, std::less<T>, std::allocator<T>>;
+
+template<typename T>
+using event_stream_type =
+  tracing::timed_stream<event_set_type<T>,
+                        tracing::timed_event_traits<event_set_type<T>>>;
 
 /// Timed-Value Stream writer interface for events implemented as std::set<T>.
 template<typename T>
@@ -39,7 +49,7 @@ class timed_event_writer : public timed_base
 public:
   using value_type = std::set<T>;
 
-  using stream_type = timed_stream<value_type, timed_event_traits<value_type>>;
+  using stream_type = event_stream_type<T>;
   using writer_type = typename stream_type::writer_type;
   using tuple_type = typename stream_type::tuple_type;
 

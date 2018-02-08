@@ -32,6 +32,8 @@
 
 #include "tvs/tracing/processors/vcd_traits.h"
 
+#include "tvs/tracing/processors/vcd_event_converter.h"
+
 #include "tvs/tracing/timed_reader_base.h"
 #include "tvs/tracing/timed_stream_base.h"
 #include "tvs/tracing/timed_writer_base.h"
@@ -43,6 +45,7 @@
 #include <boost/format.hpp>
 
 #include <map>
+#include <type_traits>
 
 namespace tracing {
 
@@ -50,9 +53,12 @@ struct vcd_stream_container_base
 {
   using reader_base_type = timed_reader_base;
 
-  explicit vcd_stream_container_base(char id, std::string const& scope)
+  explicit vcd_stream_container_base(char id,
+                                     std::string const& scope,
+                                     std::string const& name)
     : id_(id)
     , scope_(scope)
+    , name_(name)
   {}
 
   virtual void header_defn(std::ostream&) const = 0;
@@ -63,11 +69,14 @@ struct vcd_stream_container_base
 
   char const* scope() const;
 
+  std::string const& override_name() const { return name_; }
+
   virtual ~vcd_stream_container_base() {}
 
 protected:
   char id_;
   std::string scope_;
+  std::string name_;
 };
 
 template<typename StreamType>
@@ -80,20 +89,30 @@ struct vcd_stream_container : vcd_stream_container_base
 
   using base_type = vcd_stream_container_base;
 
-  vcd_stream_container(reader_type& reader, std::string const& scope, char id)
-    : base_type(id, scope)
+  vcd_stream_container(reader_type& reader,
+                       std::string const& scope,
+                       std::string const& name,
+                       char id)
+    : base_type(id, scope, name)
     , reader_(reader)
   {}
 
 private:
   void header_defn(std::ostream& out) const override
   {
+
+    auto nm = override_name();
+
+    if (nm == "") {
+      nm = this->reader_.stream().name();
+    }
+
     // clang-format off
     out << "$var "
         << traits_type::header_identifier_value << " "
         << traits_type::bitwidth_value << " "
         << this->id_ << " "
-        << this->reader_.stream().basename() << " $end\n";
+        << nm << " $end\n";
     // clang-format on
   }
 
@@ -153,23 +172,46 @@ public:
   template<typename T, typename Traits>
   void add(timed_stream<T, Traits>& stream, std::string scope = "")
   {
+    // Decide by SFINAE if we need a converter
+    this->do_add_stream(stream, scope);
+  }
+
+private:
+  template<typename T>
+  void do_add_stream(event_stream_type<T>& stream,
+                     std::string scope,
+                     std::string override_name = "")
+  {
+    auto conv = impl::create_converter(stream);
+    auto& converted_stream = conv->stream();
+    converters_.emplace_back(std::move(conv));
+
+    // override the name to avoid the converter name in the VCD
+    std::stringstream ss;
+    ss << stream.name() << "_converted";
+    this->do_add_stream(converted_stream, scope, ss.str());
+  }
+
+  template<typename T, typename Traits>
+  void do_add_stream(timed_stream<T, Traits>& stream,
+                     std::string scope,
+                     std::string override_name = "")
+  {
     using stream_type = timed_stream<T, Traits>;
     using reader_type = timed_reader<T, Traits>;
     using container_type = vcd_stream_container<stream_type>;
 
-    std::stringstream ss;
-    ss << "vcd_reader_" << stream.basename();
-    auto reader = std::make_unique<reader_type>(ss.str().c_str(), stream);
+    auto reader = std::make_unique<reader_type>(
+      host::gen_unique_name("vcd_reader"), stream);
 
-    vcd_streams_.emplace_back(
-                              std::make_unique<container_type>(*reader, scope, vcd_id_++));
+    vcd_streams_.emplace_back(std::make_unique<container_type>(
+      *reader, scope, override_name, vcd_id_++));
 
     // move the reader (including ownership) to the backend of the processor,
     // making it sensitive to the committed values
     this->do_add_input(std::move(reader));
   }
 
-private:
   duration_type process(duration_type dur) override;
 
   void write_header();
@@ -182,6 +224,8 @@ private:
 
   // use boost
   sysx::units::time_type scale_;
+
+  std::vector<std::unique_ptr<impl::vcd_event_converter_base>> converters_;
 };
 
 } // namespace tracing
