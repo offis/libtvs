@@ -77,6 +77,7 @@ processor_headers = files(
   'tracing/processors/timed_stream_vcd_processor.h',
   'tracing/processors/vcd_traits.h',
   'tracing/processors/timed_stream_print_processor.h',
+  'tracing/processors/vcd_event_converter.h',
   )
 
 install_headers('tracing.h',       subdir : 'tvs')
