@@ -29,7 +29,7 @@ matrix:
           packages:
             - clang-5.0
             - g++-5
-      env: CXX=clang++-5 CC=clang-5
+      env: CXX=clang++-5.0 CC=clang-5.0
 
     - os: linux
       addons:
@@ -38,7 +38,7 @@ matrix:
             - clang-6.0
             - g++-5
           sources: *sources
-      env: CXX=clang++-6 CC=clang-6
+      env: CXX=clang++-6.0 CC=clang-6.0
 
     - os: linux
       addons:
