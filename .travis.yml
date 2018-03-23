@@ -7,25 +7,71 @@ cache:
 
 matrix:
   include:
-    - env: CXX=g++-5 CC=gcc-5
+    - os: linux
       addons:
         apt:
-          packages:
-            - g++-5
-          sources: &sources
-            - ubuntu-toolchain-r-test
+          sources:
             - llvm-toolchain-precise
-            - llvm-toolchain-precise-3.7
-            - llvm-toolchain-precise-3.6
-    - env: CXX=clang++-3.8 CC=clang-3.8
-      addons:
-        apt:
           packages:
             - clang-3.8
             - g++-5
-          sources: *sources
+      env:
+        - MATRIX_EVAL="CXX=clang++-3.8 CC=clang-3.8"
+
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty-5.0
+          packages:
+            - clang-5
+            - g++-5
+      env:
+        - MATRIX_EVAL="CXX=clang++-5 CC=clang-5"
+
+    - os: linux
+      addons:
+        apt:
+          packages:
+            - clang-6
+            - g++-5
+          sources:
+            - llvm-toolchain-trusty-6.0
+      env:
+        - MATRIX_EVAL="CXX=clang++-6 CC=clang-6"
+
+    - os: linux
+      addons:
+        apt:
+          packages:
+            - g++-5
+          sources:
+            - ubuntu-toolchain-r-test
+      env:
+        - MATRIX_EVAL="CXX=g++-5 CC=gcc-5"
+
+    - os: linux
+      addons:
+        apt:
+          packages:
+            - g++-6
+          sources:
+            - ubuntu-toolchain-r-test
+      env:
+        - MATRIX_EVAL="CXX=g++-6 CC=gcc-6"
+
+    - os: linux
+      addons:
+        apt:
+          packages:
+            - g++-7
+          sources:
+            - ubuntu-toolchain-r-test
+      env:
+        - MATRIX_EVAL="CXX=g++-7 CC=gcc-7"
 
 before_install:
+  - eval "${MATRIX_EVAL}"
   - sudo apt-get -qq update
 
 install:
