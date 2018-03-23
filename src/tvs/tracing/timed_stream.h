@@ -72,7 +72,7 @@ public:
     : base_type(nm)
   {}
 
-  virtual duration_type duration() const { return buf_.duration(); }
+  duration_type duration() const override { return buf_.duration(); }
 
   void print(std::ostream& os = std::cout) const override;
 
@@ -95,21 +95,21 @@ protected:
   ///\}
 
 protected:
-  bool do_type_check(timed_reader_base const& r) const
+  bool do_type_check(timed_reader_base const& r) const override
   {
     return (dynamic_cast<reader_type const*>(&r) != NULL);
   }
 
-  bool do_type_check(timed_writer_base const& w) const
+  bool do_type_check(timed_writer_base const& w) const override
   {
     return (dynamic_cast<writer_type const*>(&w) != NULL);
   }
 
-  virtual void do_pre_commit_reader(duration_type const&);
-  virtual void do_commit_reader(timed_reader_base& r,
+  void do_pre_commit_reader(duration_type const&) override;
+  void do_commit_reader(timed_reader_base& r,
                                 duration_type const& until,
-                                bool last = false);
-  virtual void do_clear() { buf_.clear(); }
+                                bool last = false) override;
+  void do_clear() override { buf_.clear(); }
 
 private:
   void merge_future(sequence_type&& other);

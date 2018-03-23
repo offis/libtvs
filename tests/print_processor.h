@@ -90,7 +90,7 @@ public:
   }
 
 private:
-  virtual void do_print_tuple(std::ostream& out,
+  void do_print_tuple(std::ostream& out,
                               tuple_type const& val,
                               tracing::time_type const& local_time) override
   {

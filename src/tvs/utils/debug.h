@@ -136,7 +136,7 @@ struct debug_msg : report_base
   }
 
 protected:
-  const char* get_id() const { return debug_msg::raw_id(); }
+  const char* get_id() const override { return debug_msg::raw_id(); }
 };
 
 SYSX_REPORT_END_DEFINITION_

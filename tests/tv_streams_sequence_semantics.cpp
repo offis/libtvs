@@ -25,7 +25,7 @@ struct SequenceSemantics
   : public timed_stream_fixture<double, tracing::timed_process_traits<double>>
 {
 
-  void SetUp()
+  void SetUp() override
   {
     seq.push_back(0, dur);
     seq.push_back(1, dur);

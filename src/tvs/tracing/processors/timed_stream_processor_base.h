@@ -117,17 +117,17 @@ protected:
   /// \param duration the duration which will consumed by the input stream and
   ///                 produced at the output stream
   /// \returns the committed duration
-  virtual duration_type do_commit(duration_type) override;
+  duration_type do_commit(duration_type) override;
 
   void do_add_input(reader_ptr_type&&);
   void do_add_output(writer_ptr_type&&);
 
-  ~timed_stream_processor_base() = default;
+  ~timed_stream_processor_base() override = default;
 
 private:
   /// Checks if a minimum token duration is available on all input streams and
   /// then calls process().
-  void notify(reader_base_type&) override final;
+  void notify(reader_base_type&) final;
 
   reader_collection_type inputs_;
   writer_collection_type outputs_;
@@ -199,7 +199,7 @@ public:
 
 protected:
   // apply policy_type::process() on all input readers.
-  virtual duration_type process(duration_type dur) override final
+  duration_type process(duration_type dur) final
   {
     for (auto&& in : inputs()) {
       policy_type::process(*in, dur);

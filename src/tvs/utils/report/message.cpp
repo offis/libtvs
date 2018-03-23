@@ -114,7 +114,7 @@ public:
     : msg_(msg, from, to - from)
   {}
 
-  virtual void print(message::stream_type& out) const { out << msg_; }
+  void print(message::stream_type& out) const override { out << msg_; }
 
 private:
   const std::string msg_;
@@ -133,7 +133,7 @@ public:
     return str_;
   }
 
-  virtual void print(message::stream_type& out) const
+  void print(message::stream_type& out) const override
   {
     /// print replaced value, iff set, replacer_unknown otherwise
     if (filled_) {

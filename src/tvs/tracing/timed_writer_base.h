@@ -68,7 +68,7 @@ public:
 
   virtual void push_variant(timed_variant const&) = 0;
 
-  virtual ~timed_writer_base();
+  ~timed_writer_base() override;
 
 protected:
   explicit timed_writer_base(stream_type* own_stream = NULL);

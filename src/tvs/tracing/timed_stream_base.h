@@ -43,7 +43,7 @@ public:
   typedef tracing::time_type time_type;
   typedef timed_duration duration_type;
 
-  virtual ~timed_stream_base();
+  ~timed_stream_base() override;
 
   void attach(timed_writer_base& writer);
   void attach(timed_reader_base& reader);
@@ -55,7 +55,7 @@ public:
   time_type end_time() const { return local_time() + duration(); }
   virtual duration_type duration() const = 0;
 
-  virtual void print(std::ostream& os = std::cout) const = 0;
+  void print(std::ostream& os = std::cout) const override = 0;
 
   friend std::ostream& operator<<(std::ostream& os, timed_stream_base const& t)
   {
@@ -66,7 +66,7 @@ public:
 protected:
   explicit timed_stream_base(const char* nm);
 
-  duration_type do_commit(duration_type until);
+  duration_type do_commit(duration_type until) override;
 
 private:
   virtual bool do_type_check(timed_reader_base const& r) const = 0;

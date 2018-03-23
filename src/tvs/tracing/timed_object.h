@@ -135,7 +135,7 @@ private:
 class timed_object : public named_object, public timed_base
 {
 public:
-  const char* kind() const { return "timed_object"; }
+  const char* kind() const override { return "timed_object"; }
 
 protected:
   explicit timed_object(const char* nm)
@@ -144,7 +144,7 @@ protected:
   }
 
   /// protected destructor - no polymorphic destruction
-  virtual ~timed_object() /* = default */ {}
+  ~timed_object() override /* = default */ {}
 };
 
 } // namespace tracing

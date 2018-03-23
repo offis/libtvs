@@ -69,7 +69,7 @@ public:
   }
 
 private:
-  void notify(tracing::timed_reader_base&) override final
+  void notify(tracing::timed_reader_base&) final
   {
     while (input_.available()) {
       typename writer_type::tuple_type tup;

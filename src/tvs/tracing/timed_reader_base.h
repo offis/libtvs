@@ -103,7 +103,7 @@ public:
   duration_type front_duration() const { return front().duration(); }
   ///\}
 
-  virtual ~timed_reader_base();
+  ~timed_reader_base() override;
 
   void attach(const char* name);
   void attach(stream_type& stream);
@@ -115,7 +115,7 @@ public:
   virtual stream_type& stream() { return *stream_; }
   virtual stream_type const& stream() const { return *stream_; }
 
-  virtual void print(std::ostream&) const = 0;
+  void print(std::ostream&) const override = 0;
 
 protected:
   timed_reader_base(const char* name);

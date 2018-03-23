@@ -82,8 +82,8 @@ public:
   value_type const& get(duration_type const& offset) const;
 
   // read (and potentially split) the first tuple
-  tuple_type const& front() const { return buf_.front(); }
-  tuple_type const& front(duration_type const& dur)
+  tuple_type const& front() const override { return buf_.front(); }
+  tuple_type const& front(duration_type const& dur) override
   {
     if (front_duration() > dur) {
       buf_.split(dur);
@@ -92,12 +92,12 @@ public:
     return front();
   }
 
-  timed_variant front_variant() const
+  timed_variant front_variant() const override
   {
     return timed_variant(buf_.front().value(), front_duration());
   }
 
-  timed_variant front_variant(duration_type const& dur)
+  timed_variant front_variant(duration_type const& dur) override
   {
     if (front_duration() > dur) {
       buf_.split(dur);
@@ -168,8 +168,8 @@ public:
   }
   ///\}
 
-  virtual size_type count() const { return buf_.size(); }
-  virtual duration_type available_duration() const { return buf_.duration(); }
+  size_type count() const override { return buf_.size(); }
+  duration_type available_duration() const override { return buf_.duration(); }
 
   void print(std::ostream& os = std::cout) const override
   {
@@ -183,7 +183,7 @@ public:
   }
 
 private:
-  void do_pop_duration(duration_type const& d)
+  void do_pop_duration(duration_type const& d) override
   {
     buf_.split(d);
     duration_type rem = buf_.pop_front(d);

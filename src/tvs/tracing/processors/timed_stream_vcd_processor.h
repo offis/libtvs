@@ -167,7 +167,7 @@ public:
                              std::ostream& out,
                              char vcd_start_signal = 33);
 
-  ~timed_stream_vcd_processor();
+  ~timed_stream_vcd_processor() override;
 
   template<typename T, typename Traits>
   void add(timed_stream<T, Traits>& stream, std::string scope = "")
