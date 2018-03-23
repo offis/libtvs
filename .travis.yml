@@ -83,5 +83,6 @@ install:
 
 before_script:
   - export PATH=$PWD/.tmp:$PATH
+  - env
 
 script: ./run-ci-build.sh
