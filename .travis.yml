@@ -7,7 +7,7 @@ cache:
 
 matrix:
   include:
-    - compiler: clang
+    - os: linux
       addons:
         apt:
           sources:
@@ -19,40 +19,40 @@ matrix:
             - llvm-toolchain-trusty-6.0
           packages:
             - clang-3.8
-            - g++-5
+            - gcc-5
       env: CXX=clang++-3.8 CC=clang-3.8
 
-    - compiler: clang
+    - os: linux
       addons:
         apt:
           sources: *sources
           packages:
             - clang-5
-            - g++-5
+            - gcc-5
       env: CXX=clang++-5 CC=clang-5
 
-    - compiler: clang
+    - os: linux
       addons:
         apt:
           packages:
             - clang-6
-            - g++-5
+            - gcc-5
           sources: *sources
       env: CXX=clang++-6 CC=clang-6
 
-    - compiler: gcc
+    - os: linux
       addons:
         apt:
           packages:
-            - g++-5
+            - gcc-5
           sources: *sources
       env: CXX=g++-5 CC=gcc-5
 
-    - compiler: gcc
+    - os: linux
       addons:
         apt:
           packages:
-            - g++-6
+            - gcc-6
           sources: *sources
       env: CXX=g++-6 CC=gcc-6
 
@@ -60,12 +60,11 @@ matrix:
       addons:
         apt:
           packages:
-            - g++-7
+            - gcc-7
           sources: *sources
       env: CXX=g++-7 CC=gcc-7
 
 before_install:
-  - eval "${MATRIX_EVAL}"
   - sudo apt-get -qq update
 
 install:
