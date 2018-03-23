@@ -74,6 +74,13 @@ public:
   {
     base_type::attach(stream_name);
   }
+
+  timed_reader(timed_reader&&) = delete;
+  timed_reader& operator=(timed_reader&&) = delete;
+
+  timed_reader(timed_reader const&) = delete;
+  timed_reader& operator=(timed_reader const&) = delete;
+
   ///\}
 
   // read a value at a given time (between start and end time)

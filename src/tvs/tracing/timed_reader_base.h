@@ -120,6 +120,12 @@ public:
 protected:
   timed_reader_base(const char* name);
 
+  timed_reader_base(timed_reader_base&& other) = delete;
+  timed_reader_base& operator=(timed_reader_base&& other) = delete;
+
+  timed_reader_base(timed_reader_base const&) = delete;
+  timed_reader_base& operator=(timed_reader_base const&) = delete;
+
   virtual void do_pop_duration(duration_type const&) = 0;
   void trigger(bool new_window);
 

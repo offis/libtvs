@@ -65,6 +65,12 @@ public:
     stream_ = static_cast<stream_type*>(&base_type::stream());
   }
 
+  timed_writer(timed_writer&&) = default;
+  timed_writer& operator=(timed_writer&&) = default;
+
+  timed_writer(timed_writer const&) = delete;
+  timed_writer& operator=(timed_writer const&) = delete;
+
   //! push interface
   //!{
   void push(value_type const& v, duration_type const& dur)

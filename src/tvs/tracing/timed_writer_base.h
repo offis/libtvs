@@ -70,6 +70,22 @@ public:
 
   ~timed_writer_base() override;
 
+  timed_writer_base(timed_writer_base&& other)
+    : own_stream_{ std::move(other.own_stream_) }
+  {
+    this->re_attach(other);
+  }
+
+  timed_writer_base& operator=(timed_writer_base&& other)
+  {
+    this->own_stream_ = std::move(other.own_stream_);
+    this->re_attach(other);
+    return *this;
+  }
+
+  timed_writer_base(timed_writer_base const&) = delete;
+  timed_writer_base& operator=(timed_writer_base const&) = delete;
+
 protected:
   explicit timed_writer_base(stream_type* own_stream = nullptr);
 
@@ -80,6 +96,15 @@ protected:
   void check_stream(const char* context);
 
 private:
+  void re_attach(timed_writer_base& other)
+  {
+    if (other.stream_ != nullptr) {
+      auto str = other.stream_;
+      other.detach();
+      this->attach(*str);
+    }
+  }
+
   stream_type* stream_{};
   std::unique_ptr<stream_type> own_stream_;
 };
