@@ -84,6 +84,8 @@ public:
 
   auto& writer() { return writer_; }
 
+  auto& stream() { return static_cast<stream_type&>(writer_.stream()); }
+
 private:
   duration_type do_commit(duration_type until) override
   {
