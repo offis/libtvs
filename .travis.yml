@@ -1,13 +1,13 @@
-language: generic
-dist: "trusty"
 sudo: required
+dist: trusty
+language: cpp
 
 cache:
   apt: true
 
 matrix:
   include:
-    - os: linux
+    - compiler: clang
       addons:
         apt:
           sources:
@@ -20,46 +20,41 @@ matrix:
           packages:
             - clang-3.8
             - g++-5
-      env:
-        - MATRIX_EVAL="CXX=clang++-3.8 CC=clang-3.8"
+      env: CXX=clang++-3.8 CC=clang-3.8
 
-    - os: linux
+    - compiler: clang
       addons:
         apt:
           sources: *sources
           packages:
             - clang-5
             - g++-5
-      env:
-        - MATRIX_EVAL="CXX=clang++-5 CC=clang-5"
+      env: CXX=clang++-5 CC=clang-5
 
-    - os: linux
+    - compiler: clang
       addons:
         apt:
           packages:
             - clang-6
             - g++-5
           sources: *sources
-      env:
-        - MATRIX_EVAL="CXX=clang++-6 CC=clang-6"
+      env: CXX=clang++-6 CC=clang-6
 
-    - os: linux
+    - compiler: gcc
       addons:
         apt:
           packages:
             - g++-5
           sources: *sources
-      env:
-        - MATRIX_EVAL="CXX=g++-5 CC=gcc-5"
+      env: CXX=g++-5 CC=gcc-5
 
-    - os: linux
+    - compiler: gcc
       addons:
         apt:
           packages:
             - g++-6
           sources: *sources
-      env:
-        - MATRIX_EVAL="CXX=g++-6 CC=gcc-6"
+      env: CXX=g++-6 CC=gcc-6
 
     - os: linux
       addons:
@@ -67,8 +62,7 @@ matrix:
           packages:
             - g++-7
           sources: *sources
-      env:
-        - MATRIX_EVAL="CXX=g++-7 CC=gcc-7"
+      env: CXX=g++-7 CC=gcc-7
 
 before_install:
   - eval "${MATRIX_EVAL}"
