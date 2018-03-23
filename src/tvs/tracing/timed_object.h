@@ -104,7 +104,7 @@ protected:
   virtual duration_type do_commit(duration_type until);
 
   /// protected destructor - no polymorphic destruction
-  virtual ~timed_base() /* = default */ {}
+  virtual ~timed_base() = default;
 
 private:
   time_type time_;
@@ -144,7 +144,7 @@ protected:
   }
 
   /// protected destructor - no polymorphic destruction
-  ~timed_object() override /* = default */ {}
+  ~timed_object() override = default;
 };
 
 } // namespace tracing

@@ -97,12 +97,12 @@ protected:
 protected:
   bool do_type_check(timed_reader_base const& r) const override
   {
-    return (dynamic_cast<reader_type const*>(&r) != NULL);
+    return (dynamic_cast<reader_type const*>(&r) != nullptr);
   }
 
   bool do_type_check(timed_writer_base const& w) const override
   {
-    return (dynamic_cast<writer_type const*>(&w) != NULL);
+    return (dynamic_cast<writer_type const*>(&w) != nullptr);
   }
 
   void do_pre_commit_reader(duration_type const&) override;

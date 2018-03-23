@@ -97,7 +97,7 @@ class message::impl::element
 {
 public:
   virtual void print(message::stream_type&) const = 0;
-  virtual ~element() {}
+  virtual ~element() = default;
 
 }; // message::impl::element
 

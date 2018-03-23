@@ -30,8 +30,9 @@
 namespace tracing {
 
 /// type-agnostic timed value base class
-struct timed_value_base
+class timed_value_base
 {
+public:
   typedef tracing::time_type time_type;
   typedef tracing::timed_duration duration_type;
 

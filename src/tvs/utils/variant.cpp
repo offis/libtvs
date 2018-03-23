@@ -66,7 +66,7 @@ struct variant_pool
   }
 
 private:
-  variant_pool() {}
+  variant_pool() = default;
   static variant_pool& instance()
   {
     static variant_pool instance_;
@@ -497,11 +497,11 @@ variant_map_cref::do_lookup(const char* key,
   json_value::ConstMemberIterator it = THIS->FindMember(kv);
   if (it == THIS->MemberEnd()) {
     if (allow_fail)
-      return NULL;
+      return nullptr;
 
     SYSX_REPORT_ERROR(report::variant_error)
       << "variant map has no element with key '" << key << "'";
-    return NULL;
+    return nullptr;
   }
   return const_cast<json_value*>(&it->value);
 }

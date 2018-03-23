@@ -69,7 +69,7 @@ void
 timed_stream_base::detach(timed_writer_base& writer)
 {
   if (&writer == writer_)
-    writer_ = NULL;
+    writer_ = nullptr;
 }
 
 void

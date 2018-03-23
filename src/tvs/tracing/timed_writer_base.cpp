@@ -71,7 +71,7 @@ timed_writer_base::detach()
   if (!stream_)
     return;
   stream_->detach(*this);
-  stream_ = NULL;
+  stream_ = nullptr;
 }
 
 } // namespace tracing

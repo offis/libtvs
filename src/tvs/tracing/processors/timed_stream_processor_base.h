@@ -185,7 +185,7 @@ timed_stream_processor_base::out(tracing::timed_stream<T, Traits>& stream)
 /// \tparam T the value_type of the timed_value
 /// \tparam ProcessingPolicy the Policy on how to process the available tokens
 ///         of the input reader(s)
-template<typename T, template<class> typename ProcessingPolicy>
+template<typename T, template<class> class ProcessingPolicy>
 class timed_stream_processor
   : public timed_stream_processor_base
   , protected ProcessingPolicy<T>

@@ -54,7 +54,7 @@ protected:
     NOTIFY_DEFAULT = NOTIFY_COMMIT
   };
 
-  virtual ~timed_listener_if() {}
+  virtual ~timed_listener_if() = default;
 
 }; // class timed_listener_if
 

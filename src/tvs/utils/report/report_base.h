@@ -126,7 +126,7 @@ public:
    * \return stream_t   reference to output stream
    * \see ~report_base
    */
-  message& fill(const char* context = 0);
+  message& fill(const char* context = nullptr);
 
   /**
    * \brief issue report

@@ -31,9 +31,9 @@
 
 namespace tracing {
 
-struct timed_value_base;
-struct timed_reader_base;
-struct timed_duration;
+class timed_value_base;
+class timed_reader_base;
+class timed_duration;
 
 namespace detail {
 

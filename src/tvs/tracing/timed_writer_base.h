@@ -71,7 +71,7 @@ public:
   ~timed_writer_base() override;
 
 protected:
-  explicit timed_writer_base(stream_type* own_stream = NULL);
+  explicit timed_writer_base(stream_type* own_stream = nullptr);
 
   void attach(const char* name);
   void attach(timed_stream_base& stream);

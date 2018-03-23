@@ -107,7 +107,7 @@ class variant_cref
 protected:
   typedef void impl; // use type-punned pointer for now
 
-  explicit variant_cref(impl* i = NULL)
+  explicit variant_cref(impl* i = nullptr)
     : pimpl_(i)
   {}
 
@@ -186,7 +186,7 @@ protected:
 
 private:
   /// constant reference, disabled assignment
-  variant_cref operator=(variant_cref const&) /* = delete */;
+  variant_cref operator=(variant_cref const&) = delete;
 };
 
 template<typename T>
@@ -221,7 +221,7 @@ class variant_ref : public variant_cref
   typedef variant_ref this_type;
 
 protected:
-  explicit variant_ref(impl* i = NULL)
+  explicit variant_ref(impl* i = nullptr)
     : variant_cref(i)
   {}
 
@@ -349,7 +349,7 @@ class variant_string_cref : public variant_cref
   typedef variant_string_cref this_type;
 
 protected:
-  explicit variant_string_cref(impl* i = NULL)
+  explicit variant_string_cref(impl* i = nullptr)
     : base_type(i)
   {}
 
@@ -382,7 +382,7 @@ private:
 
 private:
   // constant reference, no assignment
-  this_type& operator=(this_type const&) /* = delete */;
+  this_type& operator=(this_type const&) = delete;
 };
 
 // --------------------------------------------------------------------------
@@ -395,7 +395,7 @@ class variant_string_ref : public variant_string_cref
   typedef variant_string_ref this_type;
 
 protected:
-  explicit variant_string_ref(impl* i = NULL)
+  explicit variant_string_ref(impl* i = nullptr)
     : base_type(i)
   {}
 
@@ -470,7 +470,7 @@ class variant_list_cref : public variant_cref
   typedef variant_list_cref this_type;
 
 protected:
-  explicit variant_list_cref(impl* i = NULL)
+  explicit variant_list_cref(impl* i = nullptr)
     : base_type(i)
   {}
 
@@ -504,7 +504,7 @@ private:
 
 private:
   // constant reference, no assignment
-  this_type& operator=(this_type const&) /* = delete */;
+  this_type& operator=(this_type const&) = delete;
 };
 
 // --------------------------------------------------------------------------
@@ -517,7 +517,7 @@ class variant_list_ref : public variant_list_cref
   typedef variant_list_ref this_type;
 
 protected:
-  explicit variant_list_ref(impl* i = NULL)
+  explicit variant_list_ref(impl* i = nullptr)
     : base_type(i)
   {}
 
@@ -593,7 +593,7 @@ class variant_map_cref : public variant_cref
   typedef variant_map_cref this_type;
 
 protected:
-  explicit variant_map_cref(impl* i = NULL)
+  explicit variant_map_cref(impl* i = nullptr)
     : base_type(i)
   {}
 
@@ -614,16 +614,16 @@ public:
   //@{
   bool has_entry(const char* key) const
   {
-    return NULL != do_lookup(key, std::strlen(key), /* allow_fail = */ true);
+    return nullptr != do_lookup(key, std::strlen(key), /* allow_fail = */ true);
   }
   bool has_entry(variant_string_cref key) const
   {
-    return NULL !=
+    return nullptr !=
            do_lookup(key.c_str(), key.length(), /* allow_fail = */ true);
   }
   bool has_entry(std::string const& key) const
   {
-    return NULL !=
+    return nullptr !=
            do_lookup(key.c_str(), key.length(), /* allow_fail = */ true);
   }
   //@}
@@ -666,7 +666,7 @@ private:
 
 private:
   // constant reference, no assignment
-  this_type& operator=(this_type const&) /* = delete */;
+  this_type& operator=(this_type const&) = delete;
 };
 
 // --------------------------------------------------------------------------
@@ -679,7 +679,7 @@ class variant_map_ref : public variant_map_cref
   typedef variant_map_ref this_type;
 
 protected:
-  explicit variant_map_ref(impl* i = NULL)
+  explicit variant_map_ref(impl* i = nullptr)
     : base_type(i)
   {}
 

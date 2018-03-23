@@ -71,7 +71,7 @@ struct vcd_stream_container_base
 
   std::string const& override_name() const { return name_; }
 
-  virtual ~vcd_stream_container_base() {}
+  virtual ~vcd_stream_container_base() = default;
 
 protected:
   char id_;

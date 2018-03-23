@@ -36,12 +36,12 @@ namespace sysx_adl_barrier_ {
 class noncopyable
 {
 protected:
-  noncopyable() {}
-  ~noncopyable() {}
+  noncopyable() = default;
+  ~noncopyable() = default;
 
 private: // emphasize the following members are private
-  noncopyable(const noncopyable&) /* = delete */;
-  const noncopyable& operator=(const noncopyable&) /* = delete */;
+  noncopyable(const noncopyable&) = delete;
+  const noncopyable& operator=(const noncopyable&) = delete;
 };
 
 } /* namespace sysx_adl_barrier_ */

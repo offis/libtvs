@@ -37,7 +37,7 @@ timed_stream_vcd_processor::timed_stream_vcd_processor(char const* modscope,
   , scale_(1.0 * sysx::si::picoseconds)
 {}
 
-timed_stream_vcd_processor::~timed_stream_vcd_processor() {}
+timed_stream_vcd_processor::~timed_stream_vcd_processor() = default;
 
 void
 timed_stream_vcd_processor::write_header()

@@ -143,7 +143,7 @@ DEFINE_UNPACK_(sc_core::sc_time)
   // encoded as string
   else if (src.is_string()) {
     const char* str = src.get_string().c_str();
-    char* endptr = NULL;
+    char* endptr = nullptr;
     double v = std::strtod(str, &endptr); // extract double value
     if (endptr == str || v < 0.0)
       return false;
