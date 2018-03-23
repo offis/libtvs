@@ -121,6 +121,10 @@ public:
 
   virtual const char* basename() const { return name(); }
 
+  virtual void print(std::ostream& out) const {
+    out << name();
+  }
+
 protected:
   named_object(const char* nm);
 
