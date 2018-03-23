@@ -803,7 +803,6 @@ public:
   /// default constructor
   variant()
     : variant_ref()
-    , own_pimpl_()
   {}
 
   /// constructor from basic type
@@ -925,7 +924,7 @@ private:
   impl* init();
   impl* do_init();
 
-  impl* own_pimpl_;
+  impl* own_pimpl_{};
 };
 
 template<typename T>
@@ -1023,12 +1022,11 @@ public:
 
 private:
   impl* do_init();
-  impl* own_pimpl_;
+  impl* own_pimpl_{};
 };
 
 inline variant_list::variant_list()
   : reference()
-  , own_pimpl_()
 {
   do_init();
 }
@@ -1085,12 +1083,11 @@ public:
 
 private:
   impl* do_init();
-  impl* own_pimpl_;
+  impl* own_pimpl_{};
 };
 
 inline variant_map::variant_map()
   : reference()
-  , own_pimpl_()
 {
   do_init();
 }

@@ -145,7 +145,7 @@ public:
 
 private:
   std::stringstream str_;
-  bool filled_;
+  bool filled_{};
 
 }; // message::impl::replacer
 

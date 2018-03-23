@@ -80,7 +80,7 @@ protected:
   void check_stream(const char* context);
 
 private:
-  stream_type* stream_;
+  stream_type* stream_{};
   std::unique_ptr<stream_type> own_stream_;
 };
 
