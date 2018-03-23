@@ -50,7 +50,7 @@ https://github.org/mesonbuild/meson and use `meson.py` directly.  Refer to the
 ### Library Dependencies
 
 The library requires a compiler with C++11 support.  It was successfully tested
-with ``gcc 6.3`` and ``clang 4.0``.
+with ``gcc 6.3`` and ``clang 6.0``.
   
 External dependencies:
 
