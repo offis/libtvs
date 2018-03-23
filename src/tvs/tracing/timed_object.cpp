@@ -136,12 +136,12 @@ lookup(const char* name)
   timed_stream_base* str = nullptr;
 
   if (it == object_registry.end()) {
-    SYSX_REPORT_ERROR(report::stream_lookup) % name
+    SYSX_REPORT_WARNING(report::stream_lookup) % name
       << "object not found in hierarchy";
   } else {
     str = dynamic_cast<timed_stream_base*>(it->second);
     if (str == nullptr) {
-      SYSX_REPORT_ERROR(report::stream_lookup) % name
+      SYSX_REPORT_WARNING(report::stream_lookup) % name
         << "could not cast to timed_stream_base";
     }
   }
@@ -160,7 +160,7 @@ lookup(const char* name)
     }
 
     if (!str) {
-      SYSX_REPORT_ERROR(report::stream_lookup) % name
+      SYSX_REPORT_WARNING(report::stream_lookup) % name
         << "object not found "
         << "(scope: " << (scope ? scope->name() : "<top>") << ")";
       return nullptr;
