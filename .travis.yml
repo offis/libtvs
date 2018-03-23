@@ -14,9 +14,7 @@ matrix:
         apt:
           sources: &sources
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise
-            - llvm-toolchain-precise-3.7
-            - llvm-toolchain-precise-3.6
+            - llvm-toolchain-trusty
             - llvm-toolchain-trusty-5.0
             - llvm-toolchain-trusty-6.0
           packages:
@@ -29,7 +27,7 @@ matrix:
         apt:
           sources: *sources
           packages:
-            - clang-5
+            - clang-5.0
             - gcc-5
       env: CXX=clang++-5 CC=clang-5
 
@@ -37,7 +35,7 @@ matrix:
       addons:
         apt:
           packages:
-            - clang-6
+            - clang-6.0
             - gcc-5
           sources: *sources
       env: CXX=clang++-6 CC=clang-6
