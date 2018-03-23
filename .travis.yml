@@ -1,6 +1,8 @@
 sudo: required
 dist: trusty
-language: cpp
+
+# specifying cpp here overrides the CXX and CC settings, so we use generic
+language: generic
 
 cache:
   apt: true
