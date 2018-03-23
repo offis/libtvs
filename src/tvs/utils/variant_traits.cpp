@@ -91,7 +91,7 @@ sc_time_from_unit(double value, unsigned unit)
   ///@todo add error handling
   SYSX_ASSERT(value >= 0.0);
   SYSX_ASSERT(unit <= sc_core::SC_SEC);
-  sc_core::sc_time_unit tu = static_cast<sc_core::sc_time_unit>(unit);
+  auto tu = static_cast<sc_core::sc_time_unit>(unit);
   return sc_core::sc_time(value, tu);
 }
 

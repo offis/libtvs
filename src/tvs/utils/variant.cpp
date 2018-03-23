@@ -60,8 +60,7 @@ struct variant_pool
 
   ~variant_pool()
   {
-    for (free_list::iterator it = free_.begin(), end = free_.end(); it != end;
-         ++it)
+    for (auto it = free_.begin(), end = free_.end(); it != end; ++it)
       delete *it;
   }
 

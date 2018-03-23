@@ -75,8 +75,7 @@ timed_stream_base::detach(timed_writer_base& writer)
 void
 timed_stream_base::attach(timed_reader_base& reader)
 {
-  typedef std::vector<timed_reader_base*>::iterator reader_iterator;
-  reader_iterator it = std::find(readers_.begin(), readers_.end(), &reader);
+  auto it = std::find(readers_.begin(), readers_.end(), &reader);
   if (it != readers_.end()) {
     SYSX_REPORT_ERROR(report::stream_attach) % name()
       << "reader '" << reader.name() << "' already attached";
@@ -94,20 +93,17 @@ timed_stream_base::attach(timed_reader_base& reader)
 void
 timed_stream_base::detach(timed_reader_base& reader)
 {
-  typedef std::vector<timed_reader_base*>::iterator reader_iterator;
-  reader_iterator it = std::remove(readers_.begin(), readers_.end(), &reader);
+  auto it = std::remove(readers_.begin(), readers_.end(), &reader);
   readers_.erase(it, readers_.end());
 }
 
 timed_stream_base::duration_type
 timed_stream_base::do_commit(duration_type until)
 {
-  typedef std::vector<timed_reader_base*>::iterator reader_iterator;
-
   if (until == timed_duration::zero_time)
     until = duration();
 
-  reader_iterator begin = readers_.begin(), end = readers_.end();
+  auto begin = readers_.begin(), end = readers_.end();
 
   do_pre_commit_reader(until);
 

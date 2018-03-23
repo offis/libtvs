@@ -183,7 +183,7 @@ message::impl::impl(char const* const msg_tpl)
 
     // we found a pattern, store pattern replacer
     if (pat_found) {
-      replacer* rpl = new replacer();
+      auto* rpl = new replacer();
       snippets_.push_back(rpl);
       replacers_.push_back(rpl); // remember replacer for inject()
       from += pat_sz;            // skip placeholder
