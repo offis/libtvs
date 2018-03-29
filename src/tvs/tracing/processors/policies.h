@@ -48,7 +48,7 @@ struct process_event_policy
 
   void process(timed_reader_base& in, timed_duration dur)
   {
-    time_type stamp{ in.local_time() + dur };
+    time_type stamp( in.local_time() + dur );
     auto val = static_cast<const timed_value<set_type>&>(in.front(dur));
     this->do_process_events(val.value(), stamp);
   }
