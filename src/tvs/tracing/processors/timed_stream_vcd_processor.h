@@ -187,9 +187,10 @@ private:
     converters_.emplace_back(std::move(conv));
 
     // override the name to avoid the converter name in the VCD
-    std::stringstream ss;
-    ss << stream.name() << "_converted";
-    this->do_add_stream(converted_stream, scope, ss.str());
+    if (override_name == "")
+      override_name = stream.name();
+
+    this->do_add_stream(converted_stream, scope, override_name);
   }
 
   template<typename T, typename Traits>
