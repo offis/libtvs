@@ -41,7 +41,7 @@ with the following toolchains:
 
 - ``gcc-5``, ``gcc-6``, ``gcc-7``
 - ``clang-3.8``, ``clang-5.0``, ``clang-6.0``
-  
+
 External dependencies:
 
 - `SystemC >= 2.3.2`  (optional, default=yes)
@@ -49,43 +49,58 @@ External dependencies:
 
 ### Building the Library
 
-To build the library, create a build directory and run `meson` in the new
-directory while pointing it to the source directory:
+To build the library, create a build directory and run ``cmake`` in the new
+directory while pointing it to the source directory.  Assuming you have
+cloned/extracted the repository in ``$PWD``, you can use the following commands
+to generate the build files:
 
-    $ cmake <path/to/libtvs> -Bbuild
+    $ mkdir -p build
     $ cd build
-    $ make
+    $ cmake ..
+
+After that, the library can be built using:
+
+    $ cmake --build .
 
 ## Build Options
 
-The library-specific build options can be queried using ``meson configure``.
+You can use ``cmake -L`` in the build directory to get a list of all build
+settings.  Another way to browse and change the settings in an existing build
+directory is ``ccmake``.
 
-You can either directly specify the build options when configuring the build
-directory using ``cmake .. -D<name>=<value>`` or ``ccmake <objdir>`` for a
-graphical configuration screen.
+Build options can be set when creating the build system, e.g.:
+
+    $ cmake .. -D<var>=<value>
+
+Refer to the CMake documentation ``cmake(1)`` for a more detailed description on
+how to set options.
 
 ## SystemC Dependency
 
-If a SystemC build is requested, the build system will search for a suitable
-SystemC library via the internal ``find_package`` mechanism.  Therefore, SystemC
-needs to be installed with ``cmake`` support, which is available starting at
-SystemC version 2.3.2.  See `cmake-packages(7)` for more information.
+If a SystemC build is requested (by default), the CMake will search for a
+suitable SystemC library via the internal ``find_package`` mechanism.
+Therefore, SystemC needs to be installed with ``cmake`` support, which is
+available starting at SystemC version 2.3.2.  See `cmake-packages(7)` for more
+information.
 
-Building with SystemC support enables Timed-Value Streams to be integrated into
-the the SystemC module hierarchy and data types.  Streams will be created as
-``sc_object`` instances within the module hierarchy.  The interface of a
-``timed_value`` will also internally use the ``sc_core::sc_time`` datatype for
-time and duration storage and provide conversion operators for ``boost::units``.
+Building with SystemC support enables the Timed-Value Streams to be integrated
+into the the SystemC module hierarchy.  Furthermore, the library will use the
+SystemC time type as its default unit.  Streams will be created as ``sc_object``
+instances within the module hierarchy.  The interface of a ``timed_value`` will
+internally use the ``sc_core::sc_time`` datatype for time and duration storage
+and provide conversion operators for ``boost::units``.
+
+If built without SystemC support, the library will use the `boost::units`
+datatypes for representing time durations and it will use its own, minimal
+object registry for supporting name-based stream binding.
 
 ## Test Suite and Documentation
-          
+
 By default, a test suite is built which contains unit tests and example files.
 The unit tests require the Google Test framework ``gtest``.  If `gtest` is not
-available on your system, The build system will automatically download and
+available on your system, the build system will automatically download and
 compile the dependency.  The build option `TVS_ENABLE_TESTS` controls if the
 test suite should be built.
 
 ``TVS_ENABLE_DOCS`` enables generating the preliminary documentation using
 Doxygen.
-
-
