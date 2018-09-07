@@ -45,16 +45,10 @@ endif
 
 extra_srcs = files('common/gtest_scmain.cpp')
 
-# disable regression tests in non-SystemC for now due to the limited string
-# comparison of test results which does not comply with boost::units.
-if get_option('with_systemc')
-
 foreach test : tests
   sources = [ files(test[2]) ] + extra_srcs
   test(test[0], executable(test[1], test[2], sources, dependencies: test_deps))
 endforeach
-
-endif
 
 subdir('native')
 
