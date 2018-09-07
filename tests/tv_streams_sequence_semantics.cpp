@@ -224,10 +224,20 @@ TEST_F(SequenceSemantics, CheckSplitSemantics)
   seq.split(seq.duration());
   expect_sequence(seq, "{3 s; (0,1 s)(1,1 s)(2,1 s) }");
 
-  seq.split(dur*1.2);
-  expect_sequence(seq, "{3 s; (0,1 s)(0.2,200 ms)(0.8,800 ms)(2,1 s) }");
+  seq.split(dur * 1.2);
 
-  ASSERT_DEATH({
-      seq.split(inf);
-    }, "");
+  sequence_type exp;
+
+  exp.push_back(0, dur);
+  exp.push_back(0.2, dur * (1.0 / 5.0));
+  exp.push_back(0.8, dur * (4.0 / 5.0));
+  exp.push_back(2, dur);
+
+  std::stringstream sstr;
+
+  sstr << exp;
+
+  expect_sequence(seq, sstr.str());
+
+  ASSERT_DEATH({ seq.split(inf); }, "");
 }

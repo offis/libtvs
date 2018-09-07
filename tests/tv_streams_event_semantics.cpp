@@ -100,8 +100,11 @@ TEST_F(StreamEventSemantics, PartialCommit)
   // a split/merge results in decaying of the old event value to the 'right'
   // side while the duration and an empty value is created on the 'left' side of
   // a split
-  expect_processor_output("@500 ms: { 10 }\n"
-                          "@1 s: { 0 }\n");
+  std::stringstream exp;
+  exp << "@" << dur / 2.0 << ": { 10 }\n";
+  exp << "@" << dur << ": { 0 }\n";
+
+  expect_processor_output(exp.str());
 }
 
 TEST_F(StreamEventSemantics, SplitMergeSemantics)
@@ -115,8 +118,12 @@ TEST_F(StreamEventSemantics, SplitMergeSemantics)
   // a split/merge results in decaying of the old event value to the 'right'
   // side while the duration and an empty value is created on the 'left' side of
   // a split
-  expect_processor_output("@500 ms: { 10 }\n"
-                          "@1 s: { 0 }\n");
+
+  std::stringstream exp;
+  exp << "@" << dur / 2.0 << ": { 10 }\n";
+  exp << "@" << dur << ": { 0 }\n";
+
+  expect_processor_output(exp.str());
 }
 
 TEST_F(StreamEventSemantics, SplitMergeSemanticsTwo)
@@ -130,9 +137,12 @@ TEST_F(StreamEventSemantics, SplitMergeSemanticsTwo)
   writer.commit();
 
   // we expect to have the events ordered correctly
-  expect_processor_output("@250 ms: { 10 }\n"
-                          "@500 ms: { 10 }\n"
-                          "@1 s: { 0, 5 }\n");
+  std::stringstream exp;
+  exp << "@" << dur / 4.0 << ": { 10 }\n";
+  exp << "@" << dur / 2.0 << ": { 10 }\n";
+  exp << "@" << dur << ": { 0, 5 }\n";
+
+  expect_processor_output(exp.str());
 }
 
 TEST_F(StreamEventSemantics, SplitMergeSemanticsThree)
@@ -147,9 +157,12 @@ TEST_F(StreamEventSemantics, SplitMergeSemanticsThree)
   writer.push(10, abs);
   writer.commit();
 
-  expect_processor_output("@250 ms: { 10 }\n"
-                          "@500 ms: { 10 }\n"
-                          "@1 s: { 0, 5, 10 }\n");
+  std::stringstream exp;
+  exp << "@" << dur / 4.0 << ": { 10 }\n";
+  exp << "@" << dur / 2.0 << ": { 10 }\n";
+  exp << "@" << dur << ": { 0, 5, 10 }\n";
+
+  expect_processor_output(exp.str());
 }
 
 TEST_F(StreamEventSemantics, SplitMergeCommitSemantics)
@@ -173,9 +186,12 @@ TEST_F(StreamEventSemantics, SplitMergeCommitSemantics)
 
   // we expect to have the events ordered correctly and have the splits at the
   // commit boundaries
-  expect_processor_output("@125 ms: { - }\n"
-                          "@250 ms: { 10 }\n"
-                          "@500 ms: { 10 }\n"
-                          "@750 ms: { - }\n"
-                          "@1 s: { 0, 5 }\n");
+  std::stringstream exp;
+  exp << "@" << dur / 8.0 << ": { - }\n";
+  exp << "@" << dur / 4.0 << ": { 10 }\n";
+  exp << "@" << dur / 2.0 << ": { 10 }\n";
+  exp << "@" << dur * (3.0 / 4.0)  << ": { - }\n";
+  exp << "@" << dur << ": { 0, 5 }\n";
+
+  expect_processor_output(exp.str());
 }

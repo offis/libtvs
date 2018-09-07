@@ -97,15 +97,15 @@ TEST_F(StreamStateSemantics, PushOffsetAndCommitWithoutDuration)
 TEST_F(StreamStateSemantics, PartialCommitTests)
 {
   writer.push(4711);
-  writer.commit(dur * 1.5);
+  writer.commit(dur * 2);
   writer.push(4712);
   writer.commit(dur);
   writer.push(4713);
-  writer.commit(dur * 2);
+  writer.commit(dur * 3);
 
-  expect_processor_output("0 s:(4711,1500 ms)\n"
-                          "1500 ms:(4712,1 s)\n"
-                          "2500 ms:(4713,2 s)\n");
+  expect_processor_output("0 s:(4711,2 s)\n"
+                          "2 s:(4712,1 s)\n"
+                          "3 s:(4713,3 s)\n");
 }
 
 // same for indefinite pushes
@@ -128,7 +128,6 @@ TEST_F(StreamStateSemantics, DISABLED_PushAndCommitWithZeroTimeState)
   expect_processor_output("0 s:(4711,1 s)\n"
                           "1 s:(4712,0 s)\n");
 }
-
 
 // Pushing with an offset followed by a commit should fill up the empty interval
 // as defined by the empty_policy
@@ -230,7 +229,6 @@ TEST_F(StreamStateSemantics, PushIndefiniteTuples)
   EXPECT_EQ(dur * 5, writer.end_time());
 }
 
-
 TEST_F(StreamStateSemantics, PushZeroTimeAtEnd)
 {
   writer.push(4711, dur);
@@ -242,31 +240,27 @@ TEST_F(StreamStateSemantics, PushZeroTimeAtEnd)
                           "1 s:(4712,0 s)\n");
 }
 
-
 TEST_F(StreamStateSemantics, PushZeroTimeAtEnd2)
 {
   writer.push(4711, dur);
   writer.push(4712, zero_time);
   writer.push(4713, dur);
-  writer.commit(dur*2);
-  EXPECT_EQ(dur*2, writer.end_time());
+  writer.commit(dur * 2);
+  EXPECT_EQ(dur * 2, writer.end_time());
 
   expect_processor_output("0 s:(4711,1 s)\n"
                           "1 s:(4712,0 s)\n"
-                          "1 s:(4713,1 s)\n"
-                          );
+                          "1 s:(4713,1 s)\n");
 }
-
 
 TEST_F(StreamStateSemantics, CheckFrontSplit)
 {
-  writer.push(0, dur*2);
+  writer.push(0, dur * 2);
   writer.push(4711, zero_time);
-  writer.push(0, dur*122);
+  writer.push(0, dur * 122);
   writer.commit();
 
   auto result = reader.front(dur);
 
   EXPECT_EQ(result.duration(), dur);
-
 }
