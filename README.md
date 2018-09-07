@@ -32,20 +32,7 @@ http://link.springer.com/chapter/10.1007/978-3-319-16214-0_12
 
 ## Build System and Dependencies
 
-The library requires the build system ``meson >= 0.39``.  By default, meson uses
-the `ninja` backend to generate the build instructions.  On debian-based
-systems, you can install ninja via
-
-    $ sudo apt-get install ninja-build
-
-If ``meson`` is not available via your distribution package manager, you can
-install it via `pip` (specifically, the python3 `pip` variant):
-
-    $ pip3 install meson
-    
-Alternatively, you can download the archive or check out the sources from
-https://github.org/mesonbuild/meson and use `meson.py` directly.  Refer to the
-`meson` website at http://mesonbuild.com/ for more information.
+The library requires the build system ``CMake >= 3.7``.
 
 ### Library Dependencies
 
@@ -65,52 +52,40 @@ External dependencies:
 To build the library, create a build directory and run `meson` in the new
 directory while pointing it to the source directory:
 
-    $ cd <path/to/libtvs>
-    $ mkdir objdir
-    $ cd objdir
-    $ meson ..
+    $ cmake <path/to/libtvs> -Bbuild
+    $ cd build
+    $ make
 
-After configuring the build directory, you can run the build using ``ninja``.
-``ninja test`` will run the test suite.
-    
 ## Build Options
 
 The library-specific build options can be queried using ``meson configure``.
 
 You can either directly specify the build options when configuring the build
-directory using ``meson -D<name>=<value> <...>`` or use ``mesonconf
--D<name>=<value>`` after having configured the directory.  You can also use
-``mesonconf`` to inspect all available build configuration options.
+directory using ``cmake .. -D<name>=<value>`` or ``ccmake <objdir>`` for a
+graphical configuration screen.
 
 ## SystemC Dependency
-    
-If a SystemC build is requested, the build system will search for a suitable
-SystemC library via `pkg-config`.  If a `pkg-config` file is not available, you
-can optionally specify custom SystemC library and include header paths via the
-options `-Dsc_includedir` and `-Dsc_libdir`:
 
-    $ mkdir objdir
-    $ cd objdir
-    $ meson -Dsc_libdir=/opt/systemc-2.3.1/lib-linux64 \
-          -Dsc_includedir=/opt/systemc-2.3.1/include ..
-          
-Building with SystemC support enables re-use of the SystemC module hierarchy and
-data types.  Streams will be created as ``sc_object`` instances within the
-module hierarchy.  The interface of a ``timed_value`` will also internally use
-the ``sc_core::sc_time`` datatype for time and duration storage and provide
-conversion operators for ``boost::units``.
+If a SystemC build is requested, the build system will search for a suitable
+SystemC library via the internal ``find_package`` mechanism.  Therefore, SystemC
+needs to be installed with ``cmake`` support, which is available starting at
+SystemC version 2.3.2.  See `cmake-packages(7)` for more information.
+
+Building with SystemC support enables Timed-Value Streams to be integrated into
+the the SystemC module hierarchy and data types.  Streams will be created as
+``sc_object`` instances within the module hierarchy.  The interface of a
+``timed_value`` will also internally use the ``sc_core::sc_time`` datatype for
+time and duration storage and provide conversion operators for ``boost::units``.
 
 ## Test Suite and Documentation
           
 By default, a test suite is built which contains unit tests and example files.
 The unit tests require the Google Test framework ``gtest``.  If `gtest` is not
-available on your system, `meson` will download and compile the dependency
-automatically.  The build option `enable_tests` controls if the test suite
-should be built.
+available on your system, The build system will automatically download and
+compile the dependency.  The build option `TVS_ENABLE_TESTS` controls if the
+test suite should be built.
 
-To enable generating the preliminary documentation using Doxygen, set
-``enable_docs`` to true:
+``TVS_ENABLE_DOCS`` enables generating the preliminary documentation using
+Doxygen.
 
-    $ mesonconf -Denable_docs=true
-    $ ninja
 

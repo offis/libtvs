@@ -17,7 +17,7 @@
 
 #include "power_producer.h"
 
-#include "timed_stream_fixture.h"
+#include "../timed_stream_fixture.h"
 
 #include "tvs/tracing.h"
 #include "gtest/gtest.h"

@@ -1,0 +1,17 @@
+# Config file for the TimedValueStreams package
+# It defines the IMPORTED target TVS::tvs and the following variables:
+#   TVS_USE_SYSTEMC - Whether TimedValueStreams are linked against SystemC
+
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+if(@TVS_USE_SYSTEMC@)
+  find_dependency(SystemCLanguage 2.3.2)
+endif()
+
+find_dependency(Boost 1.51.0)
+
+include("${CMAKE_CURRENT_LIST_DIR}/TimedValueStreamsTargets.cmake")
+
+set(TVS_USE_SYSTEMC @TVS_USE_SYSTEMC@)

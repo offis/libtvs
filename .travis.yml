@@ -68,14 +68,11 @@ before_install:
   - sudo apt-get -qq update
 
 install:
-  - sudo apt-get install -qq libboost-dev libboost-system-dev libgtest-dev python3 python3-pip
-  - sudo pip3 install 'meson<0.45'
-  - mkdir .tmp
-  - curl -L https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-linux.zip -o .tmp/ninja-linux.zip
-  - unzip .tmp/ninja-linux.zip -d .tmp
+  - sudo apt-get install -qq libboost-dev libboost-system-dev libgtest-dev cmake cmake-data
 
-before_script:
-  - export PATH=$PWD/.tmp:$PATH
-  - env
-
-script: ./run-ci-build.sh
+script:
+  - mkdir -p build
+  - cd build
+  - cmake -DTVS_ENABLE_TESTS=ON -DTVS_USE_SYSTEMC=OFF ..
+  - make
+  - ctest
