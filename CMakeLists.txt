@@ -18,6 +18,9 @@ cmake_minimum_required(VERSION 3.7 FATAL_ERROR)
 
 project(TimedValueStreams VERSION 0.10.0 LANGUAGES CXX)
 
+
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+
 include(GNUInstallDirs)
 
 # By default, build as shared library
@@ -34,7 +37,8 @@ option(TVS_USE_SYSTEMC  "use SystemC module hierarchy and data types" ON)
 find_package(Boost 1.51.0 REQUIRED)
 
 if(TVS_USE_SYSTEMC)
-  find_package(SystemCLanguage 2.3.2)
+  # cmake/FindSystemCLanguage.cmake manages the SystemC dependency
+  find_package(SystemCLanguage 2.3.2 MODULE)
 else()
   message(STATUS "SystemC support disabled")
 endif()
