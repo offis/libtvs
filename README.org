@@ -1,0 +1,117 @@
+* Timed-Value Streams
+
+[[https://travis-ci.org/offis/libtvs][[[https://travis-ci.org/offis/libtvs.svg?branch=develop]]]]
+
+The /Timed-Value Stream Library/ provides an advanced framework for
+instrumentation, pre-processing and recording of functional and extra-functional
+properties in SystemC-based virtual prototyping simulations.
+
+This repository contains an implementation of the library described in the paper
+/Advanced SystemC Tracing and Analysis Framework for Extra-Functional
+Properties/, Philipp A. Hartmann, Kim Grüttner, and Wolfgang Nebel, Procceedings
+of the 11th International Symposium on Applied Reconfigurable Computing
+(ARC'15).
+
+** Abstract
+
+System-level simulations are an important part in the design flow for today's
+complex systems-on-a-chip.  Trade-off analysis during architectural exploration
+as well as run-time reconfiguration of applications and their mapping require
+detailed introspection of the dynamic effects on the target platform.
+Additionally, extra-functional properties like power consumption and performance
+characteristics are important metrics to assess the quality of a design.  In
+this paper, we present an advanced framework for instrumentation, pre-processing
+and recording of functional and extra-functional properties in SystemC-based
+virtual prototyping simulations.  The framework is based on a hierarchy of
+so-called timed value streams, allowing to address the requirements for highly
+configurable, dynamic architectures while allowing tailored introspection of the
+required system characteristics under analysis.
+
+The full paper is available at
+http://link.springer.com/chapter/10.1007/978-3-319-16214-0\_12
+
+** Build System and Dependencies
+
+The library requires the build system CMake with a minimum version of =3.7=.
+
+*** Library Dependencies
+
+The library requires a compiler with =C++14= support. It was successfully tested
+with the following toolchains:
+
+- =gcc-5=, =gcc-6=, =gcc-7=
+- =clang-3.8=, =clang-5.0=, =clang-6.0=
+
+External dependencies:
+
+- =boost >= 1.51=
+- =SystemC >= 2.3.2= (optional)
+
+*** Building the Library
+
+To build the library, create a build directory and run =cmake= in the new
+directory while pointing it to the source directory. Assuming you have
+cloned/extracted the repository in =$PWD=, you can use the following commands to
+generate the build files:
+
+#+BEGIN_SRC shell
+mkdir -p build
+cd build
+cmake ..
+#+END_SRC
+
+After that, the library can be built using:
+
+#+BEGIN_SRC shell
+cmake --build .
+#+END_SRC
+
+** Build Options
+
+The canonical way to modify the build settings is to use a user-interface tool
+=ccmake= or =cmake-gui=.  Additionally, it is possible to list all build
+settings on the command line using =cmake -L=.  Build options can be set when
+creating the build system, e.g.:
+
+#+BEGIN_SRC shell
+cmake .. -D<var>=<value>
+#+END_SRC
+
+Refer to the CMake documentation =cmake(1)= for a more detailed description on
+how to change the build options.
+
+The Timed-Value Streams can be configured with the following build options:
+
+- =TVS_USE_SYSTEMC= :: build the library with SystemC support (default: on)
+- =TVS_ENABLE_DOCS= :: build documentation using Doxygen (default: off)
+- =TVS_ENABLE_TESTS= :: build the test suite (default: on)
+
+** SystemC Dependency
+
+By default, the library is compiled with SystemC support enabled.  This provides
+integration support of the created streams into the the SystemC module
+hierarchy.  Streams will therefore be created as =sc_core::sc_object= instances
+within the SystemC module hierarchy.  Furthermore, the library will use the
+SystemC time type =sc_core::sc_time= as its time unit for absolute times and
+durations in the tuples.  The standalone variant of the library uses the
+=boost::units= datatypes for representing time durations and provides its own,
+minimal object registry for supporting name-based stream binding.
+
+If a build with SystemC support is requested (by default), the CMake build
+system will first search for a suitable SystemC library via the internal
+=find_package= mechanism (refer to =cmake-packages(7)= for more information).
+If SystemC cannot be found, the mechanism falls back to the default library
+directories and the =SYSTEMC_HOME= environment variable.  In case of this manual
+approach, the user needs to ensure that the compilation settings of the SystemC
+library and the Timed-Value Streams are consistent.
+
+** Test Suite and Documentation
+
+The library contains a test suite which is built by default and contains unit
+tests and example files.  The unit tests require the Google Test framework
+=gtest=.  If =gtest= is not available on your system, the build system will
+automatically download and compile the dependency locally.  The build option
+=TVS_ENABLE_TESTS= controls if the test suite should be built.
+
+The setting =TVS_ENABLE_DOCS= enables generating a preliminary API documentation
+using Doxygen.
