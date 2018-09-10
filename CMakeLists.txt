@@ -40,8 +40,13 @@ option(TVS_ENABLE_DOCS  "build documentation using Doxygen" OFF)
 option(TVS_ENABLE_TESTS "build tests" ON)
 option(TVS_USE_SYSTEMC  "use SystemC module hierarchy and data types" ON)
 
+# the minimum C++ standard
+set(TVS_MIN_CXX_STANDARD 14)
+mark_as_advanced(TVS_MIN_CXX_STANDARD)
+
 # the default C++ standard; will be adjusted depending on SystemC info
 set(TVS_CXX_STANDARD 14 CACHE STRING "The default C++ standard for building")
+
 
 find_package(Boost 1.51.0 REQUIRED)
 
@@ -55,13 +60,19 @@ if(TVS_USE_SYSTEMC)
     message(STATUS "Cannot determine SystemC C++ standard, consider adjusting TVS_CXX_STANDARD if linking fails")
   elseif(SystemC_CXX_STANDARD GREATER TVS_CXX_STANDARD)
     message(STATUS "SystemC was built with C++${SystemC_CXX_STANDARD}, setting C++ standard accordingly")
-    set(TVS_CXX_STANDARD ${SystemC_CXX_STANDARD} CACHE)
+    set(TVS_CXX_STANDARD ${SystemC_CXX_STANDARD})
   endif()
 else()
   message(STATUS "SystemC support disabled")
 endif()
 
 set(CMAKE_CXX_STANDARD ${TVS_CXX_STANDARD})
+
+if(CMAKE_CXX_STANDARD LESS ${TVS_MIN_CXX_STANDARD})
+  message(FATAL_ERROR
+    "This Library requires at least C++14, but was configured to use C++${TVS_CXX_STANDARD}")
+endif()
+
 set(CMAKE_CXX_EXTENSIONS OFF) # don't use gnu extensions
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
