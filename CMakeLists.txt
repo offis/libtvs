@@ -18,43 +18,54 @@ cmake_minimum_required(VERSION 3.7 FATAL_ERROR)
 
 project(TimedValueStreams VERSION 0.10.0 LANGUAGES CXX)
 
-
-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
-
 include(GNUInstallDirs)
+
+# Install libraries with the rpath settings to avoid requiring LD_LIBRARY_PATH
+# to be set correctly.
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+# always create PIC
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+  "${CMAKE_SOURCE_DIR}/cmake/modules/")
+
 
 # By default, build as shared library
 option(BUILD_SHARED_LIBS ON)
 
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(TVS_INSTALL_CONFIGDIR "${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME}")
 
 option(TVS_ENABLE_DOCS  "build documentation using Doxygen" OFF)
 option(TVS_ENABLE_TESTS "build tests" ON)
 option(TVS_USE_SYSTEMC  "use SystemC module hierarchy and data types" ON)
 
+# the default C++ standard; will be adjusted depending on SystemC info
+set(TVS_CXX_STANDARD 14 CACHE STRING "The default C++ standard for building")
+
 find_package(Boost 1.51.0 REQUIRED)
 
 if(TVS_USE_SYSTEMC)
-  # cmake/FindSystemCLanguage.cmake manages the SystemC dependency
-  find_package(SystemCLanguage 2.3.2 MODULE)
+
+  # use FindSystemC.cmake from cmake/modules/
+  find_package(SystemC 2.3.2 REQUIRED MODULE)
+
+  # Handle SystemC C++ standard
+  if(NOT DEFINED SystemC_CXX_STANDARD)
+    message(STATUS "Cannot determine SystemC C++ standard, consider adjusting TVS_CXX_STANDARD if linking fails")
+  elseif(SystemC_CXX_STANDARD GREATER TVS_CXX_STANDARD)
+    message(STATUS "SystemC was built with C++${SystemC_CXX_STANDARD}, setting C++ standard accordingly")
+    set(TVS_CXX_STANDARD ${SystemC_CXX_STANDARD} CACHE)
+  endif()
 else()
   message(STATUS "SystemC support disabled")
 endif()
 
-if((NOT SystemCLanguage_FOUND) AND TVS_USE_SYSTEMC)
-  set(TVS_USE_SYSTEMC OFF)
-  message(WARNING
-    "SystemC dependency could not be found. Building without SystemC support.")
-endif()
+set(CMAKE_CXX_STANDARD ${TVS_CXX_STANDARD})
+set(CMAKE_CXX_EXTENSIONS OFF) # don't use gnu extensions
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-if(TVS_USE_SYSTEMC AND NOT(SystemC_CXX_STANDARD EQUAL CMAKE_CXX_STANDARD))
-  message(FATAL_ERROR
-    "This library needs C++14 support but the provided SystemC library was not "
-    "built with the same C++ standard.")
-endif()
-
+message(STATUS "Using C++${CMAKE_CXX_STANDARD}")
 
 add_subdirectory(src/tvs)
 
