@@ -1,6 +1,6 @@
 * Timed-Value Streams
 
-[[https://travis-ci.org/offis/libtvs][[[https://travis-ci.org/offis/libtvs.svg?branch=develop]]]]
+[[[[https://travis-ci.org/offis/libtvs.svg?branch=develop]]]]
 
 The /Timed-Value Stream Library/ provides an advanced framework for
 instrumentation, pre-processing and recording of functional and extra-functional
@@ -32,7 +32,7 @@ http://link.springer.com/chapter/10.1007/978-3-319-16214-0\_12
 
 ** Build System and Dependencies
 
-The library requires the build system CMake with a minimum version of =3.7=.
+The library requires the build system CMake 3.7.
 
 *** Library Dependencies
 
@@ -44,15 +44,15 @@ with the following toolchains:
 
 External dependencies:
 
-- =boost >= 1.51=
-- =SystemC >= 2.3.2= (optional)
+- =boost>=1.51=
+- =SystemC>=2.3.2= (optional)
 
 *** Building the Library
 
 To build the library, create a build directory and run =cmake= in the new
-directory while pointing it to the source directory. Assuming you have
-cloned/extracted the repository in =$PWD=, you can use the following commands to
-generate the build files:
+directory while pointing it to the source directory. Assuming the the repository
+has been cloned/extracted in =$PWD=, the following commands will generate the
+build files:
 
 #+BEGIN_SRC shell
 mkdir -p build
@@ -68,19 +68,20 @@ cmake --build .
 
 ** Build Options
 
-The canonical way to modify the build settings is to use a user-interface tool
-=ccmake= or =cmake-gui=.  Additionally, it is possible to list all build
-settings on the command line using =cmake -L=.  Build options can be set when
-creating the build system, e.g.:
+The canonical way to modify the build settings is to use user-interface tools
+such as =ccmake= or =cmake-gui=.  Additionally, it is possible to list all build
+settings on the command line using =cmake -L= and provide them to the build
+system when creating or updating the build cache, e.g.:
 
-#+BEGIN_SRC shell
+#+BEGIN_EXAMPLE
 cmake .. -D<var>=<value>
-#+END_SRC
+#+END_EXAMPLE
 
 Refer to the CMake documentation =cmake(1)= for a more detailed description on
 how to change the build options.
 
-The Timed-Value Streams can be configured with the following build options:
+The Timed-Value Streams can be configured with the following build options
+(ON/OFF):
 
 - =TVS_USE_SYSTEMC= :: build the library with SystemC support (default: on)
 - =TVS_ENABLE_DOCS= :: build documentation using Doxygen (default: off)
