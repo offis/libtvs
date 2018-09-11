@@ -25,7 +25,7 @@
 #include "tvs/tracing/timed_object.h"
 #include "tvs/tracing/timed_stream_base.h"
 
-#include "report_msgs.h"
+#include "tvs/tracing/report_msgs.h"
 
 #include "tvs/utils/debug.h"
 #include "tvs/utils/macros.h"

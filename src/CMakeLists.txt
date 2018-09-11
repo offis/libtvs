@@ -43,7 +43,7 @@ set_target_properties(tvs
 
 target_include_directories(tvs
   PUBLIC
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
   )
 

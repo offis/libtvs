@@ -27,7 +27,7 @@
 #include "tvs/utils/assert.h"
 #include "tvs/utils/report.h"
 
-#include "report_msgs.h"
+#include "tvs/tracing/report_msgs.h"
 
 namespace tracing {
 
