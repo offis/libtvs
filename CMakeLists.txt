@@ -78,8 +78,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 message(STATUS "Using C++${CMAKE_CXX_STANDARD}")
 
-add_subdirectory(src/tvs)
-
 if(TVS_ENABLE_TESTS)
   enable_testing()
 
@@ -126,6 +124,9 @@ if(TVS_ENABLE_DOCS)
     )
 endif()
 
+
+add_subdirectory(src)
+
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(${PROJECT_NAME}ConfigVersion.cmake
   COMPATIBILITY SameMajorVersion
@@ -134,6 +135,12 @@ write_basic_package_version_file(${PROJECT_NAME}ConfigVersion.cmake
 configure_package_config_file(${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in
   ${PROJECT_NAME}Config.cmake
   INSTALL_DESTINATION ${TVS_INSTALL_CONFIGDIR}
+  )
+
+
+install(DIRECTORY include/
+  DESTINATION
+    ${CMAKE_INSTALL_INCLUDEDIR}
   )
 
 install(FILES
