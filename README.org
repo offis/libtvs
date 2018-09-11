@@ -1,6 +1,6 @@
-* Timed-Value Streams
+[[https://travis-ci.org/offis/libtvs][https://travis-ci.org/offis/libtvs.svg?branch=develop]]
 
-[[https://travis-ci.org/offis/libtvs.svg?branch=develop]]
+* Timed-Value Streams
 
 The /Timed-Value Stream Library/ provides an advanced framework for
 instrumentation, pre-processing and recording of functional and extra-functional
