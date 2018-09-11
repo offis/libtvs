@@ -24,7 +24,7 @@
 #ifndef TVS_TIMED_ANNOTATION_H
 #define TVS_TIMED_ANNOTATION_H
 
-#include "tvs/tracing/timed_duration.h"
+#include <tvs/tracing/timed_duration.h>
 
 #include <vector>
 

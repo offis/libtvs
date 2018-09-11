@@ -30,8 +30,8 @@
 #ifndef TVS_REPORT_MSGS_H_INCLUDED_
 #define TVS_REPORT_MSGS_H_INCLUDED_
 
-#include "tvs/utils/report/macros_def.h"
-#include "tvs/utils/report/report_base.h"
+#include <tvs/utils/report/macros_def.h>
+#include <tvs/utils/report/report_base.h>
 
 namespace tracing {
 SYSX_REPORT_BEGIN_DEFINITION_
@@ -61,7 +61,7 @@ SYSX_REPORT_DEFINE_MSG_(
 SYSX_REPORT_END_DEFINITION_
 } // namespace tracing
 
-#include "tvs/utils/report/macros_undef.h"
+#include <tvs/utils/report/macros_undef.h>
 
 #endif // TVS_REPORT_MSGS_H_INCLUDED_
 /* Taf!

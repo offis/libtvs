@@ -28,19 +28,19 @@
 #ifndef TVS_TIMED_STREAM_VCD_PROCESSOR_H
 #define TVS_TIMED_STREAM_VCD_PROCESSOR_H
 
-#include "tvs/tracing/processors/timed_stream_processor_base.h"
+#include <tvs/tracing/processors/timed_stream_processor_base.h>
 
-#include "tvs/tracing/processors/vcd_traits.h"
+#include <tvs/tracing/processors/vcd_traits.h>
 
-#include "tvs/tracing/processors/vcd_event_converter.h"
+#include <tvs/tracing/processors/vcd_event_converter.h>
 
-#include "tvs/tracing/timed_reader_base.h"
-#include "tvs/tracing/timed_stream_base.h"
-#include "tvs/tracing/timed_writer_base.h"
+#include <tvs/tracing/timed_reader_base.h>
+#include <tvs/tracing/timed_stream_base.h>
+#include <tvs/tracing/timed_writer_base.h>
 
-#include "tvs/utils/assert.h"
+#include <tvs/utils/assert.h>
 
-#include "tvs/units/time.h"
+#include <tvs/units/time.h>
 
 #include <boost/format.hpp>
 

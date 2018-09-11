@@ -23,7 +23,7 @@
  * \see    timed_stream.h
  */
 
-#include "tvs/tracing/timed_value.h"
+#include <tvs/tracing/timed_value.h>
 
 namespace tracing {
 

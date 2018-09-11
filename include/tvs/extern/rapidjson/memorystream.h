@@ -22,7 +22,7 @@
 #ifndef RAPIDJSON_MEMORYSTREAM_H_
 #define RAPIDJSON_MEMORYSTREAM_H_
 
-#include "tvs/extern/rapidjson/rapidjson.h"
+#include <tvs/extern/rapidjson/rapidjson.h>
 
 RAPIDJSON_NAMESPACE_BEGIN
 

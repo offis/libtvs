@@ -25,11 +25,11 @@
 #ifndef TVS_TIMED_STREAM_H_INCLUDED_
 #define TVS_TIMED_STREAM_H_INCLUDED_
 
-#include "tvs/tracing/timed_sequence.h"
-#include "tvs/tracing/timed_stream_base.h"
-#include "tvs/tracing/timed_value.h"
+#include <tvs/tracing/timed_sequence.h>
+#include <tvs/tracing/timed_stream_base.h>
+#include <tvs/tracing/timed_value.h>
 
-#include "report_msgs.h"
+#include <tvs/utils/report_msgs.h>
 
 namespace tracing {
 
@@ -136,7 +136,7 @@ stream_by_name(const char* stream)
 
 } // namespace tracing
 
-#include "timed_stream.tpp"
+#include <tvs/tracing/timed_stream.tpp>
 
 #endif /* TVS_TIMED_STREAM_H_INCLUDED_ */
 /* Taf!

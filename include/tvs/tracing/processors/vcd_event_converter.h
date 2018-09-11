@@ -18,14 +18,14 @@
 #ifndef TVS_TIMED_STREAM_VCD_EVENT_CONVERTER_H
 #define TVS_TIMED_STREAM_VCD_EVENT_CONVERTER_H
 
-#include "tvs/tracing/processors/timed_stream_vcd_processor.h"
+#include <tvs/tracing/processors/timed_stream_vcd_processor.h>
 
-#include "tvs/tracing/timed_reader_base.h"
-#include "tvs/tracing/timed_stream_base.h"
-#include "tvs/tracing/timed_writer_base.h"
-#include "tvs/tracing/timed_event_writer.h"
+#include <tvs/tracing/timed_reader_base.h>
+#include <tvs/tracing/timed_stream_base.h>
+#include <tvs/tracing/timed_writer_base.h>
+#include <tvs/tracing/timed_event_writer.h>
 
-#include "tvs/tracing/timed_stream_traits.h"
+#include <tvs/tracing/timed_stream_traits.h>
 
 namespace tracing {
 

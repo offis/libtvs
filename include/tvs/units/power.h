@@ -17,7 +17,7 @@
 #ifndef SYSX_UNITS_POWER_H_INCLUDED_
 #define SYSX_UNITS_POWER_H_INCLUDED_
 
-#include "tvs/units/common.h"
+#include <tvs/units/common.h>
 
 // clang-format off
 SYSX_DIAG_OFF_(unused)

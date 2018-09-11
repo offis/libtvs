@@ -41,7 +41,7 @@
  * #if !defined( SYSX_DEBUG )
  * #  define SYSX_NDEBUG // disable assertions in non-debug build
  * #endif
- * #include "tvs/utils/assert.h"
+ * #include <tvs/utils/assert.h>
  *
  * void performance_critical_code_with_assertions()
  * {
@@ -50,7 +50,7 @@
  * }
  *
  * #undef SYSX_NDEBUG // re-enable assertions
- * #include "tvs/utils/assert.h"
+ * #include <tvs/utils/assert.h>
  *
  * \endcode
  *

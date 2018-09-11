@@ -18,8 +18,8 @@
 #ifndef SYSX_UTILS_VARIANT_TRAITS_H_INCLUDED_
 #define SYSX_UTILS_VARIANT_TRAITS_H_INCLUDED_
 
-#include "tvs/utils/systemc.h"
-#include "tvs/utils/variant.h"
+#include <tvs/utils/systemc.h>
+#include <tvs/utils/variant.h>
 
 #include <cstring> // std::strncpy
 

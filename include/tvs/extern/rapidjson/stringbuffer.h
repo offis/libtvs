@@ -22,8 +22,8 @@
 #ifndef RAPIDJSON_STRINGBUFFER_H_
 #define RAPIDJSON_STRINGBUFFER_H_
 
-#include "tvs/extern/rapidjson/rapidjson.h"
-#include "tvs/extern/rapidjson/internal/stack.h"
+#include <tvs/extern/rapidjson/rapidjson.h>
+#include <tvs/extern/rapidjson/internal/stack.h>
 
 RAPIDJSON_NAMESPACE_BEGIN
 

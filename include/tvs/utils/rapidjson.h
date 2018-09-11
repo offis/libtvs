@@ -19,7 +19,7 @@
 #ifndef SYSX_UTILS_RAPIDJSON_H_INCLUDED_
 #define SYSX_UTILS_RAPIDJSON_H_INCLUDED_
 
-#include "tvs/utils/macros.h"
+#include <tvs/utils/macros.h>
 
 /**
  * \file rapidjson.h

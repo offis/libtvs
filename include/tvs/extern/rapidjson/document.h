@@ -24,9 +24,9 @@
 
 /*! \file document.h */
 
-#include "tvs/extern/rapidjson/reader.h"
-#include "tvs/extern/rapidjson/internal/meta.h"
-#include "tvs/extern/rapidjson/internal/strfunc.h"
+#include <tvs/extern/rapidjson/reader.h>
+#include <tvs/extern/rapidjson/internal/meta.h>
+#include <tvs/extern/rapidjson/internal/strfunc.h>
 #include <new>      // placement new
 
 #ifdef _MSC_VER

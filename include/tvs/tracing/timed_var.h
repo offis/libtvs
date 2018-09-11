@@ -24,8 +24,8 @@
 #ifndef TVS_TIMED_VAR_H
 #define TVS_TIMED_VAR_H
 
-#include "tvs/tracing/timed_annotation.h"
-#include "tvs/tracing/timed_stream.h"
+#include <tvs/tracing/timed_annotation.h>
+#include <tvs/tracing/timed_stream.h>
 
 namespace tracing {
 namespace impl {

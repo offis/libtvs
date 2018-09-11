@@ -25,9 +25,9 @@
  * to hold an intermediate sequence of \ref timed_value instances.
  */
 
-#include "tvs/tracing/timed_ranges.h"
-#include "tvs/tracing/timed_sequence.h"
-#include "tvs/tracing/timed_stream_policies.h"
+#include <tvs/tracing/timed_ranges.h>
+#include <tvs/tracing/timed_sequence.h>
+#include <tvs/tracing/timed_stream_policies.h>
 
 namespace tracing {
 

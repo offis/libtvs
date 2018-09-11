@@ -23,8 +23,8 @@
 #ifndef TVS_TIMED_STREAM_PRINT_PROCESSOR_H
 #define TVS_TIMED_STREAM_PRINT_PROCESSOR_H
 
-#include "tvs/tracing/processors/policies.h"
-#include "tvs/tracing/processors/timed_stream_processor_base.h"
+#include <tvs/tracing/processors/policies.h>
+#include <tvs/tracing/processors/timed_stream_processor_base.h>
 
 namespace tracing {
 

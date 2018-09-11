@@ -22,7 +22,7 @@
 #ifndef RAPIDJSON_ENCODINGS_H_
 #define RAPIDJSON_ENCODINGS_H_
 
-#include "tvs/extern/rapidjson/rapidjson.h"
+#include <tvs/extern/rapidjson/rapidjson.h>
 
 #ifdef _MSC_VER
 RAPIDJSON_DIAG_PUSH

@@ -17,8 +17,8 @@
 #ifndef SYSX_UNITS_COMMON_H_INCLUDED_
 #define SYSX_UNITS_COMMON_H_INCLUDED_
 
-#include "tvs/utils/boost.h"
-#include "tvs/utils/variant_traits.h"
+#include <tvs/utils/boost.h>
+#include <tvs/utils/variant_traits.h>
 
 // clang-format off
 // GCC & Clang warn about unused typedefs and constants in Boost
@@ -153,7 +153,7 @@ struct variant_traits<::sysx::units::quantity<Unit, ValueType>>
 // include compatiblity with sc_trace, iff SystemC is available
 // (deliberately outside of include guards!)
 #if !defined(SYSX_NO_SYSTEMC)
-#include "tvs/units/sc_trace.h"
+#include <tvs/units/sc_trace.h>
 #endif // SYSX_SYSTEMC_INCLUDED_
 /* Taf!
  * :tag: (units,h)

@@ -42,7 +42,7 @@
 #pragma once
 #endif
 
-#include "tvs/extern/rapidjson/msinttypes/stdint.h"
+#include <tvs/extern/rapidjson/msinttypes/stdint.h>
 
 // 7.8 Format conversion of integer types
 

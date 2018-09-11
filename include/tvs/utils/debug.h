@@ -18,8 +18,8 @@
 #ifndef SYSX_UTILS_DEBUG_H_INCLUDED_
 #define SYSX_UTILS_DEBUG_H_INCLUDED_
 
-#include "tvs/utils/report.h"
-#include "tvs/utils/report/macros_def.h"
+#include <tvs/utils/report.h>
+#include <tvs/utils/report/macros_def.h>
 
 /**
  * \def SYSX_DEBUG_MSG
@@ -142,7 +142,7 @@ protected:
 SYSX_REPORT_END_DEFINITION_
 } // namespace sysx
 
-#include "tvs/utils/report/macros_undef.h"
+#include <tvs/utils/report/macros_undef.h>
 
 #endif /* SYSX_UTILS_DEBUG_H_INCLUDED_ */
 /* Taf!

@@ -25,10 +25,10 @@
 #ifndef TVS_TIMED_WRITER_BASE_H_INCLUDED_
 #define TVS_TIMED_WRITER_BASE_H_INCLUDED_
 
-#include "tvs/tracing/timed_object.h"
-#include "tvs/tracing/timed_stream_base.h"
+#include <tvs/tracing/timed_object.h>
+#include <tvs/tracing/timed_stream_base.h>
 
-#include "tvs/tracing/timed_variant.h"
+#include <tvs/tracing/timed_variant.h>
 
 #include <memory>
 

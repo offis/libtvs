@@ -22,16 +22,16 @@
  * \see    timed_stream.h
  */
 
-#include "tvs/tracing/timed_reader.h"
-#include "tvs/tracing/timed_stream.h"
-#include "tvs/tracing/timed_writer.h"
+#include <tvs/tracing/timed_reader.h>
+#include <tvs/tracing/timed_stream.h>
+#include <tvs/tracing/timed_writer.h>
 
-#include "tvs/tracing/timed_stream_traits.h"
+#include <tvs/tracing/timed_stream_traits.h>
 
-#include "tvs/utils/unique_ptr.h"
+#include <tvs/utils/unique_ptr.h>
 
-#include "tvs/utils/debug.h"
-#include "tvs/utils/macros.h"
+#include <tvs/utils/debug.h>
+#include <tvs/utils/macros.h>
 
 namespace tracing {
 

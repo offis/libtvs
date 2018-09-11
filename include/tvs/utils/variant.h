@@ -18,11 +18,11 @@
 #ifndef SYSX_UTILS_VARIANT_H_INCLUDED_
 #define SYSX_UTILS_VARIANT_H_INCLUDED_
 
-#include "tvs/utils/report.h"
-#include "tvs/utils/report_msgs.h"
-#include "tvs/utils/systemc.h" // sc_dt::(u)int64, potentially strip out
+#include <tvs/utils/report.h>
+#include <tvs/utils/report_msgs.h>
+#include <tvs/utils/systemc.h> // sc_dt::(u)int64, potentially strip out
 
-#include "tvs/utils/assert.h"
+#include <tvs/utils/assert.h>
 
 
 #include <cstring> // std::strlen

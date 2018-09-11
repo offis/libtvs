@@ -24,7 +24,7 @@
 #ifndef TVS_TIMED_STREAM_POLICIES_H_INCLUDED_
 #define TVS_TIMED_STREAM_POLICIES_H_INCLUDED_
 
-#include "tvs/tracing/timed_value.h"
+#include <tvs/tracing/timed_value.h>
 
 namespace tracing {
 
@@ -87,7 +87,7 @@ struct timed_zero_time_policy_keep;
 
 } // namespace tracing
 
-#include "tvs/tracing/timed_stream_policies.tpp"
+#include <tvs/tracing/timed_stream_policies.tpp>
 
 #endif /* TVS_TIMED_STREAM_POLICIES_H_INCLUDED_ */
 /* Taf!

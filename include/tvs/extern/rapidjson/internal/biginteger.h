@@ -22,7 +22,7 @@
 #ifndef RAPIDJSON_BIGINTEGER_H_
 #define RAPIDJSON_BIGINTEGER_H_
 
-#include "tvs/extern/rapidjson/rapidjson.h"
+#include <tvs/extern/rapidjson/rapidjson.h>
 
 RAPIDJSON_NAMESPACE_BEGIN
 namespace internal {

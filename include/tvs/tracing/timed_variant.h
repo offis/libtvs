@@ -24,9 +24,9 @@
 #ifndef TVS_TIMED_VARIANT_H_INCLUDED_
 #define TVS_TIMED_VARIANT_H_INCLUDED_
 
-#include "tvs/tracing/timed_value.h"
-#include "tvs/utils/variant.h"
-#include "tvs/utils/variant_traits.h"
+#include <tvs/tracing/timed_value.h>
+#include <tvs/utils/variant.h>
+#include <tvs/utils/variant_traits.h>
 
 namespace tracing {
 

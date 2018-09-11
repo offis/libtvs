@@ -24,11 +24,11 @@
 
 /*! \file reader.h */
 
-#include "tvs/extern/rapidjson/rapidjson.h"
-#include "tvs/extern/rapidjson/encodings.h"
-#include "tvs/extern/rapidjson/internal/meta.h"
-#include "tvs/extern/rapidjson/internal/stack.h"
-#include "tvs/extern/rapidjson/internal/strtod.h"
+#include <tvs/extern/rapidjson/rapidjson.h>
+#include <tvs/extern/rapidjson/encodings.h>
+#include <tvs/extern/rapidjson/internal/meta.h>
+#include <tvs/extern/rapidjson/internal/stack.h>
+#include <tvs/extern/rapidjson/internal/strtod.h>
 
 #if defined(RAPIDJSON_SIMD) && defined(_MSC_VER)
 #include <intrin.h>
@@ -81,14 +81,14 @@ RAPIDJSON_DIAG_OFF(effc++)
        throw ParseException(parseErrorCode, #parseErrorCode, offset)
 
     #include <stdexcept>               // std::runtime_error
-    #include "rapidjson/error/error.h" // rapidjson::ParseResult
+    #include <tvs/extern/rapidjson/error/error.h> // rapidjson::ParseResult
 
     struct ParseException : std::runtime_error, rapidjson::ParseResult {
       ParseException(rapidjson::ParseErrorCode code, const char* msg, size_t offset)
         : std::runtime_error(msg), ParseResult(code, offset) {}
     };
 
-    #include "rapidjson/reader.h"
+    #include <tvs/extern/rapidjson/reader.h>
     \endcode
 
     \see RAPIDJSON_PARSE_ERROR, rapidjson::GenericReader::Parse
@@ -120,7 +120,7 @@ RAPIDJSON_DIAG_OFF(effc++)
     RAPIDJSON_MULTILINEMACRO_END
 #endif
 
-#include "error/error.h" // ParseErrorCode, ParseResult
+#include <tvs/extern/rapidjson/error/error.h> // ParseErrorCode, ParseResult
 
 RAPIDJSON_NAMESPACE_BEGIN
 

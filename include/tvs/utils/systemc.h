@@ -31,7 +31,7 @@
 #ifndef SYSX_UTILS_SYSTEMC_H_INCLUDED_
 #define SYSX_UTILS_SYSTEMC_H_INCLUDED_
 
-#include "tvs/utils/macros.h" // SYSX_MAKE_VERSION
+#include <tvs/utils/macros.h> // SYSX_MAKE_VERSION
 
 /**
  * \def SYSX_HAVE_SYSTEMC_

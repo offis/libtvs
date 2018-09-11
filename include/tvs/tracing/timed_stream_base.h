@@ -25,8 +25,8 @@
 #ifndef TVS_TIMED_STREAM_BASE_H_INCLUDED_
 #define TVS_TIMED_STREAM_BASE_H_INCLUDED_
 
-#include "tvs/tracing/timed_duration.h"
-#include "tvs/tracing/timed_object.h"
+#include <tvs/tracing/timed_duration.h>
+#include <tvs/tracing/timed_object.h>
 
 #include <vector>
 

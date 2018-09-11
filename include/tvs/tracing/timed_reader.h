@@ -25,9 +25,9 @@
 #ifndef TVS_TIMED_READER_H_INCLUDED_
 #define TVS_TIMED_READER_H_INCLUDED_
 
-#include "tvs/tracing/timed_reader_base.h"
-#include "tvs/tracing/timed_sequence.h"
-#include "tvs/tracing/timed_variant.h"
+#include <tvs/tracing/timed_reader_base.h>
+#include <tvs/tracing/timed_sequence.h>
+#include <tvs/tracing/timed_variant.h>
 
 namespace tracing {
 

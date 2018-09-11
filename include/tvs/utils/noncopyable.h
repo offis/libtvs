@@ -26,7 +26,7 @@
 
 #ifdef HAVE_BOOST
 
-#include "tvs/utils/boost.h"
+#include <tvs/utils/boost.h>
 #include SYSX_BOOST_INCLUDE_(noncopyable.hpp)
 
 #else // no Boost - use simplified implementation

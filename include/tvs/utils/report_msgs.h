@@ -30,8 +30,8 @@
 #ifndef SYSX_UTILS_REPORT_MSGS_H_INCLUDED_
 #define SYSX_UTILS_REPORT_MSGS_H_INCLUDED_
 
-#include "tvs/utils/report/macros_def.h"
-#include "tvs/utils/report/report_base.h"
+#include <tvs/utils/report/macros_def.h>
+#include <tvs/utils/report/report_base.h>
 
 namespace sysx {
 namespace utils {
@@ -69,7 +69,7 @@ SYSX_REPORT_END_DEFINITION_
 } // namespace utils
 } // namespace sysx
 
-#include "tvs/utils/report/macros_undef.h"
+#include <tvs/utils/report/macros_undef.h>
 
 #endif // SYSX_UTILS_REPORT_MSGS_H_INCLUDED_
 //! \todo: fix exposure as public header again

@@ -22,12 +22,12 @@
 #ifndef RAPIDJSON_WRITER_H_
 #define RAPIDJSON_WRITER_H_
 
-#include "tvs/extern/rapidjson/rapidjson.h"
-#include "tvs/extern/rapidjson/internal/stack.h"
-#include "tvs/extern/rapidjson/internal/strfunc.h"
-#include "tvs/extern/rapidjson/internal/dtoa.h"
-#include "tvs/extern/rapidjson/internal/itoa.h"
-#include "tvs/extern/rapidjson/stringbuffer.h"
+#include <tvs/extern/rapidjson/rapidjson.h>
+#include <tvs/extern/rapidjson/internal/stack.h>
+#include <tvs/extern/rapidjson/internal/strfunc.h>
+#include <tvs/extern/rapidjson/internal/dtoa.h>
+#include <tvs/extern/rapidjson/internal/itoa.h>
+#include <tvs/extern/rapidjson/stringbuffer.h>
 #include <new>      // placement new
 
 #ifdef _MSC_VER

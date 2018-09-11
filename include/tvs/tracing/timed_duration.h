@@ -24,8 +24,8 @@
 #ifndef TVS_TIMED_DURATION_H_INCLUDED_
 #define TVS_TIMED_DURATION_H_INCLUDED_
 
-#include "tvs/units/time.h"
-#include "tvs/utils/type_id.h"
+#include <tvs/units/time.h>
+#include <tvs/utils/type_id.h>
 
 #include <iosfwd>
 #include <iostream> // std::cout

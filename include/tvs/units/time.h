@@ -17,7 +17,7 @@
 #ifndef SYSX_UNITS_TIME_H_INCLUDED_
 #define SYSX_UNITS_TIME_H_INCLUDED_
 
-#include "tvs/units/common.h"
+#include <tvs/units/common.h>
 
 // clang-format off
 SYSX_DIAG_OFF_(unused)
@@ -100,7 +100,7 @@ using units::time_type;
 // include compatiblity with sc_time, iff SystemC is available
 // (deliberately outside of include guards!)
 #if !defined(SYSX_NO_SYSTEMC)
-#include "tvs/units/sc_time.h"
+#include <tvs/units/sc_time.h>
 #endif // SYSX_SYSTEMC_INCLUDED_
 
 /* Taf!

@@ -32,8 +32,8 @@
 #ifndef SYSX_UTILS_REPORT_REPORT_MSGS_H_INCLUDED_
 #define SYSX_UTILS_REPORT_REPORT_MSGS_H_INCLUDED_
 
-#include "tvs/utils/report/macros_def.h"
-#include "tvs/utils/report/report_base.h"
+#include <tvs/utils/report/macros_def.h>
+#include <tvs/utils/report/report_base.h>
 
 namespace sysx {
 SYSX_REPORT_BEGIN_DEFINITION_
@@ -81,7 +81,7 @@ SYSX_REPORT_DEFINE_MSG_(plain_msg,
 SYSX_REPORT_END_DEFINITION_
 } // namespace sysx
 
-#include "tvs/utils/report/macros_undef.h"
+#include <tvs/utils/report/macros_undef.h>
 
 #endif // SYSX_UTILS_REPORT_REPORT_MSGS_H_INCLUDED_
 /* Taf!

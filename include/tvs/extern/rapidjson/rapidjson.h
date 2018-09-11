@@ -70,7 +70,7 @@
     #define RAPIDJSON_NAMESPACE my::rapidjson
     #define RAPIDJSON_NAMESPACE_BEGIN namespace my { namespace rapidjson {
     #define RAPIDJSON_NAMESPACE_END   } }
-    #include "rapidjson/..."
+    #include <rapidjson/...>
     \endcode
 
     \see rapidjson
@@ -111,8 +111,8 @@
 #ifndef RAPIDJSON_NO_INT64DEFINE
 //!@cond RAPIDJSON_HIDDEN_FROM_DOXYGEN
 #ifdef _MSC_VER
-#include "tvs/extern/rapidjson/msinttypes/stdint.h"
-#include "tvs/extern/rapidjson/msinttypes/inttypes.h"
+#include <tvs/extern/rapidjson/msinttypes/stdint.h>
+#include <tvs/extern/rapidjson/msinttypes/inttypes.h>
 #else
 // Other compilers should have this.
 #include <stdint.h>
@@ -277,7 +277,7 @@
     \code
     #define RAPIDJSON_NO_SIZETYPEDEFINE
     namespace rapidjson { typedef ::std::size_t SizeType; }
-    #include "rapidjson/..."
+    #include <rapidjson/...>
     \endcode
 
     \see rapidjson::SizeType
@@ -462,8 +462,8 @@ RAPIDJSON_NAMESPACE_END
 ///////////////////////////////////////////////////////////////////////////////
 // Allocators and Encodings
 
-#include "allocators.h"
-#include "encodings.h"
+#include <tvs/extern/rapidjson/allocators.h>
+#include <tvs/extern/rapidjson/encodings.h>
 
 /*! \namespace rapidjson
     \brief main RapidJSON namespace

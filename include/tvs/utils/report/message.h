@@ -18,7 +18,7 @@
 #ifndef SYSX_UTILS_REPORT_MESSAGE_H_INCLUDED_
 #define SYSX_UTILS_REPORT_MESSAGE_H_INCLUDED_
 
-#include "tvs/utils/noncopyable.h"
+#include <tvs/utils/noncopyable.h>
 
 #include <iosfwd>
 #include <sstream>

@@ -18,7 +18,7 @@
 #ifndef SYSX_UTILS_REPORT_H_INCLUDED_
 #define SYSX_UTILS_REPORT_H_INCLUDED_
 
-#include "tvs/utils/macros.h"
+#include <tvs/utils/macros.h>
 
 /**
  * \file  report.h
@@ -67,9 +67,9 @@ namespace report { /* for documentation only */
 
 } // namespace sysx
 
-#include "tvs/utils/macros.h"
-#include "tvs/utils/report/report_base.h"
-#include "tvs/utils/report/report_msgs.h"
+#include <tvs/utils/macros.h>
+#include <tvs/utils/report/report_base.h>
+#include <tvs/utils/report/report_msgs.h>
 
 /* ------------------------- reporting macros ------------------------- */
 

@@ -22,7 +22,7 @@
 #ifndef RAPIDJSON_ENCODEDSTREAM_H_
 #define RAPIDJSON_ENCODEDSTREAM_H_
 
-#include "tvs/extern/rapidjson/rapidjson.h"
+#include <tvs/extern/rapidjson/rapidjson.h>
 
 #ifdef __GNUC__
 RAPIDJSON_DIAG_PUSH

@@ -23,9 +23,9 @@
 #ifndef TVS_PROCESSOR_POLICIES_H
 #define TVS_PROCESSOR_POLICIES_H
 
-#include "tvs/tracing/processors/timed_stream_processor_base.h"
+#include <tvs/tracing/processors/timed_stream_processor_base.h>
 
-#include "tvs/tracing/timed_duration.h"
+#include <tvs/tracing/timed_duration.h>
 
 #include <set>
 

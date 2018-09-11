@@ -25,9 +25,9 @@
 #ifndef TVS_TIMED_EVENT_WRITER_H
 #define TVS_TIMED_EVENT_WRITER_H
 
-#include "tvs/tracing/timed_writer.h"
+#include <tvs/tracing/timed_writer.h>
 
-#include "tvs/tracing/timed_stream_traits.h"
+#include <tvs/tracing/timed_stream_traits.h>
 
 #include <set>
 

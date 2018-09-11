@@ -25,8 +25,8 @@
 #ifndef TVS_TIMED_OBJECT_H_INCLUDED_
 #define TVS_TIMED_OBJECT_H_INCLUDED_
 
-#include "tvs/tracing/timed_duration.h" // time_type
-#include "tvs/utils/noncopyable.h"
+#include <tvs/tracing/timed_duration.h> // time_type
+#include <tvs/utils/noncopyable.h>
 
 #include <functional>
 
