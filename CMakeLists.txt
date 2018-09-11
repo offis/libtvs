@@ -28,7 +28,7 @@ set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-  "${CMAKE_SOURCE_DIR}/cmake/modules/")
+  "${PROJECT_SOURCE_DIR}/cmake/modules/")
 
 
 # By default, build as shared library
