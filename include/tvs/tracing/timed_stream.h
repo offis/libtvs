@@ -29,7 +29,7 @@
 #include <tvs/tracing/timed_stream_base.h>
 #include <tvs/tracing/timed_value.h>
 
-#include <tvs/utils/report_msgs.h>
+#include <tvs/tracing/report_msgs.h>
 
 namespace tracing {
 
