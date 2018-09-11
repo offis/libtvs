@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 OFFIS Institute for Information Technology
+ * Copyright (c) 2017-2018 OFFIS Institute for Information Technology
  *                          Oldenburg, Germany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

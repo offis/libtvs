@@ -1,7 +1,7 @@
 /* :external-source:
  *
  * Copyright (C) 2007--2010  Torsten Maehne
- * Copyright (c) 2011--2012  OFFIS Institute for Information Technology
+ * Copyright (c) 2011-2018  OFFIS Institute for Information Technology
  *                           Oldenburg, Germany
  * All rights reserved.
  *
