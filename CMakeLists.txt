@@ -34,7 +34,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
 # By default, build as shared library
 option(BUILD_SHARED_LIBS "build shared libraries" ON)
 
-set(TVS_INSTALL_CONFIGDIR "${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME}")
+set(TVS_INSTALL_CONFIGDIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
 
 option(TVS_ENABLE_DOCS  "build documentation using Doxygen" OFF)
 option(TVS_ENABLE_TESTS "build tests" ON)
