@@ -67,11 +67,11 @@ protected:
 
   void set_ostream(std::ostream& out) { output_ = &out; }
 
-  void process(timed_reader_base& in, timed_duration const& dur)
+  void process(timed_reader_base& in, timed_duration const&)
   {
     SYSX_ASSERT(output_ != nullptr);
     while (in.available()) {
-      auto val = static_cast<tuple_type const&>(in.front(dur));
+      auto val = static_cast<tuple_type const&>(in.front());
       this->do_print_tuple(*output_, val, in.local_time());
       in.pop();
     }
