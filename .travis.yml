@@ -74,5 +74,5 @@ script:
   - mkdir -p build
   - cd build
   - cmake -DTVS_ENABLE_TESTS=ON -DTVS_USE_SYSTEMC=OFF ..
-  - make
-  - ctest
+  - cmake --build .
+  - ctest --verbose .
