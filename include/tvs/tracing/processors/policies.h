@@ -71,7 +71,7 @@ protected:
   {
     SYSX_ASSERT(output_ != nullptr);
     while (in.available()) {
-      auto val = static_cast<tuple_type const&>(in.front());
+      auto val = static_cast<tuple_type const&>(in.front(dur));
       this->do_print_tuple(*output_, val, in.local_time());
       in.pop();
     }
