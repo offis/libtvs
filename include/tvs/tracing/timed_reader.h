@@ -85,6 +85,8 @@ public:
 
   // read a value at a given time (between start and end time)
   value_type const& get() const { return front().value(); }
+  // allow modifying the value of the front tuple
+  value_type& get() { return buf_.front().value(); }
   value_type const& get(time_type const& offset) const;
   value_type const& get(duration_type const& offset) const;
 
