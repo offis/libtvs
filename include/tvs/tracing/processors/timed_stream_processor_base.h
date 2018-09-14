@@ -30,7 +30,7 @@
 #include <tvs/tracing/timed_stream_base.h>
 #include <tvs/tracing/timed_writer_base.h>
 
-#include <tvs/utils/unique_ptr.h>
+#include <memory>
 
 namespace tracing {
 
@@ -64,8 +64,8 @@ struct timed_stream_processor_base
   using reader_base_type = timed_reader_base;
   using writer_base_type = timed_writer_base;
 
-  using reader_ptr_type = std::unique_ptr<timed_reader_base>;
-  using writer_ptr_type = std::unique_ptr<timed_writer_base>;
+  using reader_ptr_type = std::shared_ptr<timed_reader_base>;
+  using writer_ptr_type = std::shared_ptr<timed_writer_base>;
 
   using reader_collection_type = std::vector<reader_ptr_type>;
   using writer_collection_type = std::vector<writer_ptr_type>;
@@ -98,7 +98,6 @@ protected:
   /// Returns a reference to the attached output writers.
   writer_collection_type& outputs() { return outputs_; }
   writer_collection_type const& outputs() const { return outputs_; }
-
 
   /// User-defined implementation for updating the state of this processor.
   ///
@@ -155,7 +154,7 @@ timed_stream_processor_base::in(tracing::timed_stream<T, Traits>& stream)
   std::stringstream name;
   name << stream.basename() << "_reader";
 
-  this->do_add_input(detail::make_unique<reader_type>(
+  this->do_add_input(std::make_shared<reader_type>(
     host::gen_unique_name(name.str().c_str()), stream));
 }
 
@@ -177,7 +176,7 @@ timed_stream_processor_base::out(tracing::timed_stream<T, Traits>& stream)
 {
   using writer_type =
     typename std::remove_reference<decltype(stream)>::type::writer_type;
-  this->do_add_output(detail::make_unique<writer_type>(stream));
+  this->do_add_output(std::make_shared<writer_type>(stream));
 }
 
 /// Policy-based processor template.
