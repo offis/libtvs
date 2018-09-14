@@ -33,35 +33,62 @@
 
 namespace tracing {
 
+namespace {
+
+// helper function to update the minimum duration cache entry
+void
+set_min_duration(duration_type& min_dur, duration_type const& dur)
+{
+  if (min_dur == duration_type::zero_time) {
+    min_dur = dur;
+  } else {
+    min_dur = std::min(min_dur, dur);
+  }
+};
+
+} // anonymous namespace
+
 timed_stream_processor_base::timed_stream_processor_base() = default;
 
 void
-timed_stream_processor_base::notify(reader_base_type&)
+timed_stream_processor_base::notify(reader_base_type& rd)
 {
-  const auto availp = [](auto const& r) { return r->available(); };
 
-  const auto time_cmp = [](auto const& lhs, auto const& rhs) {
-    return lhs->available_until() < rhs->available_until();
-  };
+  // remember minimum duration of all incoming readers
+  set_min_duration(min_duration_, rd.front_duration());
 
-  const auto begin = inputs_.cbegin();
-  const auto end = inputs_.cend();
+  // check if all readers have notified
+  available_inputs_.insert(&rd);
+  if (available_inputs_.size() != inputs_.size()) {
+    return;
+  }
 
-  while (std::all_of(begin, end, availp)) {
-
-    // determine minimum front value duration on each run
-    auto const& stream = std::min_element(begin, end, time_cmp);
-    auto duration = (*stream)->front_duration();
-
-    // let the user process all readers with the minimum front duration
-    auto advance = process(duration);
-
-    // wait until next token arrives when no duration was returned
+  // consume until no more duration is available or until the process() stops
+  // advancing
+  duration_type consumed;
+  while (consumed < min_duration_) {
+    auto const& advance = process(min_duration_);
     if (advance == duration_type::zero_time)
       break;
+    consumed += advance;
+  }
 
-    // update this stream processor's local time after processing
-    commit(advance);
+  commit(consumed);
+
+  // invalidate cache
+  available_inputs_.clear();
+  min_duration_ = duration_type::zero_time;
+
+  // re-build the cache, since we don't know which input readers process() has
+  // fully consumed or what the new minimum duration is.
+  for (auto&& it : inputs_) {
+    auto const* ptr = &(*it);
+    if (it->available()) {
+      available_inputs_.insert(ptr);
+
+      // re-set minimum duration of all incoming readers
+      set_min_duration(min_duration_, it->front_duration());
+    }
   }
 }
 

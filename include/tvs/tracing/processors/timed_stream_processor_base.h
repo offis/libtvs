@@ -31,6 +31,7 @@
 #include <tvs/tracing/timed_writer_base.h>
 
 #include <memory>
+#include <unordered_set>
 
 namespace tracing {
 
@@ -130,6 +131,9 @@ private:
 
   reader_collection_type inputs_;
   writer_collection_type outputs_;
+
+  std::unordered_set<timed_reader_base const*> available_inputs_;
+  duration_type min_duration_;
 };
 
 template<typename T, typename Traits>
