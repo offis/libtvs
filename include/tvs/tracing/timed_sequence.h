@@ -195,8 +195,16 @@ public:
   ///\{
 
   /// read front of the sequence
-  const_reference front() const { return buf_.front(); }
-  reference front() { return buf_.front(); }
+  const_reference front() const
+  {
+    SYSX_ASSERT(!empty());
+    return buf_.front();
+  }
+  reference front()
+  {
+    SYSX_ASSERT(!empty());
+    return buf_.front();
+  }
 
   /// update/replace (value of) first element in the sequence
   void front(value_type const& v) { buf_.front().value(v); }
