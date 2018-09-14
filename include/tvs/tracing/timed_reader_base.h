@@ -130,6 +130,12 @@ protected:
   void trigger(bool new_window);
 
 private:
+  friend std::ostream& operator<<(std::ostream& os, timed_reader_base const& t)
+  {
+    t.print(os);
+    return os;
+  }
+
   stream_type* stream_;
   timed_listener_if* listener_;
   listener_mode listen_mode_;

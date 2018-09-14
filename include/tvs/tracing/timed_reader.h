@@ -185,12 +185,6 @@ public:
     os << name() << "@" << local_time() << ": " << buf_;
   }
 
-  friend std::ostream& operator<<(std::ostream& os, this_type const& t)
-  {
-    t.print(os);
-    return os;
-  }
-
 private:
   void do_pop_duration(duration_type const& d) override
   {
