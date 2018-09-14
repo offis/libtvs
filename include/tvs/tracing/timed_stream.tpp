@@ -117,7 +117,7 @@ timed_stream<T, P>::push(value_type const& val)
 {
   tuple_type tup(val, duration_type::infinity());
 
-  if (future_.front().is_infinite()) {
+  if (!future_.empty() && future_.front().is_infinite()) {
     future_.front(tup);
   } else {
     // merge with existing future sequence
