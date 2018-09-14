@@ -106,7 +106,7 @@ protected:
   /// streams.  It should return the consumed time which is then used to advance
   /// this processors's time via commit().  The user is responsible for
   /// consuming the tuples on the input streams.
-  virtual duration_type process(duration_type) = 0;
+  virtual duration_type process(duration_type) {}
 
   /// Advance the (distributed) local time of this processor instance.
   ///
@@ -127,7 +127,7 @@ protected:
 private:
   /// Checks if a minimum token duration is available on all input streams and
   /// then calls process().
-  void notify(reader_base_type&) final;
+  virtual void notify(reader_base_type&) override;
 
   reader_collection_type inputs_;
   writer_collection_type outputs_;
