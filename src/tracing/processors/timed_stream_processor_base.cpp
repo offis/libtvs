@@ -67,7 +67,7 @@ timed_stream_processor_base::notify(reader_base_type& rd)
   // advancing
   duration_type consumed;
   while (consumed < min_duration_) {
-    auto const& advance = process(min_duration_);
+    auto const& advance = process(min_duration_ - consumed);
     if (advance == duration_type::zero_time)
       break;
     consumed += advance;
