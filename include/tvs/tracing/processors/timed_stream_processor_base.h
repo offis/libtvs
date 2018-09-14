@@ -106,7 +106,7 @@ protected:
   /// streams.  It should return the consumed time which is then used to advance
   /// this processors's time via commit().  The user is responsible for
   /// consuming the tuples on the input streams.
-  virtual duration_type process(duration_type) {}
+  virtual duration_type process(duration_type dur) { return dur; }
 
   /// Advance the (distributed) local time of this processor instance.
   ///
