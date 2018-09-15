@@ -9,6 +9,7 @@
 #include "tvs/tracing/report_msgs.h"
 
 #include <map>
+#include <cstdint>
 
 namespace tracing {
 
@@ -69,35 +70,58 @@ timed_stream_vcd_processor::write_header()
   out_ << "$end\n";
 }
 
-timed_stream_vcd_processor::duration_type
-timed_stream_vcd_processor::process(duration_type /* unused */)
+void
+timed_stream_vcd_processor::notify(reader_base_type&)
 {
+  auto scale_time = [&](time_type const& t) {
+    return static_cast<std::uint64_t>(
+      sysx::units::sc_time_cast<sysx::units::time_type>(t) / scale_);
+  };
 
   if (!header_written_) {
     write_header();
     header_written_ = true;
   }
 
-  unsigned long scaled =
-    sysx::units::sc_time_cast<sysx::units::time_type>(this->local_time()) /
-    scale_;
+  // find the minimum available time of all VCD input streams
+  auto it =
+    std::min_element(this->inputs().cbegin(),
+                     this->inputs().cend(),
+                     [](std::shared_ptr<timed_reader_base> const& lhs,
+                        std::shared_ptr<timed_reader_base> const& rhs) {
+                       return lhs->available_until() < rhs->available_until();
+                     });
 
-  out_ << "#" << scaled << "\n";
+  time_type until = (*it)->available_until();
 
-  // figure out the next local time to advance to
-  std::vector<time_type> next;
-
-  // write the first tuple of all synchronised streams
-  for (auto&& vcd : this->vcd_streams_) {
-    auto& rd = vcd->reader();
-    if (rd.local_time() == this->local_time()) {
-      vcd->print_front_value(out_);
-      rd.pop();
-    }
-    next.push_back(rd.local_time());
+  if (until <= local_time()) {
+    return;
   }
 
-  return *std::min_element(next.begin(), next.end()) - local_time();
+  // create a map of all tuples to order them
+  std::multimap<time_type, std::string> ordered;
+  for (auto&& vcd : this->vcd_streams_) {
+    auto& rd = vcd->reader();
+    // std::cout << rd.count() << " tuples: " << rd;
+    while (rd.available() && rd.local_time() <= until) {
+      std::stringstream ss;
+      vcd->print_front_value(ss);
+      ordered.insert(std::make_pair(rd.local_time(), ss.str()));
+      rd.pop();
+    }
+  }
+
+  // print the ordered tuples
+  time_type stamp = duration_type::infinity();
+  for (auto&& o : ordered) {
+    if (stamp != o.first) {
+      out_ << "#" << scale_time(o.first) << "\n";
+      stamp = o.first;
+    }
+    out_ << o.second;
+  }
+
+  commit(until);
 }
 
 } // namespace tracing

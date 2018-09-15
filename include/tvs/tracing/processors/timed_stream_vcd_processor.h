@@ -62,7 +62,7 @@ struct vcd_stream_container_base
   {}
 
   virtual void header_defn(std::ostream&) const = 0;
-  virtual void print_front_value(std::ostream&) = 0;
+  virtual void print_front_value(std::ostream&) const = 0;
   virtual void default_value(std::ostream& out) const = 0;
 
   virtual reader_base_type& reader() const = 0;
@@ -123,10 +123,9 @@ private:
     do_print_val(out, value_type());
   }
 
-  void print_front_value(std::ostream& out) override
+  void print_front_value(std::ostream& out) const override
   {
-    value_type val = this->reader_.front().value();
-    do_print_val(out, val);
+    do_print_val(out, this->reader_.get());
   }
 
   void do_print_val(std::ostream& out, value_type const& val) const
@@ -213,7 +212,7 @@ private:
     this->do_add_input(std::move(reader));
   }
 
-  duration_type process(duration_type dur) override;
+  void notify(reader_base_type&) override;
 
   void write_header();
 
