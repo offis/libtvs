@@ -116,6 +116,10 @@ timed_sequence<T, Traits>::split(duration_type const& offset)
   if (this->empty())
     return;
 
+  // check common case
+  if (offset == front_duration() || offset == duration())
+    return;
+
   auto srange = this->range(this->before(offset).duration(), offset);
 
   // is there already a split at the offset?
