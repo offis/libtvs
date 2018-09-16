@@ -225,6 +225,9 @@ private:
   // use boost
   sysx::units::time_type scale_;
 
+  // temporary stringstream to print the VCD values
+  std::stringstream temp_sstr_;
+
   std::vector<std::unique_ptr<impl::vcd_event_converter_base>> converters_;
 };
 

@@ -104,10 +104,10 @@ timed_stream_vcd_processor::notify(reader_base_type&)
     auto& rd = vcd->reader();
     // std::cout << rd.count() << " tuples: " << rd;
     while (rd.available() && rd.local_time() <= until) {
-      std::stringstream ss;
-      vcd->print_front_value(ss);
-      ordered.insert(std::make_pair(rd.local_time(), ss.str()));
+      vcd->print_front_value(temp_sstr_);
+      ordered.insert(std::make_pair(rd.local_time(), temp_sstr_.str()));
       rd.pop();
+      temp_sstr_.str("");
     }
   }
 
