@@ -43,12 +43,11 @@ timed_stream_vcd_processor::~timed_stream_vcd_processor() = default;
 void
 timed_stream_vcd_processor::print_timestamp(time_type const& stamp)
 {
-  auto scale_time = [&](time_type const& t) {
-    return static_cast<std::uint64_t>(
-      sysx::units::sc_time_cast<sysx::units::time_type>(t) / scale_);
-  };
-
-  out_ << "#" << scale_time(stamp) << "\n";
+  using sysx::units::sc_time_cast;
+  out_ << "#"
+       << static_cast<uint64_t>(sc_time_cast<sysx::units::time_type>(stamp) /
+                                scale_)
+       << "\n";
 }
 
 void
