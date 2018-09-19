@@ -41,6 +41,17 @@ timed_stream_vcd_processor::timed_stream_vcd_processor(char const* modscope,
 timed_stream_vcd_processor::~timed_stream_vcd_processor() = default;
 
 void
+timed_stream_vcd_processor::print_timestamp(time_type const& stamp)
+{
+  auto scale_time = [&](time_type const& t) {
+    return static_cast<std::uint64_t>(
+      sysx::units::sc_time_cast<sysx::units::time_type>(t) / scale_);
+  };
+
+  out_ << "#" << scale_time(stamp) << "\n";
+}
+
+void
 timed_stream_vcd_processor::write_header()
 {
   out_ << "$timescale " << sysx::units::engineering_prefix << scale_
@@ -73,10 +84,6 @@ timed_stream_vcd_processor::write_header()
 void
 timed_stream_vcd_processor::notify(reader_base_type&)
 {
-  auto scale_time = [&](time_type const& t) {
-    return static_cast<std::uint64_t>(
-      sysx::units::sc_time_cast<sysx::units::time_type>(t) / scale_);
-  };
 
   if (!header_written_) {
     write_header();
@@ -102,23 +109,22 @@ timed_stream_vcd_processor::notify(reader_base_type&)
   std::multimap<time_type, std::string> ordered;
   for (auto&& vcd : this->vcd_streams_) {
     auto& rd = vcd->reader();
-    // std::cout << rd.count() << " tuples: " << rd;
     while (rd.available() && rd.local_time() <= until) {
       if (vcd->value_changed()) {
         vcd->print_front_value(temp_sstr_);
         ordered.insert(std::make_pair(rd.local_time(), temp_sstr_.str()));
+        temp_sstr_.str("");
         vcd->update_value();
       }
       rd.pop();
-      temp_sstr_.str("");
     }
   }
 
-  // print the ordered tuples
+  // print the ordered tuples and the time stamp if necessary
   time_type stamp = duration_type::infinity();
   for (auto&& o : ordered) {
     if (stamp != o.first) {
-      out_ << "#" << scale_time(o.first) << "\n";
+      print_timestamp(o.first);
       stamp = o.first;
     }
     out_ << o.second;

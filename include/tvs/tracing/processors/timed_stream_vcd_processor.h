@@ -226,6 +226,9 @@ private:
     this->do_add_input(std::move(reader));
   }
 
+  /// prints the timestamp to the output buffer
+  void print_timestamp(time_type const&);
+
   void notify(reader_base_type&) override;
 
   void write_header();
