@@ -8,8 +8,8 @@
 
 #include "tvs/tracing/report_msgs.h"
 
-#include <map>
 #include <cstdint>
+#include <map>
 
 namespace tracing {
 
@@ -104,8 +104,11 @@ timed_stream_vcd_processor::notify(reader_base_type&)
     auto& rd = vcd->reader();
     // std::cout << rd.count() << " tuples: " << rd;
     while (rd.available() && rd.local_time() <= until) {
-      vcd->print_front_value(temp_sstr_);
-      ordered.insert(std::make_pair(rd.local_time(), temp_sstr_.str()));
+      if (vcd->value_changed()) {
+        vcd->print_front_value(temp_sstr_);
+        ordered.insert(std::make_pair(rd.local_time(), temp_sstr_.str()));
+        vcd->update_value();
+      }
       rd.pop();
       temp_sstr_.str("");
     }

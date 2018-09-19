@@ -65,6 +65,13 @@ struct vcd_stream_container_base
   virtual void print_front_value(std::ostream&) const = 0;
   virtual void default_value(std::ostream& out) const = 0;
 
+  /// returns whether the front value is different from the last value that has
+  /// been printed
+  virtual bool value_changed() const = 0;
+
+  /// update the last value that has been printed
+  virtual void update_value() = 0;
+
   virtual reader_base_type& reader() const = 0;
 
   char const* scope() const;
@@ -95,6 +102,7 @@ struct vcd_stream_container : vcd_stream_container_base
                        char id)
     : base_type(id, scope, name)
     , reader_(reader)
+    , prev_(value_type())
   {}
 
 private:
@@ -128,6 +136,10 @@ private:
     do_print_val(out, this->reader_.get());
   }
 
+  bool value_changed() const override { return prev_ != this->reader_.get(); }
+
+  void update_value() override { prev_ = this->reader_.get(); }
+
   void do_print_val(std::ostream& out, value_type const& val) const
   {
     if (traits_type::bitwidth_value == 1) {
@@ -140,6 +152,8 @@ private:
 
     out << this->id_ << "\n";
   }
+
+  value_type prev_;
 
   reader_type& reader_;
 };
