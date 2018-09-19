@@ -153,9 +153,8 @@ private:
     out << this->id_ << "\n";
   }
 
-  value_type prev_;
-
   reader_type& reader_;
+  value_type prev_;
 };
 
 /**
