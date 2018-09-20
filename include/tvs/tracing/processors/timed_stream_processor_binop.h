@@ -57,10 +57,11 @@ namespace tracing {
  * \tparam BinaryOperation the operation, \see std::plus for an example
  *
  */
-template<typename T, typename Traits, typename BinaryOperation>
+template<typename T, typename Traits, typename BinaryOperation, T InitValue>
 struct timed_stream_binop_processor : timed_stream_processor_base
 {
-  using this_type = timed_stream_binop_processor<T, Traits, BinaryOperation>;
+  using this_type =
+    timed_stream_binop_processor<T, Traits, BinaryOperation, InitValue>;
   using base_type = timed_stream_processor_base;
 
   using reader_type = tracing::timed_reader<T, Traits>;
@@ -97,7 +98,7 @@ protected:
   {
     using namespace boost::adaptors;
 
-    output_type result{};
+    output_type result{ InitValue };
 
     result = boost::accumulate(this->inputs() | transformed([&dur](auto& rd) {
                                  auto& reader = static_cast<reader_type&>(*rd);
@@ -119,15 +120,14 @@ protected:
   }
 };
 
-#define _DECLARE_PROC(op)                                                      \
+#define _DECLARE_PROC(op, init)                                                \
   template<typename T, typename Traits>                                        \
   using timed_stream_processor_##op =                                          \
-    timed_stream_binop_processor<T, Traits, std::op<T>>
+    timed_stream_binop_processor<T, Traits, std::op<T>, init>
 
-_DECLARE_PROC(plus);
-_DECLARE_PROC(minus);
-_DECLARE_PROC(multiplies);
-_DECLARE_PROC(divides);
+_DECLARE_PROC(plus, 0);
+_DECLARE_PROC(minus, 0);
+_DECLARE_PROC(multiplies, 1);
 
 #undef _DECLARE_PROC
 
