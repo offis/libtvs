@@ -62,8 +62,15 @@ struct vcd_stream_container_base
   {}
 
   virtual void header_defn(std::ostream&) const = 0;
-  virtual void print_front_value(std::ostream&) = 0;
+  virtual void print_front_value(std::ostream&) const = 0;
   virtual void default_value(std::ostream& out) const = 0;
+
+  /// returns whether the front value is different from the last value that has
+  /// been printed
+  virtual bool value_changed() const = 0;
+
+  /// update the last value that has been printed
+  virtual void update_value() = 0;
 
   virtual reader_base_type& reader() const = 0;
 
@@ -95,6 +102,7 @@ struct vcd_stream_container : vcd_stream_container_base
                        char id)
     : base_type(id, scope, name)
     , reader_(reader)
+    , prev_(value_type())
   {}
 
 private:
@@ -123,11 +131,14 @@ private:
     do_print_val(out, value_type());
   }
 
-  void print_front_value(std::ostream& out) override
+  void print_front_value(std::ostream& out) const override
   {
-    value_type val = this->reader_.front().value();
-    do_print_val(out, val);
+    do_print_val(out, this->reader_.get());
   }
+
+  bool value_changed() const override { return prev_ != this->reader_.get(); }
+
+  void update_value() override { prev_ = this->reader_.get(); }
 
   void do_print_val(std::ostream& out, value_type const& val) const
   {
@@ -143,6 +154,7 @@ private:
   }
 
   reader_type& reader_;
+  value_type prev_;
 };
 
 /**
@@ -213,7 +225,10 @@ private:
     this->do_add_input(std::move(reader));
   }
 
-  duration_type process(duration_type dur) override;
+  /// prints the timestamp to the output buffer
+  void print_timestamp(time_type const&);
+
+  void notify(reader_base_type&) override;
 
   void write_header();
 
@@ -225,6 +240,9 @@ private:
 
   // use boost
   sysx::units::time_type scale_;
+
+  // temporary stringstream to print the VCD values
+  std::stringstream temp_sstr_;
 
   std::vector<std::unique_ptr<impl::vcd_event_converter_base>> converters_;
 };
