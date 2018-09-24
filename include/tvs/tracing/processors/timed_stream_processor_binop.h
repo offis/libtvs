@@ -48,6 +48,9 @@
 
 namespace tracing {
 
+template<typename T, typename Op>
+struct operator_traits;
+
 /**
  * \brief Stream processor for applying a binary operation on all stream inputs
  * and committing the result to the output sink.
@@ -57,11 +60,11 @@ namespace tracing {
  * \tparam BinaryOperation the operation, \see std::plus for an example
  *
  */
-template<typename T, typename Traits, typename BinaryOperation, T InitValue>
+template<typename T, typename Traits, typename BinaryOperation>
 struct timed_stream_binop_processor : timed_stream_processor_base
 {
   using this_type =
-    timed_stream_binop_processor<T, Traits, BinaryOperation, InitValue>;
+    timed_stream_binop_processor<T, Traits, BinaryOperation>;
   using base_type = timed_stream_processor_base;
 
   using reader_type = tracing::timed_reader<T, Traits>;
@@ -70,6 +73,8 @@ struct timed_stream_binop_processor : timed_stream_processor_base
 
   using binop_type = BinaryOperation;
   using output_type = typename binop_type::result_type;
+
+  using op_traits = operator_traits<T, BinaryOperation>;
 
   timed_stream_binop_processor() = default;
 
@@ -98,7 +103,7 @@ protected:
   {
     using namespace boost::adaptors;
 
-    output_type result{ InitValue };
+    output_type result{ op_traits::identity };
 
     result = boost::accumulate(this->inputs() | transformed([&dur](auto& rd) {
                                  auto& reader = static_cast<reader_type&>(*rd);
@@ -120,14 +125,26 @@ protected:
   }
 };
 
-#define _DECLARE_PROC(op, init)                                                \
+
+template<typename T>
+struct operator_traits<T, std::plus<T>>
+{
+  static T constexpr identity = 0;
+};
+
+template<typename T>
+struct operator_traits<T, std::multiplies<T>>
+{
+  static T constexpr identity = 1;
+};
+
+#define _DECLARE_PROC(op)                                                      \
   template<typename T, typename Traits>                                        \
   using timed_stream_processor_##op =                                          \
-    timed_stream_binop_processor<T, Traits, std::op<T>, init>
+    timed_stream_binop_processor<T, Traits, std::op<T>>
 
-_DECLARE_PROC(plus, 0);
-_DECLARE_PROC(minus, 0);
-_DECLARE_PROC(multiplies, 1);
+_DECLARE_PROC(plus);
+_DECLARE_PROC(multiplies);
 
 #undef _DECLARE_PROC
 
