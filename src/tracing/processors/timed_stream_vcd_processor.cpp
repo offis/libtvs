@@ -29,16 +29,36 @@ vcd_stream_container_base::scope() const
 }
 
 timed_stream_vcd_processor::timed_stream_vcd_processor(char const* modscope,
-                                                       std::ostream& out,
-                                                       char vcd_start_signal)
+                                                       std::ostream& out)
   : named_object(modscope)
   , out_(out)
-  , vcd_id_(vcd_start_signal)
-  , header_written_(false)
-  , scale_(1.0 * sysx::si::picoseconds)
 {}
 
-timed_stream_vcd_processor::~timed_stream_vcd_processor() = default;
+timed_stream_vcd_processor::~timed_stream_vcd_processor()
+{
+  out_ << "$vcdclose " << this->local_time() << " $end\n";
+}
+
+std::string
+timed_stream_vcd_processor::next_identifier()
+{
+  // ASCII start/end characters for encoding the wire ID
+  char const first_id = '!';
+  char const last_id = '~';
+  int const range = last_id - first_id + 1;
+
+  auto next = vcd_id_++;
+
+  // produce an identifier in the range [first_id, last_id] with the necessary
+  // amount of character symbols
+  std::string id{};
+  while (next != 0) {
+    int rem = next % range;
+    id.insert(id.begin(), rem + first_id);
+    next /= range;
+  }
+  return id;
+}
 
 void
 timed_stream_vcd_processor::print_timestamp(time_type const& stamp)
@@ -61,10 +81,10 @@ timed_stream_vcd_processor::write_header()
   for (const auto& vcd : this->vcd_streams_) {
     if (vcd->scope() != std::string("")) {
       out_ << "$scope module " << vcd->scope() << " $end\n";
-      vcd->header_defn(out_);
+      vcd->print_node_information(out_);
       out_ << "$upscope $end\n";
     } else {
-      vcd->header_defn(out_);
+      vcd->print_node_information(out_);
     }
   }
 
@@ -74,7 +94,7 @@ timed_stream_vcd_processor::write_header()
        << "$dumpvars\n";
 
   for (auto&& vcd : this->vcd_streams_) {
-    vcd->default_value(out_);
+    vcd->print_default_value(out_);
   }
 
   out_ << "$end\n";

@@ -53,7 +53,9 @@ struct vcd_stream_container_base
 {
   using reader_base_type = timed_reader_base;
 
-  explicit vcd_stream_container_base(char id,
+  using id_type = std::string;
+
+  explicit vcd_stream_container_base(id_type const& id,
                                      std::string const& scope,
                                      std::string const& name)
     : id_(id)
@@ -61,9 +63,9 @@ struct vcd_stream_container_base
     , name_(name)
   {}
 
-  virtual void header_defn(std::ostream&) const = 0;
+  virtual void print_node_information(std::ostream&) const = 0;
   virtual void print_front_value(std::ostream&) const = 0;
-  virtual void default_value(std::ostream& out) const = 0;
+  virtual void print_default_value(std::ostream& out) const = 0;
 
   /// returns whether the front value is different from the last value that has
   /// been printed
@@ -81,7 +83,7 @@ struct vcd_stream_container_base
   virtual ~vcd_stream_container_base() = default;
 
 protected:
-  char id_;
+  id_type id_;
   std::string scope_;
   std::string name_;
 };
@@ -99,18 +101,16 @@ struct vcd_stream_container : vcd_stream_container_base
   vcd_stream_container(reader_type& reader,
                        std::string const& scope,
                        std::string const& name,
-                       char id)
+                       id_type const& id)
     : base_type(id, scope, name)
     , reader_(reader)
     , prev_(value_type())
   {}
 
 private:
-  void header_defn(std::ostream& out) const override
+  void print_node_information(std::ostream& out) const override
   {
-
     auto nm = override_name();
-
     if (nm == "") {
       nm = this->reader_.stream().name();
     }
@@ -126,7 +126,7 @@ private:
 
   reader_base_type& reader() const override { return reader_; }
 
-  void default_value(std::ostream& out) const override
+  void print_default_value(std::ostream& out) const override
   {
     do_print_val(out, value_type());
   }
@@ -175,9 +175,7 @@ struct timed_stream_vcd_processor
   using vcd_stream_ptr_type = std::unique_ptr<vcd_stream_container_base>;
 
 public:
-  timed_stream_vcd_processor(char const* modscope,
-                             std::ostream& out,
-                             char vcd_start_signal = 33);
+  timed_stream_vcd_processor(char const* modscope, std::ostream& out);
 
   ~timed_stream_vcd_processor() override;
 
@@ -218,12 +216,14 @@ private:
       host::gen_unique_name("vcd_reader"), stream);
 
     vcd_streams_.emplace_back(std::make_unique<container_type>(
-      *reader, scope, override_name, vcd_id_++));
+      *reader, scope, override_name, next_identifier()));
 
     // move the reader (including ownership) to the backend of the processor,
     // making it sensitive to the committed values
     this->do_add_input(std::move(reader));
   }
+
+  std::string next_identifier();
 
   /// prints the timestamp to the output buffer
   void print_timestamp(time_type const&);
@@ -232,17 +232,18 @@ private:
 
   void write_header();
 
+  std::ostream& out_;
+
   std::vector<vcd_stream_ptr_type> vcd_streams_;
 
-  std::ostream& out_;
-  char vcd_id_;
-  bool header_written_;
+  std::uint64_t vcd_id_{ 0 };
+  bool header_written_{ false };
 
   // use boost
-  sysx::units::time_type scale_;
+  sysx::units::time_type scale_{ 1.0 * sysx::si::picoseconds };
 
   // temporary stringstream to print the VCD values
-  std::stringstream temp_sstr_;
+  std::stringstream temp_sstr_{};
 
   std::vector<std::unique_ptr<impl::vcd_event_converter_base>> converters_;
 };
