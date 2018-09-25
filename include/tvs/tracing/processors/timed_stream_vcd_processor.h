@@ -180,6 +180,14 @@ public:
   ~timed_stream_vcd_processor() override;
 
   template<typename T, typename Traits>
+  void add(timed_writer<T, Traits>& writer, std::string scope = "")
+  {
+    using stream_type = timed_stream<T, Traits>;
+    // Decide by SFINAE if we need a converter
+    this->do_add_stream(static_cast<stream_type>(writer.stream()), scope);
+  }
+
+  template<typename T, typename Traits>
   void add(timed_stream<T, Traits>& stream, std::string scope = "")
   {
     // Decide by SFINAE if we need a converter
