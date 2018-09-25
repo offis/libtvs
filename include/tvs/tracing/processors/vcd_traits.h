@@ -23,9 +23,11 @@
 
 #include <boost/format.hpp>
 
-#include <ostream>
-#include <iomanip>
+#include <algorithm>
+#include <bitset>
 #include <climits>
+#include <iomanip>
+#include <ostream>
 
 template<typename T>
 struct vcd_traits
@@ -73,5 +75,29 @@ struct vcd_traits<double>
   static void print(std::ostream& out, value_type const& val)
   {
     out << boost::format("%.16g") % val;
+  }
+};
+
+template<>
+struct vcd_traits<std::string>
+{
+  using value_type = std::string;
+  using this_type = vcd_traits<value_type>;
+
+  static constexpr const char* header_identifier_value = "wire";
+  static constexpr const char* trace_identifier_value = "b";
+  static constexpr uint16_t bitwidth_value = 800;
+
+  static void print(std::ostream& out, value_type const& val)
+  {
+    for (std::size_t i = 0; i < bitwidth_value/8; i++) {
+      char data;
+      if (i < val.size()) {
+        data = val[i];
+      } else {
+        data = 0;
+      }
+      out << std::bitset<8>(data);
+    }
   }
 };
