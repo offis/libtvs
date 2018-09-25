@@ -115,12 +115,28 @@ private:
       nm = this->reader_.stream().name();
     }
 
+    SYSX_ASSERT(traits_type::bitwidth_value >= 1);
+
+    // bug(?): using the constexpr values directly in the boost::format call
+    // results in a linker error
+    constexpr const char* idval = traits_type::header_identifier_value;
+    constexpr uint16_t bitwidth = traits_type::bitwidth_value;
+
     // clang-format off
-    out << "$var "
-        << traits_type::header_identifier_value << " "
-        << traits_type::bitwidth_value << " "
-        << this->id_ << " "
-        << nm << " $end\n";
+    if (traits_type::bitwidth_value == 1) {
+      out << boost::format("$var %s  % 3d  %s  %s         $end\n")
+                           % idval
+                           % bitwidth
+                           % this->id_
+                           % nm;
+    } else {
+      out << boost::format("$var %s  % 3d  %s  %s [%d:0]  $end\n")
+                           % idval
+                           % bitwidth
+                           % this->id_
+                           % nm
+                           % (bitwidth - 1);
+    }
     // clang-format on
   }
 
@@ -184,7 +200,7 @@ public:
   {
     using stream_type = timed_stream<T, Traits>;
     // Decide by SFINAE if we need a converter
-    this->do_add_stream(static_cast<stream_type>(writer.stream()), scope);
+    this->add(static_cast<stream_type&>(writer.stream()), scope);
   }
 
   template<typename T, typename Traits>
