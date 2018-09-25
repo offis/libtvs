@@ -52,11 +52,12 @@ timed_stream_vcd_processor::next_identifier()
   // produce an identifier in the range [first_id, last_id] with the necessary
   // amount of character symbols
   std::string id{};
-  while (next != 0) {
+  do {
     int rem = next % range;
     id.insert(id.begin(), rem + first_id);
     next /= range;
-  }
+  } while (next != 0);
+
   return id;
 }
 
