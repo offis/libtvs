@@ -87,7 +87,7 @@ timed_stream_processor_base::notify(reader_base_type& rd)
       available_inputs_.insert(ptr);
 
       // re-set minimum duration of all incoming readers
-      front_duration_ = update_min_duration(front_duration_, rd.front_duration());
+      front_duration_ = update_min_duration(front_duration_, it->front_duration());
     }
   }
 }
