@@ -36,14 +36,16 @@ namespace tracing {
 namespace {
 
 // helper function to update the minimum duration cache entry
-void
-set_min_duration(duration_type& min_dur, duration_type const& dur)
+duration_type
+update_min_duration(duration_type const& min_dur, duration_type const& dur)
 {
+  duration_type ret;
   if (min_dur == duration_type::zero_time) {
-    min_dur = dur;
+    ret = dur;
   } else {
-    min_dur = std::min(min_dur, dur);
+    ret = std::min(min_dur, dur);
   }
+  return ret;
 };
 
 } // anonymous namespace
@@ -55,7 +57,8 @@ timed_stream_processor_base::notify(reader_base_type& rd)
 {
 
   // remember minimum available duration of all incoming readers
-  set_min_duration(available_duration_, rd.available_duration());
+  available_duration_ =
+    update_min_duration(available_duration_, rd.available_duration());
 
   // check if all readers have notified
   available_inputs_.insert(&rd);
@@ -90,7 +93,8 @@ timed_stream_processor_base::notify(reader_base_type& rd)
       available_inputs_.insert(ptr);
 
       // re-set minimum duration of all incoming readers
-      set_min_duration(available_duration_, it->available_duration());
+      available_duration_ =
+        update_min_duration(available_duration_, it->available_duration());
     }
   }
 }
