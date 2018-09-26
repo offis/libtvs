@@ -210,7 +210,8 @@ template<typename T, typename Traits>
 void
 timed_stream<T, Traits>::print(std::ostream& os) const
 {
-  os << "@" << this->local_time() << " : " << buf_ << "|" << future_ << "\n";
+  os << this->name() << "@" << this->local_time() << " : " << buf_ << "|"
+     << future_ << "\n";
 }
 
 } // namespace tracing
