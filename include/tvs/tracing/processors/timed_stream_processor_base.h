@@ -133,7 +133,7 @@ private:
   writer_collection_type outputs_;
 
   std::unordered_set<timed_reader_base const*> available_inputs_;
-  duration_type min_duration_;
+  duration_type available_duration_;
 };
 
 template<typename T, typename Traits>

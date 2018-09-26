@@ -54,8 +54,8 @@ void
 timed_stream_processor_base::notify(reader_base_type& rd)
 {
 
-  // remember minimum duration of all incoming readers
-  set_min_duration(min_duration_, rd.front_duration());
+  // remember minimum available duration of all incoming readers
+  set_min_duration(available_duration_, rd.available_duration());
 
   // check if all readers have notified
   available_inputs_.insert(&rd);
@@ -63,11 +63,14 @@ timed_stream_processor_base::notify(reader_base_type& rd)
     return;
   }
 
+  if (available_duration_ == duration_type::zero_time)
+    return;
+
   // consume until no more duration is available or until the process() stops
   // advancing
   duration_type consumed;
-  while (consumed < min_duration_) {
-    auto const& advance = process(min_duration_ - consumed);
+  while (consumed < available_duration_) {
+    auto const& advance = process(available_duration_ - consumed);
     if (advance == duration_type::zero_time)
       break;
     consumed += advance;
@@ -77,7 +80,7 @@ timed_stream_processor_base::notify(reader_base_type& rd)
 
   // invalidate cache
   available_inputs_.clear();
-  min_duration_ = duration_type::zero_time;
+  available_duration_ = duration_type::zero_time;
 
   // re-build the cache, since we don't know which input readers process() has
   // fully consumed or what the new minimum duration is.
@@ -87,7 +90,7 @@ timed_stream_processor_base::notify(reader_base_type& rd)
       available_inputs_.insert(ptr);
 
       // re-set minimum duration of all incoming readers
-      set_min_duration(min_duration_, it->front_duration());
+      set_min_duration(available_duration_, it->available_duration());
     }
   }
 }
