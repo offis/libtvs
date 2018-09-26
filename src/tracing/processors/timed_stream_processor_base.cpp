@@ -39,13 +39,11 @@ namespace {
 duration_type
 update_min_duration(duration_type const& min_dur, duration_type const& dur)
 {
-  duration_type ret;
   if (min_dur == duration_type::zero_time) {
-    ret = dur;
+    return dur;
   } else {
-    ret = std::min(min_dur, dur);
+    return std::min(min_dur, dur);
   }
-  return ret;
 };
 
 } // anonymous namespace
@@ -56,9 +54,8 @@ void
 timed_stream_processor_base::notify(reader_base_type& rd)
 {
 
-  // remember minimum available duration of all incoming readers
-  available_duration_ =
-    update_min_duration(available_duration_, rd.available_duration());
+  // remember the minimum duration of all incoming front tokens
+  front_duration_ = update_min_duration(front_duration_, rd.front_duration());
 
   // check if all readers have notified
   available_inputs_.insert(&rd);
@@ -66,24 +63,21 @@ timed_stream_processor_base::notify(reader_base_type& rd)
     return;
   }
 
-  if (available_duration_ == duration_type::zero_time)
-    return;
-
   // consume until no more duration is available or until the process() stops
   // advancing
   duration_type consumed;
-  while (consumed < available_duration_) {
-    auto const& advance = process(available_duration_ - consumed);
+  do {
+    auto const& advance = process(front_duration_ - consumed);
+    consumed += advance;
     if (advance == duration_type::zero_time)
       break;
-    consumed += advance;
-  }
+  } while (consumed < front_duration_);
 
   commit(consumed);
 
   // invalidate cache
   available_inputs_.clear();
-  available_duration_ = duration_type::zero_time;
+  front_duration_ = duration_type::zero_time;
 
   // re-build the cache, since we don't know which input readers process() has
   // fully consumed or what the new minimum duration is.
@@ -93,8 +87,7 @@ timed_stream_processor_base::notify(reader_base_type& rd)
       available_inputs_.insert(ptr);
 
       // re-set minimum duration of all incoming readers
-      available_duration_ =
-        update_min_duration(available_duration_, it->available_duration());
+      front_duration_ = update_min_duration(front_duration_, rd.front_duration());
     }
   }
 }
