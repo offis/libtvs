@@ -102,9 +102,11 @@ protected:
 
   /// User-defined implementation for updating the state of this processor.
   ///
-  /// This method is called when the given duration is available on all input
-  /// streams.  It should return the consumed time which is then used to advance
-  /// this processors's time via commit().  The user is responsible for
+  /// This method is called when all input streams have tuples available.  The
+  /// duration given is the minimum duration of the first tuple on all streams,
+  /// i.e. calling reader->front(dur) is guaranteed to succeed.  The
+  /// implementation should return the consumed time which is then used to
+  /// advance this processors's time via commit(). The user is responsible for
   /// consuming the tuples on the input streams.
   virtual duration_type process(duration_type dur) { return dur; }
 
