@@ -215,6 +215,9 @@ tracing::time_type operator"" _ms(unsigned long long val)
 #endif
 }
 
+// only in release mode
+#if defined(SYSX_NDEBUG)
+
 TEST_F(StreamEventSemantics, RoundingErrorTests)
 {
   writer.push(0, 251_ns);
@@ -236,3 +239,5 @@ TEST_F(StreamEventSemantics, RoundingErrorTests2)
   writer.commit();
   EXPECT_EQ(writer.local_time(), 253_ns);
 }
+
+#endif
