@@ -264,3 +264,19 @@ TEST_F(StreamStateSemantics, CheckFrontSplit)
 
   EXPECT_EQ(result.duration(), dur);
 }
+
+TEST_F(StreamStateSemantics, CheckFrontSplitZeroTime)
+{
+  writer.push(0, dur * 2);
+  writer.commit();
+
+  auto result = reader.front(zero_time);
+  EXPECT_EQ(result.duration(), zero_time);
+  EXPECT_EQ(reader.count(), 2);
+  reader.pop();
+
+  result = reader.front();
+
+  EXPECT_EQ(result.duration(), dur * 2);
+  EXPECT_EQ(reader.count(), 1);
+}

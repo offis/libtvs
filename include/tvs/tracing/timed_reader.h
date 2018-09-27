@@ -95,7 +95,13 @@ public:
   tuple_type const& front(duration_type const& dur) override
   {
     if (front_duration() > dur) {
-      buf_.split(dur);
+      // special case: splitting at zero-time should produce a new zero-time
+      // tuple at the front
+      if (dur == duration_type::zero_time) {
+        buf_.push_front(get(), dur);
+      } else {
+        buf_.split(dur);
+      }
     }
 
     SYSX_ASSERT(front_duration() <= dur);
@@ -110,9 +116,7 @@ public:
 
   timed_variant front_variant(duration_type const& dur) override
   {
-    if (front_duration() > dur) {
-      buf_.split(dur);
-    }
+    front(dur);
 
     return front_variant();
   }
