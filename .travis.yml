@@ -15,6 +15,7 @@ addons:
       - llvm-toolchain-trusty-5.0
       - llvm-toolchain-trusty-6.0
     packages:
+      # Compilers
       - clang-3.8
       - clang-5.0
       - clang-6.0
@@ -22,59 +23,60 @@ addons:
       - g++-6
       - g++-7
 
+      # Dependencies
+      - libboost-dev
+      - libboost-system-dev
+      - libgtest-dev
+      - cmake
+      - cmake-data
+
 matrix:
   include:
 
     ## Debug builds
 
     - os: linux
-      env: CXX=clang++-3.8 CC=clang-3.8 CONFIG=Debug
+      env: CXX=clang++-3.8 CC=clang-3.8 TVS_BUILD_CFG=Debug
 
     - os: linux
-      env: CXX=clang++-5.0 CC=clang-5.0 CONFIG=Debug
+      env: CXX=clang++-5.0 CC=clang-5.0 TVS_BUILD_CFG=Debug
 
     - os: linux
-      env: CXX=clang++-6.0 CC=clang-6.0 CONFIG=Debug
+      env: CXX=clang++-6.0 CC=clang-6.0 TVS_BUILD_CFG=Debug
 
     - os: linux
-      env: CXX=g++-5 CC=gcc-5 CONFIG=Debug
+      env: CXX=g++-5 CC=gcc-5 TVS_BUILD_CFG=Debug
 
     - os: linux
-      env: CXX=g++-6 CC=gcc-6 CONFIG=Debug
+      env: CXX=g++-6 CC=gcc-6 TVS_BUILD_CFG=Debug
 
     - os: linux
-      env: CXX=g++-7 CC=gcc-7 CONFIG=Debug
+      env: CXX=g++-7 CC=gcc-7 TVS_BUILD_CFG=Debug
 
 
     ## Release builds
 
     - os: linux
-      env: CXX=clang++-3.8 CC=clang-3.8 CONFIG=Release
+      env: CXX=clang++-3.8 CC=clang-3.8 TVS_BUILD_CFG=Release
 
     - os: linux
-      env: CXX=clang++-5.0 CC=clang-5.0 CONFIG=Release
+      env: CXX=clang++-5.0 CC=clang-5.0 TVS_BUILD_CFG=Release
 
     - os: linux
-      env: CXX=clang++-6.0 CC=clang-6.0 CONFIG=Release
+      env: CXX=clang++-6.0 CC=clang-6.0 TVS_BUILD_CFG=Release
 
     - os: linux
-      env: CXX=g++-5 CC=gcc-5 CONFIG=Release
+      env: CXX=g++-5 CC=gcc-5 TVS_BUILD_CFG=Release
 
     - os: linux
-      env: CXX=g++-6 CC=gcc-6 CONFIG=Release
+      env: CXX=g++-6 CC=gcc-6 TVS_BUILD_CFG=Release
 
     - os: linux
-      env: CXX=g++-7 CC=gcc-7 CONFIG=Release
-
-before_install:
-  - sudo apt-get -qq update
-
-install:
-  - sudo apt-get install -qq libboost-dev libboost-system-dev libgtest-dev cmake cmake-data
+      env: CXX=g++-7 CC=gcc-7 TVS_BUILD_CFG=Release
 
 script:
   - mkdir -p build
   - cd build
-  - cmake -DTVS_ENABLE_TESTS=ON -DTVS_USE_SYSTEMC=OFF -DCMAKE_BUILD_TYPE=$CONFIG ..
+  - cmake -DTVS_ENABLE_TESTS=ON -DTVS_USE_SYSTEMC=OFF -DCMAKE_BUILD_TYPE=${TVS_BUILD_CFG} ..
   - cmake --build .
   - ctest --verbose .
