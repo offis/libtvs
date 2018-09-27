@@ -129,11 +129,13 @@ private:
   /// then calls process().
   virtual void notify(reader_base_type&) override;
 
+  void update_cache();
+
   reader_collection_type inputs_;
   writer_collection_type outputs_;
 
   std::unordered_set<timed_reader_base const*> available_inputs_;
-  duration_type front_duration_;
+  duration_type front_duration_{ duration_type::infinity() };
 };
 
 template<typename T, typename Traits>

@@ -33,29 +33,35 @@
 
 namespace tracing {
 
-namespace {
-
-// helper function to update the minimum duration cache entry
-duration_type
-update_min_duration(duration_type const& min_dur, duration_type const& dur)
-{
-  if (min_dur == duration_type::zero_time) {
-    return dur;
-  } else {
-    return std::min(min_dur, dur);
-  }
-};
-
-} // anonymous namespace
-
 timed_stream_processor_base::timed_stream_processor_base() = default;
+
+void
+timed_stream_processor_base::update_cache()
+{
+
+  // invalidate cache
+  available_inputs_.clear();
+  front_duration_ = duration_type::infinity();
+
+  for (auto const& it : inputs()) {
+    auto const* ptr = &(*it);
+    if (!it->available()) {
+      front_duration_ = duration_type::infinity();
+      return;
+    }
+
+    available_inputs_.insert(ptr);
+
+    // re-set minimum duration of all incoming readers
+    front_duration_ = std::min(front_duration_, it->front_duration());
+  }
+}
 
 void
 timed_stream_processor_base::notify(reader_base_type& rd)
 {
-
   // remember the minimum duration of all incoming front tokens
-  front_duration_ = update_min_duration(front_duration_, rd.front_duration());
+  front_duration_ = std::min(front_duration_, rd.front_duration());
 
   // check if all readers have notified
   available_inputs_.insert(&rd);
@@ -63,32 +69,22 @@ timed_stream_processor_base::notify(reader_base_type& rd)
     return;
   }
 
-  // consume until no more duration is available or until the process() stops
-  // advancing
-  duration_type consumed;
-  do {
-    auto const& advance = process(front_duration_ - consumed);
-    consumed += advance;
-    if (advance == duration_type::zero_time)
-      break;
-  } while (consumed < front_duration_);
+  // run as long as there are tokens available
+  while (front_duration_ != duration_type::infinity()) {
+    // consume until no more duration is available or until the process() stops
+    // advancing
+    duration_type consumed;
+    do {
+      auto const& advance = process(front_duration_ - consumed);
+      consumed += advance;
 
-  commit(consumed);
+      if (advance == duration_type::zero_time)
+        break;
+    } while (consumed < front_duration_);
+    commit(consumed);
 
-  // invalidate cache
-  available_inputs_.clear();
-  front_duration_ = duration_type::zero_time;
-
-  // re-build the cache, since we don't know which input readers process() has
-  // fully consumed or what the new minimum duration is.
-  for (auto&& it : inputs_) {
-    auto const* ptr = &(*it);
-    if (it->available()) {
-      available_inputs_.insert(ptr);
-
-      // re-set minimum duration of all incoming readers
-      front_duration_ = update_min_duration(front_duration_, it->front_duration());
-    }
+    // updates front_duration_ and available_inputs_
+    update_cache();
   }
 }
 
