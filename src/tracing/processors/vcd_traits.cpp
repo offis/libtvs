@@ -35,7 +35,7 @@ namespace tracing {
   DEFINE_BITWIDTH_(Type, BitWidth)                                             \
   DEFINE_PRINT_(Type)
 
-DEFINE_TYPE_TRAITS_(int, "real", "r", 32)
+DEFINE_TYPE_TRAITS_(int, "real", "r", sizeof(int))
 {
   out << val;
 }
@@ -43,6 +43,12 @@ DEFINE_TYPE_TRAITS_(int, "real", "r", 32)
 DEFINE_TYPE_TRAITS_(bool, "wire", "b", 1)
 {
   out << (val ? "1" : "0");
+}
+
+
+DEFINE_TYPE_TRAITS_(double, "real", "r", sizeof(double))
+{
+  out << val;
 }
 
 DEFINE_TYPE_TRAITS_(std::string, "wire", "b", 800)
