@@ -57,7 +57,10 @@ struct timed_split_policy_average
 
   static tuple_type split(tuple_type& old, duration_type const& split_at)
   {
-    SYSX_ASSERT(!old.is_infinite());
+    if (old.is_infinite()) {
+      SYSX_REPORT_FATAL(sysx::report::plain_msg)
+        << "This policy cannot split infinite tuples";
+    }
     SYSX_ASSERT(split_at < old.duration());
 
     using utype = sysx::units::time_type;
@@ -105,7 +108,8 @@ struct timed_merge_policy_error
 
   static void merge(tuple_type&, tuple_type const&)
   {
-    SYSX_ASSERT(false && "Merge forbidden by policy");
+    SYSX_REPORT_FATAL(sysx::report::plain_msg)
+      << "Merge forbidden by policy";
   }
 };
 

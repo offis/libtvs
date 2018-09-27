@@ -195,3 +195,44 @@ TEST_F(StreamEventSemantics, SplitMergeCommitSemantics)
 
   expect_processor_output(exp.str());
 }
+
+tracing::time_type operator"" _ns(unsigned long long val)
+{
+#ifdef SYSX_NO_SYSTEMC
+  return tracing::time_type(val * 1.0 * sysx::si::nanoseconds );
+#else
+  return tracing::time_type(1.0 * val, sc_core::SC_NS);
+#endif
+}
+
+
+tracing::time_type operator"" _ms(unsigned long long val)
+{
+#ifdef SYSX_NO_SYSTEMC
+  return tracing::time_type(val * 1.0 * sysx::si::milliseconds );
+#else
+  return tracing::time_type(1.0 * val, sc_core::SC_MS);
+#endif
+}
+
+TEST_F(StreamEventSemantics, RoundingErrorTests)
+{
+  writer.push(0, 251_ns);
+  writer.push(0, 46_ns);
+  writer.push(0, 209_ns);
+  writer.commit();
+  EXPECT_EQ(writer.local_time(), 251_ns);
+}
+
+TEST_F(StreamEventSemantics, RoundingErrorTests2)
+{
+  writer.push(0, 52_ns);
+  writer.push(0, 126_ns);
+  writer.push(0, 248_ns);
+  writer.push(0, 22_ns);
+  writer.push(0, 26_ns);
+  writer.push(0, 253_ns);
+
+  writer.commit();
+  EXPECT_EQ(writer.local_time(), 253_ns);
+}

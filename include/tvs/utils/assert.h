@@ -73,7 +73,7 @@
 
 /* ---------------------------- assertions ---------------------------- */
 
-#if !defined(SYSX_NDEBUG) && !defined(SYSX_SYNTHESIS_)
+#if !defined(SYSX_NDEBUG)
 
 /**
  * \def   SYSX_ASSERT()

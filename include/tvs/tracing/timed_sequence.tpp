@@ -108,7 +108,10 @@ template<typename T, typename Traits>
 void
 timed_sequence<T, Traits>::split(duration_type const& offset)
 {
-  SYSX_ASSERT(!offset.is_infinite() && "Cannot split at infinite offset.");
+  if (offset.is_infinite()) {
+      SYSX_REPORT_FATAL(sysx::report::plain_msg)
+        << "Cannot split sequence at infinite offset";
+    }
   SYSX_ASSERT(offset <= this->duration() &&
               "Cannot split beyond sequence duration.");
 
