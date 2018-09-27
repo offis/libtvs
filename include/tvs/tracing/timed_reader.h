@@ -98,6 +98,8 @@ public:
       buf_.split(dur);
     }
 
+    SYSX_ASSERT(front_duration() <= dur);
+
     return front();
   }
 
