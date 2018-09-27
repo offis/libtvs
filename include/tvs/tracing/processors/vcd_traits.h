@@ -21,83 +21,32 @@
  *         Sören Schreiner <soeren.schreiner@offis.de>
  */
 
-#include <boost/format.hpp>
+#ifndef TVS_VCD_TRAITS_H_INCLUDED_
+#define TVS_VCD_TRAITS_H_INCLUDED_
 
-#include <algorithm>
-#include <bitset>
 #include <climits>
-#include <iomanip>
 #include <ostream>
+
+namespace tracing {
 
 template<typename T>
 struct vcd_traits
 {
   using value_type = T;
   using this_type = vcd_traits<value_type>;
-
-  static constexpr const char* header_identifier_value = "real";
-  static constexpr const char* trace_identifier_value = "r";
-  static constexpr uint16_t bitwidth_value = sizeof(value_type) * CHAR_BIT;
-
-  static void print(std::ostream& out, value_type const& val) { out << val; }
+  static void print(std::ostream& out, value_type const& val);
+  static const char* header_id();
+  static const char* trace_id();
+  static uint16_t bitwidth();
 };
 
-template struct vcd_traits<uint16_t>;
-template struct vcd_traits<uint32_t>;
+// these are provided by the library
+
 template struct vcd_traits<int>;
+template struct vcd_traits<bool>;
+template struct vcd_traits<double>;
+template struct vcd_traits<std::string>;
 
-template<>
-struct vcd_traits<bool>
-{
-  using value_type = bool;
-  using this_type = vcd_traits<value_type>;
+} // namespace tracing
 
-  static constexpr const char* header_identifier_value = "wire";
-  static constexpr const char* trace_identifier_value = "b";
-  static constexpr uint16_t bitwidth_value = 1;
-
-  static void print(std::ostream& out, value_type const& val)
-  {
-    out << (val ? "1" : "0");
-  }
-};
-
-template<>
-struct vcd_traits<double>
-{
-  using value_type = double;
-  using this_type = vcd_traits<value_type>;
-
-  static constexpr const char* header_identifier_value = "real";
-  static constexpr const char* trace_identifier_value = "r";
-  static constexpr uint16_t bitwidth_value = sizeof(value_type) * CHAR_BIT;
-
-  static void print(std::ostream& out, value_type const& val)
-  {
-    out << boost::format("%.16g") % val;
-  }
-};
-
-template<>
-struct vcd_traits<std::string>
-{
-  using value_type = std::string;
-  using this_type = vcd_traits<value_type>;
-
-  static constexpr const char* header_identifier_value = "wire";
-  static constexpr const char* trace_identifier_value = "b";
-  static constexpr uint16_t bitwidth_value = 800;
-
-  static void print(std::ostream& out, value_type const& val)
-  {
-    for (std::size_t i = 0; i < bitwidth_value/8; i++) {
-      char data;
-      if (i < val.size()) {
-        data = val[i];
-      } else {
-        data = 0;
-      }
-      out << std::bitset<8>(data);
-    }
-  }
-};
+#endif /* TVS_VCD_TRAITS_H_INCLUDED_ */

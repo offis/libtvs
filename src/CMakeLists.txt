@@ -31,6 +31,7 @@ add_library(tvs
   tracing/timed_writer_base.cpp
   tracing/processors/timed_stream_processor_base.cpp
   tracing/processors/timed_stream_vcd_processor.cpp
+  tracing/processors/vcd_traits.cpp
   )
 
 add_library(TVS::tvs ALIAS tvs)

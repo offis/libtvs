@@ -115,23 +115,20 @@ private:
       nm = this->reader_.stream().name();
     }
 
-    SYSX_ASSERT(traits_type::bitwidth_value >= 1);
+    auto const& bitwidth = traits_type::bitwidth();
 
-    // bug(?): using the constexpr values directly in the boost::format call
-    // results in a linker error
-    constexpr const char* idval = traits_type::header_identifier_value;
-    constexpr uint16_t bitwidth = traits_type::bitwidth_value;
+    SYSX_ASSERT(bitwidth >= 1);
 
     // clang-format off
-    if (traits_type::bitwidth_value == 1) {
+    if (traits_type::bitwidth() == 1) {
       out << boost::format("$var %s  % 3d  %s  %s         $end\n")
-                           % idval
+                           % traits_type::header_id()
                            % bitwidth
                            % this->id_
                            % nm;
     } else {
       out << boost::format("$var %s  % 3d  %s  %s [%d:0]  $end\n")
-                           % idval
+                           % traits_type::header_id()
                            % bitwidth
                            % this->id_
                            % nm
@@ -158,10 +155,10 @@ private:
 
   void do_print_val(std::ostream& out, value_type const& val) const
   {
-    if (traits_type::bitwidth_value == 1) {
+    if (traits_type::bitwidth() == 1) {
       traits_type::print(out, val);
     } else {
-      out << traits_type::trace_identifier_value;
+      out << traits_type::trace_id();
       traits_type::print(out, val);
       out << " ";
     }
