@@ -36,6 +36,7 @@ timed_stream_vcd_processor::timed_stream_vcd_processor(char const* modscope,
 
 timed_stream_vcd_processor::~timed_stream_vcd_processor()
 {
+  print_timestamp(this->local_time());
   out_ << "$vcdclose " << this->local_time() << " $end\n";
 }
 
