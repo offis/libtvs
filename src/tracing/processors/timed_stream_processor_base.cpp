@@ -46,13 +46,12 @@ timed_stream_processor_base::update_cache()
   for (auto const& it : inputs()) {
     auto const* ptr = &(*it);
     if (!it->available()) {
-      front_duration_ = duration_type::infinity();
-      return;
+      break;
     }
 
     available_inputs_.insert(ptr);
 
-    // re-set minimum duration of all incoming readers
+    // re-set minimum duration of all incoming available readers
     front_duration_ = std::min(front_duration_, it->front_duration());
   }
 }
@@ -60,17 +59,15 @@ timed_stream_processor_base::update_cache()
 void
 timed_stream_processor_base::notify(reader_base_type& rd)
 {
-  // remember the minimum duration of all incoming front tokens
-  front_duration_ = std::min(front_duration_, rd.front_duration());
-
   // check if all readers have notified
   available_inputs_.insert(&rd);
-  if (available_inputs_.size() != inputs_.size()) {
-    return;
-  }
 
-  // run as long as there are tokens available
-  while (front_duration_ != duration_type::infinity()) {
+  // remember the minimum duration of an incoming reader (since it also must
+  // have tokens available)
+  front_duration_ = std::min(front_duration_, rd.front_duration());
+
+  // run as long as there are readers with available tokens
+  while (available_inputs_.size() == inputs_.size()) {
     // consume until no more duration is available or until the process() stops
     // advancing
     duration_type consumed;
