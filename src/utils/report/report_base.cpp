@@ -59,12 +59,12 @@ report_base::fill(const char* context)
   id_ = this->get_id();
   // include simulation context in message
   if (context) {
-    msg_
 #if not defined(SYSX_NO_SYSTEMC)
-      << ::sc_core::sc_time_stamp() << "~" << ::sc_core::sc_delta_count() << " "
-      << sc_core::sc_get_current_process_handle().name()
+    msg_ << "@" << ::sc_core::sc_time_stamp() << "~"
+         << ::sc_core::sc_delta_count() << " "
+         << sc_core::sc_get_current_process_handle().name() << " ";
 #endif
-      << " @ " << reduce_function(context) << ": ";
+    msg_ << "in function " << reduce_function(context);
   }
   return msg_;
 }
@@ -199,10 +199,10 @@ report_base::reduce_function(const char* char_text)
   // remove all arguments
   idx_bra = working_copy.find("(");
   if (idx_bra != std::string::npos) {
-    working_copy[idx_bra] = ')';
+    working_copy[idx_bra] = '(';
     working_copy.erase(idx_bra + 1);
   }
-  return working_copy;
+  return working_copy + ")";
 }
 
 const char* const report_base::lib_prefix = SYSX_IMPL_REPORT_LIBRARY_PREFIX_;
