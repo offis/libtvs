@@ -88,8 +88,9 @@ timed_stream_processor_base::notify(reader_base_type& rd)
 timed_stream_processor_base::duration_type
 timed_stream_processor_base::do_commit(duration_type until)
 {
+  time_type stamp = local_time() + until;
   for (auto&& out : outputs())
-    out->commit(until);
+    out->commit(stamp);
 
   return until;
 }
