@@ -74,20 +74,36 @@ struct timed_stream_processor_base
   using duration_type = stream_base_type::duration_type;
 
   /// Add an input stream of a writer to this processor.
+  ///
+  /// \returns a shared_ptr to the the internally created reader which is
+  /// attached to the stream of the given reader
   template<typename T, typename Traits>
-  void in(timed_writer<T, Traits>&);
+  std::shared_ptr<tracing::timed_reader<T, Traits>>
+  in(timed_writer<T, Traits>&);
 
   /// Add an input stream to this processor.
+  ///
+  /// \returns a shared_ptr to the the internally created reader which is
+  /// attached to the given stream
   template<typename T, typename Traits>
-  void in(timed_stream<T, Traits>&);
+  std::shared_ptr<tracing::timed_reader<T, Traits>>
+  in(timed_stream<T, Traits>&);
 
   /// Add an output stream of a reader to this processor.
+  ///
+  /// \returns a shared_ptr to the the internally created writer which is
+  /// attached to the stream of the given reader
   template<typename T, typename Traits>
-  void out(timed_reader<T, Traits>&);
+  std::shared_ptr<tracing::timed_writer<T, Traits>>
+  out(timed_reader<T, Traits>&);
 
   /// Add an output stream to this processor.
+  ///
+  /// \returns a shared_ptr to the the internally created writer which is
+  /// attached to the given stream
   template<typename T, typename Traits>
-  void out(timed_stream<T, Traits>&);
+  std::shared_ptr<tracing::timed_writer<T, Traits>>
+  out(timed_stream<T, Traits>&);
 
 protected:
   timed_stream_processor_base();
@@ -141,7 +157,7 @@ private:
 };
 
 template<typename T, typename Traits>
-void
+std::shared_ptr<tracing::timed_reader<T, Traits>>
 timed_stream_processor_base::in(tracing::timed_writer<T, Traits>& writer)
 {
   using stream_type =
@@ -149,11 +165,11 @@ timed_stream_processor_base::in(tracing::timed_writer<T, Traits>& writer)
 
   auto stream = dynamic_cast<stream_type*>(&writer.stream());
   SYSX_ASSERT(stream != nullptr);
-  this->in(*stream);
+  return this->in(*stream);
 }
 
 template<typename T, typename Traits>
-void
+std::shared_ptr<tracing::timed_reader<T, Traits>>
 timed_stream_processor_base::in(tracing::timed_stream<T, Traits>& stream)
 {
   using reader_type =
@@ -162,12 +178,15 @@ timed_stream_processor_base::in(tracing::timed_stream<T, Traits>& stream)
   std::stringstream name;
   name << stream.basename() << "_reader";
 
-  this->do_add_input(std::make_shared<reader_type>(
-    host::gen_unique_name(name.str().c_str()), stream));
+  auto ret = std::make_shared<reader_type>(
+    host::gen_unique_name(name.str().c_str()), stream);
+
+  this->do_add_input(ret);
+  return ret;
 }
 
 template<typename T, typename Traits>
-void
+std::shared_ptr<tracing::timed_writer<T, Traits>>
 timed_stream_processor_base::out(tracing::timed_reader<T, Traits>& reader)
 {
   using stream_type =
@@ -175,16 +194,18 @@ timed_stream_processor_base::out(tracing::timed_reader<T, Traits>& reader)
 
   auto stream = dynamic_cast<stream_type*>(&reader.stream());
   SYSX_ASSERT(stream != nullptr);
-  this->out(*stream);
+  return this->out(*stream);
 }
 
 template<typename T, typename Traits>
-void
+std::shared_ptr<tracing::timed_writer<T, Traits>>
 timed_stream_processor_base::out(tracing::timed_stream<T, Traits>& stream)
 {
   using writer_type =
     typename std::remove_reference<decltype(stream)>::type::writer_type;
-  this->do_add_output(std::make_shared<writer_type>(stream));
+  auto ret = std::make_shared<writer_type>(stream);
+  this->do_add_output(ret);
+  return ret;
 }
 
 /// Policy-based processor template.
