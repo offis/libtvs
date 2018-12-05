@@ -231,7 +231,7 @@ namespace report { /* for documentation only */
 #define SYSX_IMPL_REPORT_STREAM_(Severity, ID)                                 \
   /* create temporary report object and return its stream */                   \
   ::sysx::impl::report<ID>::type(Severity, __FILE__, __LINE__)                 \
-    .fill(__PRETTY_FUNCTION__)
+    .fill()
 
 namespace sysx {
 namespace impl {

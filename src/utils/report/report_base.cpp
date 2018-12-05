@@ -65,7 +65,7 @@ report_base::fill(const char* context)
          << ::sc_core::sc_delta_count() << " "
          << sc_core::sc_get_current_process_handle().name();
 #endif
-    msg_ << " in function " << reduce_function(context);
+    msg_ << " in function " << context;
   }
   return msg_;
 }
@@ -186,25 +186,6 @@ sysx_severity_to_sc_severity(report_base::severity svrty)
   return scs;
 }
 #endif // not SYSX_NO_SYSTEMC
-
-std::string
-report_base::reduce_function(const char* char_text)
-{
-  std::string working_copy(char_text);
-  // remove all namespace and class names
-  std::string::size_type idx_bra = working_copy.find("(");
-  std::string::size_type idx_sep = working_copy.rfind("::", idx_bra);
-  if (idx_sep != std::string::npos)
-    working_copy.erase(0, idx_sep + 2);
-
-  // remove all arguments
-  idx_bra = working_copy.find("(");
-  if (idx_bra != std::string::npos) {
-    working_copy[idx_bra] = '(';
-    working_copy.erase(idx_bra + 1);
-  }
-  return working_copy + ")";
-}
 
 const char* const report_base::lib_prefix = SYSX_IMPL_REPORT_LIBRARY_PREFIX_;
 const char* const report_base::file_unknown = "<unknown>";

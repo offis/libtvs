@@ -180,16 +180,6 @@ protected:
   report_base(const report_base&);
 
 private:
-  /**
-   * \brief function name reduction helper
-   *
-   * This method reduces a string given by macros like
-   * __PRETTY_FUNCTION__ to a shorter fraction: "methodname()".
-   * It is used, if the \c context parameter is given to
-   * the stream() method.
-   *
-   */
-  static std::string reduce_function(const char*);
 
   message msg_;
   bool active_;
