@@ -171,6 +171,20 @@ lookup(const char* name)
 #endif // SYSX_NO_SYSTEMC
 }
 
+char const*
+current_object_name()
+{
+#ifdef SYSX_NO_SYSTEMC
+  SYSX_REPORT_FATAL(sysx::report::not_implemented) % "object name retrieval";
+  return "";
+#else
+  auto obj = sc_core::sc_get_current_object();
+  SYSX_ASSERT(obj != nullptr);
+
+  return obj->name();
+#endif
+}
+
 } // namespace host
 
 /* ----------------------------- sync --------------------------- */

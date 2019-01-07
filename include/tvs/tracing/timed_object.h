@@ -53,6 +53,9 @@ gen_unique_name(const char* name);
 timed_stream_base*
 lookup(const char* name);
 
+char const*
+current_object_name();
+
 } // namespace host
 
 /// Register a synchronisation function to be called for synchronising the time
