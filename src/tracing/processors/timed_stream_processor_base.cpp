@@ -45,8 +45,10 @@ timed_stream_processor_base::update_cache()
 
   for (auto const& it : inputs()) {
     auto const* ptr = &(*it);
+
+    // skip if stream is unavailable
     if (!it->available()) {
-      break;
+      continue;
     }
 
     available_inputs_.insert(ptr);
