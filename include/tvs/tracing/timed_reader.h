@@ -48,10 +48,12 @@ public:
   typedef timed_reader<T, Traits> this_type;
 
   typedef T value_type;
+  typedef Traits traits_type;
   typedef timed_stream<T, Traits> stream_type;
   typedef timed_value<T> tuple_type;
 
   typedef typename stream_type::sequence_type sequence_type;
+  typedef typename traits_type::split_policy split_policy;
 
   typedef typename sequence_type::const_iterator const_iterator;
   typedef typename sequence_type::range_type range_type;
@@ -98,7 +100,8 @@ public:
       // special case: splitting at zero-time should produce a new zero-time
       // tuple at the front
       if (dur == duration_type::zero_time) {
-        buf_.push_front(get(), dur);
+        auto lhs = split_policy::split(buf_.front(), dur);
+        buf_.push_front(lhs);
       } else {
         buf_.split(dur);
       }
