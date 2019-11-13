@@ -37,7 +37,7 @@ namespace sysx {
 namespace utils {
 
 #ifndef _WIN32
-#if defined(__x86_64__)
+#if defined(__x86_64__) || defined(__aarch64__)
 typedef long long int64;
 typedef unsigned long long uint64;
 #else
