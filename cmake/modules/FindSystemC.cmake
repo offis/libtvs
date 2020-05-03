@@ -16,22 +16,18 @@ else()
 
   # TODO: version check
 
-  set (SYSTEMC_SEARCH_PATH
-    /usr/local
-    /usr
-    $ENV{SYSTEMC_HOME})
-
   find_path (SYSTEMC_INCLUDE_DIR systemc
     PATH_SUFFIXES include
-    PATHS ${SYSTEMC_SEARCH_PATH}
+    HINTS ENV SYSTEMC_HOME
     )
 
   find_library (SYSTEMC_LIBRARY systemc
     PATH_SUFFIXES lib64 lib lib-linux64
-    PATHS ${SYSTEMC_SEARCH_PATH}
+    HINTS ENV SYSTEMC_HOME
     )
 
   set(SYSTEMC_INCLUDE_DIRS ${SYSTEMC_INCLUDE_DIR})
+
   set(SYSTEMC_LIBRARIES ${SYSTEMC_LIBRARY})
 
   include(FindPackageHandleStandardArgs)
@@ -48,6 +44,6 @@ else()
     INTERFACE_INCLUDE_DIRECTORIES
     ${SYSTEMC_INCLUDE_DIRS})
 
-  message(STATUS "Found SystemC at ${SYSTEMC_LIBRARY}")
+  message(STATUS "Found SystemC at ${SYSTEMC_LIBRARY} (header at ${SYSTEMC_INCLUDE_DIR})" )
 
 endif()
